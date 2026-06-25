@@ -23,12 +23,12 @@ export default function Home() {
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         <CategoryCard
-          cover={"/images/apparel.avif"}
+          cover={"https://adn.nestortech.io/api/va/67a06a45ea8a39c6628c71c3/Apparel/dev/generic"}
           title={"Apperal"}
           description={"Shop Now"}
         />
         <CategoryCard
-          cover={"/images/accessories.avif"}
+          cover={"https://adn.nestortech.io/api/va/67a06a45ea8a39c6628c71c3/Accessories/dev/generic"}
           title={"Accessories"}
           description={"Shop Now"}
         />

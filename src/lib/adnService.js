@@ -52,6 +52,11 @@ export function transformADNToProduct(adnData, metadata) {
   const coverUrl = adnData.anchorAsset
     ? buildMediaUrl(adnData.anchorAsset.downloadUrl)
     : null;
+    
+  let coverType = 'image';
+  if (adnData.anchorAsset && adnData.anchorAsset.mimetype && adnData.anchorAsset.mimetype.startsWith('video/')) {
+    coverType = 'video';
+  }
 
   // Build thumbnails from ALL image/video assets (including anchorAsset)
   const thumbnails = adnData.assetItemUrls
@@ -92,7 +97,8 @@ export function transformADNToProduct(adnData, metadata) {
     category: metadata.category,
     suggestion: metadata.suggestion || false,
     cover: {
-      url: coverUrl
+      url: coverUrl,
+      type: coverType
     },
     thumbnails,
     pdfUrl

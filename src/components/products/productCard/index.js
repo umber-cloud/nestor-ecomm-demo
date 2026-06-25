@@ -28,7 +28,7 @@ const ProductCard = ({ title, price, cover, onClick, id }) => {
       id: productId,
       title,
       price: numericPrice,
-      image: cover
+      image: cover?.url || cover
     };
     console.log("Adding product to cart:", productToAdd);
     addToCart(productToAdd);
@@ -47,13 +47,24 @@ const ProductCard = ({ title, price, cover, onClick, id }) => {
       <Card className="overflow-hidden border-none shadow-none">
         <div onClick={onClick} className="flex justify-center relative">
           <CardHeader>
-            <Image
-              width={1024}
-              height={720}
-              src={cover}
-              alt={title}
-              className="rounded-lg cursor-pointer transition-all duration-200 hover:scale-110 hover:brightness-35"
-            />
+            {cover?.type === 'video' ? (
+              <video
+                src={cover.url}
+                className="w-full h-auto object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-110 hover:brightness-35 aspect-video"
+                autoPlay
+                loop
+                muted
+                playsInline
+              />
+            ) : (
+              <Image
+                width={1024}
+                height={720}
+                src={cover?.url || cover}
+                alt={title}
+                className="rounded-lg cursor-pointer transition-all duration-200 hover:scale-110 hover:brightness-35"
+              />
+            )}
           </CardHeader>
           <div className="image-shadow"></div>
         </div>

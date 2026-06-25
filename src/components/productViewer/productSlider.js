@@ -48,12 +48,12 @@ const ThumbnailItem = ({ image }) => {
 };
 
 export default function ProductSlider({ images, cover }) {
-  const [currentView, setCurrentView] = React.useState({ type: "image", url: cover });
+  const [currentView, setCurrentView] = React.useState(cover || { type: "image", url: "" });
 
   const allThumbnails =
     images && images.length > 0
       ? images
-      : [{ url: cover, type: "image" }];
+      : (cover ? [cover] : []);
 
   return (
     <div className="flex items-center justify-center flex-col">
@@ -61,13 +61,13 @@ export default function ProductSlider({ images, cover }) {
       {renderMainView(currentView)}
 
       {/* Small thumbnail strip — fixed to original size */}
-      <div className="flex gap-2 my-2">
-        <Carousel opts={{ align: "start" }} className="w-full max-w-sm">
-          <CarouselContent className="flex items-center justify-center">
+      <div className="flex gap-2 my-2 w-full max-w-md mx-auto px-12">
+        <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
+          <CarouselContent className="flex items-center -ml-4">
             {allThumbnails.map((image, index) => (
               <CarouselItem
                 key={index}
-                className="md:basis-1/2 lg:basis-1/3"
+                className="pl-4 basis-1/3 md:basis-1/4"
               >
                 <div className="p-1" onClick={() => setCurrentView(image)}>
                   <Card
@@ -75,7 +75,7 @@ export default function ProductSlider({ images, cover }) {
                       currentView.url === image.url ? "ring-2 ring-primary" : ""
                     }`}
                   >
-                    <CardContent className="p-1">
+                    <CardContent className="p-1 flex items-center justify-center">
                       <ThumbnailItem image={image} />
                     </CardContent>
                   </Card>

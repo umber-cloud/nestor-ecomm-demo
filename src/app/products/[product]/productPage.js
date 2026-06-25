@@ -113,7 +113,7 @@ function ProductPage({ params }) {
               <div className="flex gap-2 flex-wrap lg:flex-nowrap">
                 <ProductSlider
                   images={product?.thumbnails}
-                  cover={product?.cover.url}
+                  cover={product?.cover}
                 />
                 <div className="items-end p-5 m-1 gap-1">
                   <ProductInfo product={product} onAddToCart={handleAddToCart} />
@@ -134,7 +134,7 @@ function ProductPage({ params }) {
         {suggestions.map((product, index) => (
           <ProductSugg
             key={index}
-            cover={product.cover.url}
+            cover={product.cover}
             title={product.title}
             price={product.price}
           />

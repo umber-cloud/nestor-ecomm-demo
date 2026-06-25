@@ -53,7 +53,7 @@ function ProductsPage() {
                                     onClick={() =>
                                         router.push(`/products/${product.title.replace(/\s+/g, "-")}`)
                                     }
-                                    cover={product.cover.url}
+                                    cover={product.cover}
                                     title={product.title}
                                     price={product.price}
                                 />
