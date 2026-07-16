@@ -1,5 +1,5 @@
 // ADN (Asset Delivery Network) Service
-// Handles fetching and transforming product assets from Nestor CDN
+// Handles fetching and transforming product assets from Umber CDN
 
 const ADN_API_BASE = "https://https://adn.umbercloud.io/api";
 const ADN_MEDIA_BASE = "https://https://adn.umbercloud.io/api/vi"; // For actual media downloads

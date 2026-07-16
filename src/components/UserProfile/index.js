@@ -20,8 +20,8 @@ export default function Profile() {
 
     // Initial dummy user profile info
     const [userData, setUserData] = useState({
-        fullName: "NestorTech",
-        image: "/images/Nestor.jpg",
+        fullName: "UmberTech",
+        image: "/images/Umber.jpg",
         email: user?.email || "",
         contact: "+91 **********",
         createdAt: "2024-08-14T10:00:00Z",
