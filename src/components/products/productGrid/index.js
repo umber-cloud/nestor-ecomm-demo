@@ -49,6 +49,7 @@ function ProductGrid() {
                         cover={product.cover}
                         title={product.title}
                         price={product.price}
+                        priority={index < 3}
                     />
                 );
             })}

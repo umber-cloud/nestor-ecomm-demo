@@ -44,7 +44,7 @@ export default function Header() {
                     {/* Logo */}
                     <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
                         <Image
-                            src="https://https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/nestorlogo/dev/generic"
+                            src="https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/nestorlogo/dev/generic"
                             alt="Logo"
                             className="object-contain"
                             width={40}

@@ -6,7 +6,7 @@ const bannerData = [
     description:
       "Explore our carefully selected products for your home and lifestyle.",
     buttonText: "Shop Now",
-    imageSrc: "https://https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/Banner_cup/dev/generic"
+    imageSrc: "https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/Banner_cup/dev/generic"
   },
   {
     id: 2,
@@ -15,7 +15,7 @@ const bannerData = [
     description:
       "Experience high-fidelity audio with our expertly tested headphones for the best sound quality.",
     buttonText: "Shop Now",
-    imageSrc: "https://https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/Banner_Headphones/dev/generic"
+    imageSrc: "https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/Banner_Headphones/dev/generic"
   }
 ];
 

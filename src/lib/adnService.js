@@ -1,8 +1,8 @@
 // ADN (Asset Delivery Network) Service
 // Handles fetching and transforming product assets from Umber CDN
 
-const ADN_API_BASE = "https://https://adn.umbercloud.io/api";
-const ADN_MEDIA_BASE = "https://https://adn.umbercloud.io/api/vi"; // For actual media downloads
+const ADN_API_BASE = "https://adn.umbercloud.io/api";
+const ADN_MEDIA_BASE = "https://adn.umbercloud.io/api/vi"; // For actual media downloads
 const DOMAIN_ID = "67a06a45ea8a39c6628c71c3";
 
 /**
@@ -37,7 +37,7 @@ export async function fetchCollectionAssets(collectionId) {
  */
 function buildMediaUrl(downloadUrl) {
   // downloadUrl format: /67a06a45ea8a39c6628c71c3/SunbeamToteJeff/39eff1030679/dev/generic
-  // Need to convert to: https://https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/SunbeamToteJeff/39eff1030679/dev/generic
+  // Need to convert to: https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/SunbeamToteJeff/39eff1030679/dev/generic
   return `${ADN_MEDIA_BASE}${downloadUrl}`;
 }
 

@@ -20,12 +20,12 @@ function CategoriesPage() {
             <div className="grid grid-cols-2 gap-3">
                 <CategoryGrid
                     title={"Apparel"}
-                    cover={"https://https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/Apparel/dev/generic"}
+                    cover={"https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/Apparel/dev/generic"}
                     description={"Shop now"}
                 />
                 <CategoryGrid
                     title={"Accessories"}
-                    cover={"https://https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/Accessories/dev/generic"}
+                    cover={"https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/Accessories/dev/generic"}
                     description={"Shop now"}
                 />
             </div>

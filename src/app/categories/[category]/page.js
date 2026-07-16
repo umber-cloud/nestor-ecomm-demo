@@ -72,6 +72,7 @@ function CategoriesPage({ params }) {
                                 cover={product.cover}
                                 title={product.title}
                                 price={product.price}
+                                priority={index < 3}
                                 onClick={() => router.push(`/products/${product.title.replace(/\s+/g, "-")}`)}
                             />
                         )

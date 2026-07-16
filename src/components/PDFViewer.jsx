@@ -20,7 +20,7 @@ export function PDFViewer({ url }) {
   }
 
   // Stream the PDF through a proxy to avoid CORS issues
-  // The ADN media URL is: https://https://adn.umbercloud.io/api/vi/<domainId>/<collectionId>/<assetId>/dev/generic
+  // The ADN media URL is: https://adn.umbercloud.io/api/vi/<domainId>/<collectionId>/<assetId>/dev/generic
   // We proxy it through /api/pdf-proxy?url=<encoded_url>
   const proxyUrl = `/api/pdf-proxy?url=${encodeURIComponent(url)}`;
 

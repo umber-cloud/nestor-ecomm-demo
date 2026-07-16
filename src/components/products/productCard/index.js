@@ -8,7 +8,7 @@ import { ShoppingCart } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import { CartSheet } from "@/components/CartSheet";
 
-const ProductCard = ({ title, price, cover, onClick, id }) => {
+const ProductCard = ({ title, price, cover, onClick, id, priority }) => {
   const [isMounted, setIsMounted] = useState(false);
   const { addToCart } = useCart();
 
@@ -62,7 +62,8 @@ const ProductCard = ({ title, price, cover, onClick, id }) => {
                 height={720}
                 src={cover?.url || cover}
                 alt={title}
-                className="rounded-lg cursor-pointer transition-all duration-200 hover:scale-110 hover:brightness-35"
+                priority={priority}
+                className="w-full aspect-video object-cover rounded-lg cursor-pointer transition-all duration-200 hover:scale-110 hover:brightness-35"
               />
             )}
           </CardHeader>
