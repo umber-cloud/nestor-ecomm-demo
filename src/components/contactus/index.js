@@ -57,22 +57,22 @@ export default function ContactUs() {
                         Fill out the form and we&apos;ll get back to you shortly.
                     </p>
 
-                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+                    <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" autoComplete="off">
                         <div className="space-y-1.5">
                             <Label htmlFor="name">Name</Label>
-                            <Input id="name" className="h-11 rounded-xl" {...register('name')} />
+                            <Input id="name" autoComplete="off" className="h-11 rounded-xl" {...register('name')} />
                             {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
                         </div>
 
                         <div className="space-y-1.5">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" className="h-11 rounded-xl" {...register('email')} />
+                            <Input id="email" type="email" autoComplete="off" className="h-11 rounded-xl" {...register('email')} />
                             {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
                         </div>
 
                         <div className="space-y-1.5">
                             <Label htmlFor="message">Message</Label>
-                            <Textarea id="message" rows={4} className="rounded-xl" {...register('message')} />
+                            <Textarea id="message" rows={4} autoComplete="off" className="rounded-xl" {...register('message')} />
                             {errors.message && <p className="text-sm text-destructive">{errors.message.message}</p>}
                         </div>
 

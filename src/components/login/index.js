@@ -78,7 +78,7 @@ export function Login() {
                         Enter your credentials to access your account.
                     </p>
 
-                    <form onSubmit={handleLogin} className="space-y-4">
+                    <form onSubmit={handleLogin} className="space-y-4" autoComplete="off">
                         <div className="space-y-1.5">
                             <Label htmlFor="email">Email</Label>
                             <Input
@@ -88,6 +88,7 @@ export function Login() {
                                 className="h-11 rounded-xl"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
+                                autoComplete="off"
                                 required
                             />
                             {emailError && <p className="text-sm text-destructive">{emailError}</p>}
@@ -102,6 +103,7 @@ export function Login() {
                                 className="h-11 rounded-xl"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
+                                autoComplete="new-password"
                                 required
                             />
                             {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
