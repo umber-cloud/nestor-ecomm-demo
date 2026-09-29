@@ -28,6 +28,12 @@ export function Login() {
     const [emailError, setEmailError] = useState("")
     const [passwordError, setPasswordError] = useState("")
     const [success, setSuccess] = useState(false)
+    // Chrome ignores autoComplete="off"/"new-password" and still shows its
+    // saved-credential suggestion dropdown on focus. Keeping the fields
+    // readOnly until the user actually interacts with them stops Chrome
+    // from treating them as autofillable targets in the first place.
+    const [emailReadOnly, setEmailReadOnly] = useState(true)
+    const [passwordReadOnly, setPasswordReadOnly] = useState(true)
 
     const handleLogin = (e) => {
         e.preventDefault()
@@ -89,6 +95,8 @@ export function Login() {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 autoComplete="off"
+                                readOnly={emailReadOnly}
+                                onFocus={() => setEmailReadOnly(false)}
                                 required
                             />
                             {emailError && <p className="text-sm text-destructive">{emailError}</p>}
@@ -104,6 +112,8 @@ export function Login() {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 autoComplete="new-password"
+                                readOnly={passwordReadOnly}
+                                onFocus={() => setPasswordReadOnly(false)}
                                 required
                             />
                             {passwordError && <p className="text-sm text-destructive">{passwordError}</p>}
