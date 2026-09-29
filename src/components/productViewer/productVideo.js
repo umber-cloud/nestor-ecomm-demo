@@ -17,7 +17,7 @@ function ProductVideo({ url }) {
   return (
     <video
       ref={videoRef}
-      className="w-full h-auto block rounded-3xl"
+      className="absolute inset-0 w-full h-full object-contain rounded-3xl bg-black/5"
       onClick={togglePlay}
       controls
     >

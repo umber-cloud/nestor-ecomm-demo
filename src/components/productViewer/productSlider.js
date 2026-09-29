@@ -57,8 +57,11 @@ export default function ProductSlider({ images, cover }) {
 
   return (
     <div className="flex items-center justify-center flex-col w-full">
-      {/* Main viewer */}
-      <div className="w-full">{renderMainView(currentView)}</div>
+      {/* Main viewer — fixed aspect-square box so switching between images and
+          videos never causes a sudden height jump */}
+      <div className="relative w-full aspect-square overflow-hidden rounded-3xl">
+        {renderMainView(currentView)}
+      </div>
 
       {/* Small thumbnail strip */}
       <div className="flex gap-2 mt-4 w-full px-6">

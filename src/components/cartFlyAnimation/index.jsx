@@ -19,7 +19,17 @@ export function CartFlyAnimationProvider({ children }) {
   const flyToCart = useCallback(({ imageUrl, sourceEl }) => {
     if (!sourceEl || !imageUrl || !cartIconRef.current) return;
 
-    const sourceRect = sourceEl.getBoundingClientRect();
+    // Normalize the source into a centered square so the clone always reads
+    // as a circle, even when the triggering element (e.g. a wide "Add to
+    // Bag" button) isn't square itself.
+    const rawRect = sourceEl.getBoundingClientRect();
+    const size = Math.min(rawRect.width, rawRect.height, 96);
+    const sourceRect = {
+      left: rawRect.left + (rawRect.width - size) / 2,
+      top: rawRect.top + (rawRect.height - size) / 2,
+      width: size,
+      height: size,
+    };
     const targetRect = cartIconRef.current.getBoundingClientRect();
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
