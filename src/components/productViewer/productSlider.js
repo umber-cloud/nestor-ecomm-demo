@@ -56,26 +56,26 @@ export default function ProductSlider({ images, cover }) {
       : (cover ? [cover] : []);
 
   return (
-    <div className="flex items-center justify-center flex-col">
+    <div className="flex items-center justify-center flex-col w-full">
       {/* Main viewer */}
-      {renderMainView(currentView)}
+      <div className="w-full">{renderMainView(currentView)}</div>
 
-      {/* Small thumbnail strip — fixed to original size */}
-      <div className="flex gap-2 my-2 w-full max-w-md mx-auto px-12">
+      {/* Small thumbnail strip */}
+      <div className="flex gap-2 mt-4 w-full px-6">
         <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
           <CarouselContent className="flex items-center -ml-4">
             {allThumbnails.map((image, index) => (
               <CarouselItem
                 key={index}
-                className="pl-4 basis-1/3 md:basis-1/4"
+                className="pl-4 basis-1/4 md:basis-1/5"
               >
-                <div className="p-1" onClick={() => setCurrentView(image)}>
+                <div onClick={() => setCurrentView(image)}>
                   <Card
-                    className={`cursor-pointer hover:ring-2 hover:ring-primary transition-all ${
-                      currentView.url === image.url ? "ring-2 ring-primary" : ""
+                    className={`cursor-pointer rounded-2xl overflow-hidden aspect-square hover:ring-2 hover:ring-accent transition-all ${
+                      currentView.url === image.url ? "ring-2 ring-accent" : ""
                     }`}
                   >
-                    <CardContent className="p-1 flex items-center justify-center">
+                    <CardContent className="p-1.5 h-full flex items-center justify-center">
                       <ThumbnailItem image={image} />
                     </CardContent>
                   </Card>

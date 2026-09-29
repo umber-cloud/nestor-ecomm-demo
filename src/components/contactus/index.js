@@ -2,12 +2,11 @@
 import { useForm } from 'react-hook-form'
 import { z } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Card, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Button } from '@/components/ui/button'
 import { Label } from '@/components/ui/label'
-import { cn } from '@/lib/utils'
+import { Mail, Send, CheckCircle2 } from 'lucide-react'
 
 const contactSchema = z.object({
     name: z.string().min(2, { message: 'Name must be at least 2 characters' }),
@@ -23,62 +22,74 @@ export default function ContactUs() {
         reset,
     } = useForm({
         resolver: zodResolver(contactSchema),
-        defaultValues: {
-            name: '',
-            email: '',
-            message: '',
-        },
+        defaultValues: { name: '', email: '', message: '' },
     })
 
-    const onSubmit = (data) => {
-        console.log('Form submitted:', data)
-        // You can replace this with an API call
+    const onSubmit = () => {
         reset()
     }
 
     return (
-        <div className="min-h-screen flex items-center justify-center bg-gray-50 p-4 mt-16">
-            <Card className="w-full max-w-lg shadow-xl rounded-2xl p-6">
-                <CardContent>
-                    <h2 className="text-2xl font-bold mb-6 text-center">Contact Us</h2>
+        <div className="flex items-center justify-center py-10 md:py-16">
+            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 rounded-[2.5rem] overflow-hidden shadow-xl">
+                {/* Decorative panel */}
+                <div className="hidden md:flex flex-col justify-between bg-primary text-primary-foreground p-10">
+                    <span className="font-semibold text-lg">InfinityGadgets</span>
+                    <div>
+                        <h2 className="text-3xl font-semibold leading-tight">
+                            Let&apos;s <em className="font-serif font-normal">talk.</em>
+                        </h2>
+                        <p className="text-primary-foreground/60 mt-3 text-sm max-w-xs">
+                            Questions about an order, a product, or anything else — we usually
+                            reply within a day.
+                        </p>
+                    </div>
+                    <div className="flex items-center gap-2 text-sm text-primary-foreground/70">
+                        <Mail className="h-4 w-4 text-accent" />
+                        hello@infinitygadgets.example
+                    </div>
+                </div>
+
+                {/* Form panel */}
+                <div className="bg-card p-8 md:p-10 flex flex-col justify-center">
+                    <h1 className="text-2xl font-semibold mb-1">Contact Us</h1>
+                    <p className="text-sm text-muted-foreground mb-6">
+                        Fill out the form and we&apos;ll get back to you shortly.
+                    </p>
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
-                        <div>
+                        <div className="space-y-1.5">
                             <Label htmlFor="name">Name</Label>
-                            <Input id="name" {...register('name')} />
-                            {errors.name && (
-                                <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>
-                            )}
+                            <Input id="name" className="h-11 rounded-xl" {...register('name')} />
+                            {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
                         </div>
 
-                        <div>
+                        <div className="space-y-1.5">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" {...register('email')} />
-                            {errors.email && (
-                                <p className="text-sm text-red-500 mt-1">{errors.email.message}</p>
-                            )}
+                            <Input id="email" type="email" className="h-11 rounded-xl" {...register('email')} />
+                            {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
                         </div>
 
-                        <div>
+                        <div className="space-y-1.5">
                             <Label htmlFor="message">Message</Label>
-                            <Textarea id="message" rows={4} {...register('message')} />
-                            {errors.message && (
-                                <p className="text-sm text-red-500 mt-1">{errors.message.message}</p>
-                            )}
+                            <Textarea id="message" rows={4} className="rounded-xl" {...register('message')} />
+                            {errors.message && <p className="text-sm text-destructive">{errors.message.message}</p>}
                         </div>
 
-                        <Button type="submit" className="w-full" disabled={isSubmitting}>
-                            {isSubmitting ? 'Sending...' : 'Send Message'}
+                        <Button type="submit" className="w-full gap-2 h-11 mt-2" disabled={isSubmitting}>
+                            <Send className="h-4 w-4" />
+                            {isSubmitting ? 'Sending…' : 'Send Message'}
                         </Button>
 
                         {isSubmitSuccessful && (
-                            <p className="text-green-600 text-sm text-center mt-2">
+                            <p className="flex items-center justify-center gap-1.5 text-emerald-600 text-sm">
+                                <CheckCircle2 className="h-4 w-4" />
                                 Message sent successfully!
                             </p>
                         )}
                     </form>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </div>
     )
 }

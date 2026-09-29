@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-const ALLOWED_HOST = "https://adn.umbercloud.io";
+const ALLOWED_HOST = "adn.umbercloud.io";
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

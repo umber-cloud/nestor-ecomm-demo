@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
     Share,
     Mail,
@@ -24,6 +24,18 @@ const PinterestIcon = () => (
 export default function ProductShare({ productUrl, productImageUrl }) {
     const [open, setOpen] = useState(false);
     const [copied, setCopied] = useState(false);
+    const containerRef = useRef(null);
+
+    useEffect(() => {
+        if (!open) return;
+        const handleClickOutside = (e) => {
+            if (containerRef.current && !containerRef.current.contains(e.target)) {
+                setOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, [open]);
 
     const handleCopy = () => {
         navigator.clipboard.writeText(productUrl).then(() => {
@@ -61,25 +73,26 @@ export default function ProductShare({ productUrl, productImageUrl }) {
     ];
 
     return (
-        <div className="relative inline-block text-left">
+        <div ref={containerRef} className="relative inline-block text-left">
             {/* Main Share Icon */}
             <button
                 onClick={() => setOpen(!open)}
-                className="p-2 rounded-full hover:bg-gray-200"
+                className="p-2 text-muted-foreground hover:text-accent transition-colors"
+                aria-label="Share product"
             >
-                <Share className="w-5 h-5 text-black" />
+                <Share className="w-5 h-5" />
             </button>
 
             {/* Dropdown */}
             {open && (
-                <div className="absolute right-0 mt-2 w-48 bg-white border rounded shadow z-10">
+                <div className="absolute right-0 mt-2 w-48 bg-card rounded-2xl border border-border shadow-lg overflow-hidden z-10">
                     {options.map((opt) => (
                         <a
                             key={opt.label}
                             href={opt.link}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center px-4 py-2 hover:bg-gray-100"
+                            className="flex items-center px-4 py-2.5 text-sm hover:bg-muted hover:text-accent transition-colors"
                         >
                             {opt.icon}
                             {opt.label}
@@ -89,7 +102,7 @@ export default function ProductShare({ productUrl, productImageUrl }) {
                     {/* Copy Link Option */}
                     <button
                         onClick={handleCopy}
-                        className="flex items-center w-full px-4 py-2 hover:bg-gray-100"
+                        className="flex items-center w-full px-4 py-2.5 text-sm hover:bg-muted hover:text-accent transition-colors"
                     >
                         {copied ? (
                             <>

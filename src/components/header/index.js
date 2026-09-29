@@ -9,8 +9,13 @@ import {
     NavigationMenuLink,
     NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import {
+    Sheet,
+    SheetContent,
+    SheetTrigger,
+} from "@/components/ui/sheet";
 import Searchbar from "../search";
-import { ShoppingCart, User } from "lucide-react";
+import { ShoppingCart, User, Menu } from "lucide-react";
 import { useCart } from "@/lib/cartContext";
 import { CartSheet } from "@/components/CartSheet";
 
@@ -24,6 +29,7 @@ const components = [
 export default function Header() {
     const [isMounted, setIsMounted] = React.useState(false);
     const [cartOpen, setCartOpen] = React.useState(false);
+    const [mobileOpen, setMobileOpen] = React.useState(false);
 
     React.useEffect(() => {
         setIsMounted(true);
@@ -36,33 +42,57 @@ export default function Header() {
 
     return (
         <>
-            {/* Cart drawer — available from header on every page */}
             <CartSheet isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-            <header>
-                <nav className="w-full fixed h-16 bg-white shadow-md px-6 flex justify-between items-center z-50">
-                    {/* Logo */}
-                    <Link href="/" className="flex items-center space-x-2 flex-shrink-0">
+            <header className="fixed top-0 left-0 w-full z-50 px-3 pt-3">
+                <nav className="max-w-7xl mx-auto h-16 px-4 md:px-6 flex justify-between items-center rounded-full bg-card/90 backdrop-blur-md border border-border shadow-sm">
+                    <div className="flex items-center gap-1 md:hidden">
+                        <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
+                            <SheetTrigger asChild>
+                                <button
+                                    className="p-2 -ml-2 hover:text-accent transition-colors"
+                                    aria-label="Open menu"
+                                >
+                                    <Menu className="w-5 h-5" />
+                                </button>
+                            </SheetTrigger>
+                            <SheetContent side="left" className="w-72 bg-background rounded-r-3xl">
+                                <nav className="mt-10 flex flex-col gap-1">
+                                    {components.map((component, index) => (
+                                        <Link
+                                            key={index}
+                                            href={component.href}
+                                            onClick={() => setMobileOpen(false)}
+                                            className="px-4 py-3 rounded-full text-base hover:bg-muted hover:text-accent transition-colors"
+                                        >
+                                            {component.title}
+                                        </Link>
+                                    ))}
+                                </nav>
+                            </SheetContent>
+                        </Sheet>
+                    </div>
+
+                    <Link href="/" className="flex items-center gap-2 flex-shrink-0">
                         <Image
                             src="https://adn.umbercloud.io/api/va/67a06a45ea8a39c6628c71c3/nestorlogo/dev/generic"
-                            alt="Logo"
-                            className="object-contain"
-                            width={40}
-                            height={40}
+                            alt="InfinityGadgets"
+                            className="object-contain rounded-full"
+                            width={30}
+                            height={30}
                         />
-                        <h2 className="font-bold text-lg">InfinityGadgets</h2>
+                        <span className="font-semibold text-lg tracking-tight hidden sm:inline">
+                            InfinityGadgets
+                        </span>
                     </Link>
 
-                    {/* Nav links */}
                     <NavigationMenu className="hidden md:flex">
                         <NavigationMenuList className="flex gap-1">
                             {components.map((component, index) => (
                                 <NavigationMenuItem key={index}>
                                     <NavigationMenuLink
                                         href={component.href}
-                                        className={cn(
-                                            "hover:bg-gray-100 transition-all font-base px-4 py-2 rounded-md"
-                                        )}
+                                        className="rounded-full font-medium text-sm px-4 py-2 transition-colors hover:bg-muted hover:text-accent"
                                     >
                                         {component.title}
                                     </NavigationMenuLink>
@@ -71,26 +101,27 @@ export default function Header() {
                         </NavigationMenuList>
                     </NavigationMenu>
 
-                    {/* Right side: search + cart + profile */}
-                    <div className="flex items-center gap-3">
+                    <div className="flex items-center gap-1">
                         <Searchbar />
 
-                        {/* Cart icon with badge */}
                         <button
                             onClick={() => setCartOpen(true)}
-                            className="relative p-2 hover:bg-gray-100 rounded-full transition-colors"
+                            className="relative p-2 hover:bg-muted hover:text-accent rounded-full transition-colors"
                             aria-label="Open cart"
                         >
                             <ShoppingCart className="w-5 h-5" />
                             {itemCount > 0 && (
-                                <span className="absolute -top-1 -right-1 w-5 h-5 bg-black text-white text-xs rounded-full flex items-center justify-center font-semibold">
-                                    {itemCount > 99 ? '99+' : itemCount}
+                                <span className="absolute -top-1 -right-1 w-4.5 h-4.5 min-w-[18px] px-1 bg-accent text-accent-foreground text-[10px] rounded-full flex items-center justify-center font-semibold">
+                                    {itemCount > 99 ? "99+" : itemCount}
                                 </span>
                             )}
                         </button>
 
-                        {/* Profile */}
-                        <Link href="/profile" className="p-2 hover:bg-gray-100 rounded-full transition-colors">
+                        <Link
+                            href="/profile"
+                            className="p-2 hover:bg-muted hover:text-accent rounded-full transition-colors"
+                            aria-label="Account"
+                        >
                             <User className="w-5 h-5" />
                         </Link>
                     </div>
