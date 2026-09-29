@@ -1,10 +1,11 @@
 "use client";
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, Truck, RotateCcw, ShieldCheck, Minus, Plus } from "lucide-react";
 
 function ProductInfo({ product, onAddToCart }) {
     const [quantity, setQuantity] = useState(1);
+    const addButtonRef = useRef(null);
 
     return (
         <div className="flex flex-col">
@@ -12,17 +13,17 @@ function ProductInfo({ product, onAddToCart }) {
                 {product?.category}
             </span>
 
-            <h1 className="text-3xl md:text-4xl font-semibold mt-4">{product?.title}</h1>
-            <p className="text-2xl text-muted-foreground mt-2">{product?.price}</p>
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mt-4">{product?.title}</h1>
+            <p className="text-xl sm:text-2xl text-muted-foreground mt-2">{product?.price}</p>
 
-            <p className="text-muted-foreground leading-relaxed mt-5">
+            <p className="text-muted-foreground leading-relaxed mt-5 text-sm sm:text-base">
                 Meet the {product?.title} — thoughtfully designed within our{" "}
                 <em className="font-serif not-italic md:italic">{product?.category?.toLowerCase()}</em>{" "}
                 range, made to look good and hold up to everyday use.
             </p>
 
-            <div className="flex items-center gap-3 mt-7">
-                <div className="flex items-center border border-border rounded-full">
+            <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 mt-7">
+                <div className="flex items-center justify-center border border-border rounded-full w-fit">
                     <button
                         className="h-11 w-11 flex items-center justify-center hover:text-accent transition-colors"
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -41,8 +42,9 @@ function ProductInfo({ product, onAddToCart }) {
                 </div>
 
                 <Button
+                    ref={addButtonRef}
                     className="h-11 flex-1 text-base gap-2"
-                    onClick={() => onAddToCart(quantity)}
+                    onClick={() => onAddToCart(quantity, addButtonRef.current)}
                 >
                     <ShoppingBag className="h-4 w-4" />
                     Add to Bag

@@ -7,8 +7,7 @@ import { getProductBySlug, getProductSuggestions } from "@/lib/shopData";
 import { ProductSlider } from "@/components/productViewer";
 import ProductShare from "@/components/productShare";
 import BreadCrumb from "@/components/breadcrumb";
-import { CartSheet } from "@/components/CartSheet";
-import { useCart } from "@/lib/cartContext";
+import { useAddToCart } from "@/lib/useAddToCart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileText, ArrowUpRight } from "lucide-react";
 
@@ -21,9 +20,8 @@ function ProductPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
-  const [cartOpen, setCartOpen] = useState(false);
 
-  const { addToCart } = useCart();
+  const addProductToCart = useAddToCart();
 
   useEffect(() => {
     async function loadProduct() {
@@ -57,19 +55,19 @@ function ProductPage({ params }) {
 
   const productUrl = `${baseUrl}/products/${slug}`;
 
-  const handleAddToCart = (quantity = 1) => {
+  const handleAddToCart = (quantity = 1, sourceEl = null) => {
     if (!product) return;
-    const id = product.collectionId;
-    addToCart(
-      {
-        id,
+    addProductToCart({
+      product: {
+        id: product.collectionId,
         title: product.title,
         price: product.price,
         image: product.cover?.url,
+        type: product.cover?.type || "image",
       },
-      quantity
-    );
-    setCartOpen(true);
+      quantity,
+      sourceEl,
+    });
   };
 
   if (loading) {
@@ -100,58 +98,54 @@ function ProductPage({ params }) {
   const panelTint = PANEL_TINT[product.category] || "bg-muted";
 
   return (
-    <>
-      <CartSheet isOpen={cartOpen} onClose={() => setCartOpen(false)} />
-
-      <div className="max-w-6xl mx-auto w-full">
-        <div className="mt-16 pt-2 flex items-center justify-between">
-          <BreadCrumb />
-        </div>
-
-        <div className="flex flex-col lg:flex-row gap-6 mb-10 items-start">
-          {/* Image panel — tinted, rounded, contains gallery */}
-          <div className={`relative rounded-[2.5rem] ${panelTint} p-6 md:p-8 pb-6 w-full lg:w-[440px] shrink-0`}>
-            <ProductSlider images={product?.thumbnails} cover={product?.cover} />
-          </div>
-
-          {/* Info card */}
-          <div className="relative bg-card rounded-[2rem] shadow-xl p-7 md:p-8 w-full lg:flex-1 z-10">
-            <div className="absolute top-6 right-6">
-              <ProductShare productUrl={productUrl} productImageUrl={product.cover?.url} />
-            </div>
-            <ProductInfo product={product} onAddToCart={handleAddToCart} />
-
-            {product.pdfUrl && (
-              <a
-                href={`/api/pdf-proxy?url=${encodeURIComponent(product.pdfUrl)}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="mt-6 pt-5 border-t border-border flex items-center justify-between text-sm group"
-              >
-                <span className="flex items-center gap-2 text-foreground">
-                  <FileText className="h-4 w-4 text-accent" />
-                  Product documentation
-                </span>
-                <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-accent transition-colors" />
-              </a>
-            )}
-          </div>
-        </div>
-
-        {suggestions.length > 0 && (
-          <section className="mb-16">
-            <h2 className="text-2xl md:text-3xl font-semibold mb-6">
-              You May Also <em className="font-serif font-normal">Like</em>
-            </h2>
-            <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
-              {suggestions.map((s, index) => (
-                <ProductSugg key={index} cover={s.cover} title={s.title} price={s.price} />
-              ))}
-            </div>
-          </section>
-        )}
+    <div className="max-w-6xl mx-auto w-full">
+      <div className="mt-16 pt-2 flex items-center justify-between">
+        <BreadCrumb />
       </div>
-    </>
+
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 mb-10 items-start">
+        {/* Image panel — tinted, rounded, contains gallery */}
+        <div className={`relative rounded-[1.75rem] sm:rounded-[2.5rem] ${panelTint} p-4 sm:p-6 md:p-8 pb-4 sm:pb-6 w-full lg:w-[440px] shrink-0`}>
+          <ProductSlider images={product?.thumbnails} cover={product?.cover} />
+        </div>
+
+        {/* Info card */}
+        <div className="relative bg-card rounded-[1.5rem] sm:rounded-[2rem] shadow-xl p-5 sm:p-7 md:p-8 w-full lg:flex-1 z-10">
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+            <ProductShare productUrl={productUrl} productImageUrl={product.cover?.url} />
+          </div>
+          <ProductInfo product={product} onAddToCart={handleAddToCart} />
+
+          {product.pdfUrl && (
+            <a
+              href={`/api/pdf-proxy?url=${encodeURIComponent(product.pdfUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 pt-5 border-t border-border flex items-center justify-between text-sm group"
+            >
+              <span className="flex items-center gap-2 text-foreground">
+                <FileText className="h-4 w-4 text-accent" />
+                Product documentation
+              </span>
+              <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-accent transition-colors" />
+            </a>
+          )}
+        </div>
+      </div>
+
+      {suggestions.length > 0 && (
+        <section className="mb-16">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-6">
+            You May Also <em className="font-serif font-normal">Like</em>
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {suggestions.map((s, index) => (
+              <ProductSugg key={index} cover={s.cover} title={s.title} price={s.price} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
   );
 }
 

@@ -6,6 +6,7 @@ import React from "react";
 const TINTS = {
   Apparel: "from-[#2f4f4a]/70 via-[#2f4f4a]/10 to-transparent",
   Accessories: "from-[#8a4a35]/70 via-[#8a4a35]/10 to-transparent",
+  Digital: "from-[#3d3a5c]/70 via-[#3d3a5c]/10 to-transparent",
 };
 
 const CategoryGrid = ({ title, description, cover }) => {

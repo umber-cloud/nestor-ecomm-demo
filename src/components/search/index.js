@@ -35,12 +35,12 @@ function Searchbar() {
     return (
         <div className="flex items-center">
             {/* Desktop Search */}
-            <div className="relative hidden md:flex">
+            <div className="relative hidden lg:flex">
                 <Input
                     type="search"
                     id="search"
-                    placeholder="Search for Products..."
-                    className="w-56 lg:w-64 h-10 rounded-full border-border bg-muted pr-9 focus-visible:ring-1 focus-visible:ring-accent"
+                    placeholder="Search products…"
+                    className="w-44 xl:w-64 h-10 rounded-full border-border bg-muted pr-9 text-sm focus-visible:ring-1 focus-visible:ring-accent"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyDown={handleKeyDown}
@@ -52,7 +52,7 @@ function Searchbar() {
             </div>
 
             {/* Mobile Search */}
-            <div className="md:hidden">
+            <div className="lg:hidden">
                 {mobileOpen ? (
                     <div className="fixed inset-x-0 top-20 z-40 flex items-center gap-2 bg-background border-b border-border p-3">
                         <Input

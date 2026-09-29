@@ -13,11 +13,14 @@ import {
     Sheet,
     SheetContent,
     SheetTrigger,
+    SheetTitle,
+    SheetDescription,
 } from "@/components/ui/sheet";
 import Searchbar from "../search";
 import { ShoppingCart, User, Menu } from "lucide-react";
 import { useCart } from "@/lib/cartContext";
 import { CartSheet } from "@/components/CartSheet";
+import { useCartFlyAnimation } from "@/components/cartFlyAnimation";
 
 const components = [
     { title: "Home", href: "/" },
@@ -36,6 +39,7 @@ export default function Header() {
     }, []);
 
     const { getCartItemsCount } = useCart();
+    const { cartIconRef, pulseKey } = useCartFlyAnimation();
     const itemCount = isMounted ? getCartItemsCount() : 0;
 
     if (!isMounted) return null;
@@ -45,8 +49,8 @@ export default function Header() {
             <CartSheet isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
             <header className="fixed top-0 left-0 w-full z-50 px-3 pt-3">
-                <nav className="max-w-7xl mx-auto h-16 px-4 md:px-6 flex justify-between items-center rounded-full bg-card/90 backdrop-blur-md border border-border shadow-sm">
-                    <div className="flex items-center gap-1 md:hidden">
+                <nav className="max-w-7xl mx-auto h-16 px-3 sm:px-4 lg:px-6 flex justify-between items-center rounded-full bg-card/90 backdrop-blur-md border border-border shadow-sm">
+                    <div className="flex items-center gap-1 lg:hidden">
                         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
                             <SheetTrigger asChild>
                                 <button
@@ -56,7 +60,11 @@ export default function Header() {
                                     <Menu className="w-5 h-5" />
                                 </button>
                             </SheetTrigger>
-                            <SheetContent side="left" className="w-72 bg-background rounded-r-3xl">
+                            <SheetContent side="left" className="w-[85vw] max-w-72 bg-background rounded-r-3xl">
+                                <SheetTitle className="sr-only">Site menu</SheetTitle>
+                                <SheetDescription className="sr-only">
+                                    Browse product categories and site navigation links.
+                                </SheetDescription>
                                 <nav className="mt-10 flex flex-col gap-1">
                                     {components.map((component, index) => (
                                         <Link
@@ -86,13 +94,13 @@ export default function Header() {
                         </span>
                     </Link>
 
-                    <NavigationMenu className="hidden md:flex">
+                    <NavigationMenu className="hidden lg:flex">
                         <NavigationMenuList className="flex gap-1">
                             {components.map((component, index) => (
                                 <NavigationMenuItem key={index}>
                                     <NavigationMenuLink
                                         href={component.href}
-                                        className="rounded-full font-medium text-sm px-4 py-2 transition-colors hover:bg-muted hover:text-accent"
+                                        className="rounded-full font-medium text-sm px-3 xl:px-4 py-2 transition-colors hover:bg-muted hover:text-accent"
                                     >
                                         {component.title}
                                     </NavigationMenuLink>
@@ -105,16 +113,22 @@ export default function Header() {
                         <Searchbar />
 
                         <button
+                            ref={cartIconRef}
                             onClick={() => setCartOpen(true)}
                             className="relative p-2 hover:bg-muted hover:text-accent rounded-full transition-colors"
                             aria-label="Open cart"
                         >
-                            <ShoppingCart className="w-5 h-5" />
-                            {itemCount > 0 && (
-                                <span className="absolute -top-1 -right-1 w-4.5 h-4.5 min-w-[18px] px-1 bg-accent text-accent-foreground text-[10px] rounded-full flex items-center justify-center font-semibold">
-                                    {itemCount > 99 ? "99+" : itemCount}
-                                </span>
-                            )}
+                            <span
+                                key={pulseKey}
+                                className={cn("relative block", pulseKey > 0 && "animate-cart-pop")}
+                            >
+                                <ShoppingCart className="w-5 h-5" />
+                                {itemCount > 0 && (
+                                    <span className="absolute -top-1 -right-1 w-4.5 h-4.5 min-w-[18px] px-1 bg-accent text-accent-foreground text-[10px] rounded-full flex items-center justify-center font-semibold">
+                                        {itemCount > 99 ? "99+" : itemCount}
+                                    </span>
+                                )}
+                            </span>
                         </button>
 
                         <Link

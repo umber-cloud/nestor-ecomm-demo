@@ -8,6 +8,7 @@ function ImageView({ cover }) {
                 src={cover}
                 fill
                 unoptimized
+                priority
                 className="object-contain"
                 alt="Product image"
             />

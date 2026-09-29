@@ -5,18 +5,14 @@ import {
   SheetContent,
   SheetHeader,
   SheetTitle,
+  SheetDescription,
 } from "@/components/ui/sheet";
 import { Button } from "./ui/button";
 import { ShoppingBag, Minus, Plus, Trash2 } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import Image from "next/image";
-
-const formatPrice = (price) =>
-  (typeof price === "number" ? price : parseFloat(String(price).replace(/[$,]/g, ""))).toLocaleString(
-    "en-US",
-    { minimumFractionDigits: 2, maximumFractionDigits: 2 }
-  );
+import { formatPrice } from "@/lib/formatPrice";
+import { CartItemThumbnail } from "@/components/CartItemThumbnail";
 
 export function CartSheet({ isOpen, onClose }) {
   const [isMounted, setIsMounted] = useState(false);
@@ -43,6 +39,9 @@ export function CartSheet({ isOpen, onClose }) {
           <SheetTitle className="font-serif text-xl font-normal">
             Shopping Bag {cart.length > 0 && `(${cart.length})`}
           </SheetTitle>
+          <SheetDescription className="sr-only">
+            Review items in your shopping bag and proceed to checkout.
+          </SheetDescription>
         </SheetHeader>
 
         {cart.length === 0 ? (
@@ -59,7 +58,7 @@ export function CartSheet({ isOpen, onClose }) {
               {cart.map((item) => (
                 <div key={item.id} className="flex gap-4 py-5">
                   <div className="relative w-20 h-20 bg-muted shrink-0 overflow-hidden rounded-2xl">
-                    <Image src={item.image} alt={item.title} fill unoptimized className="object-cover" />
+                    <CartItemThumbnail item={item} className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm truncate">{item.title}</h3>
