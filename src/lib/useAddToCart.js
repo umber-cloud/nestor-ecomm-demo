@@ -17,10 +17,8 @@ export function useAddToCart() {
   return function addProductToCart({ product, sourceEl, quantity = 1 }) {
     addToCart(product, quantity);
 
-    // The fly-to-cart clone only supports static images — video covers skip
-    // the flight but still get the toast confirmation.
-    if (sourceEl && product.image && product.type !== "video") {
-      flyToCart({ imageUrl: product.image, sourceEl });
+    if (sourceEl && product.image) {
+      flyToCart({ imageUrl: product.image, sourceEl, mediaType: product.type });
     }
 
     toast({

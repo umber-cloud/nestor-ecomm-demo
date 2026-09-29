@@ -16,7 +16,7 @@ export function CartFlyAnimationProvider({ children }) {
   const [bursts, setBursts] = useState([]);
   const [pulseKey, setPulseKey] = useState(0);
 
-  const flyToCart = useCallback(({ imageUrl, sourceEl }) => {
+  const flyToCart = useCallback(({ imageUrl, sourceEl, mediaType = "image" }) => {
     if (!sourceEl || !imageUrl || !cartIconRef.current) return;
 
     // Normalize the source into a centered square so the clone always reads
@@ -33,7 +33,7 @@ export function CartFlyAnimationProvider({ children }) {
     const targetRect = cartIconRef.current.getBoundingClientRect();
     const id = `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
-    setFlights((prev) => [...prev, { id, imageUrl, sourceRect, targetRect }]);
+    setFlights((prev) => [...prev, { id, imageUrl, mediaType, sourceRect, targetRect }]);
   }, []);
 
   const landFlight = useCallback((id, targetRect) => {
@@ -70,7 +70,7 @@ export function useCartFlyAnimation() {
   return ctx;
 }
 
-function FlyingItem({ imageUrl, sourceRect, targetRect, onDone }) {
+function FlyingItem({ imageUrl, mediaType, sourceRect, targetRect, onDone }) {
   const ref = useRef(null);
 
   useEffect(() => {
@@ -108,27 +108,36 @@ function FlyingItem({ imageUrl, sourceRect, targetRect, onDone }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  return (
-    <img
-      ref={ref}
-      src={imageUrl}
-      alt=""
-      aria-hidden="true"
-      style={{
-        position: "fixed",
-        left: sourceRect.left,
-        top: sourceRect.top,
-        width: sourceRect.width,
-        height: sourceRect.height,
-        objectFit: "cover",
-        borderRadius: "9999px",
-        boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
-        zIndex: 200,
-        pointerEvents: "none",
-        willChange: "transform, opacity",
-      }}
-    />
-  );
+  const style = {
+    position: "fixed",
+    left: sourceRect.left,
+    top: sourceRect.top,
+    width: sourceRect.width,
+    height: sourceRect.height,
+    objectFit: "cover",
+    borderRadius: "9999px",
+    boxShadow: "0 10px 30px rgba(0,0,0,0.3)",
+    zIndex: 200,
+    pointerEvents: "none",
+    willChange: "transform, opacity",
+  };
+
+  if (mediaType === "video") {
+    return (
+      <video
+        ref={ref}
+        src={imageUrl}
+        style={style}
+        muted
+        autoPlay
+        loop
+        playsInline
+        aria-hidden="true"
+      />
+    );
+  }
+
+  return <img ref={ref} src={imageUrl} alt="" aria-hidden="true" style={style} />;
 }
 
 const PARTICLE_COUNT = 10;
