@@ -2,26 +2,25 @@
 import React, { useState, useEffect } from "react";
 import { useAuth } from "@/app/context/auth-context";
 import { useRouter } from "next/navigation";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
-import { Upload } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Upload, Pencil, Check, X } from "lucide-react";
 
 export default function Profile() {
     const { user } = useAuth();
     const router = useRouter();
 
-    // Redirect if no user is logged in (optional)
     useEffect(() => {
         if (!user) {
-            router.push("/login");
+            router.push("/userlogin");
         }
     }, [user, router]);
 
-    // Initial dummy user profile info
     const [userData, setUserData] = useState({
-        fullName: "NestorTech",
-        image: "/images/Nestor.jpg",
+        fullName: "UmberTech",
+        image: "",
         email: user?.email || "",
         contact: "+91 **********",
         createdAt: "2024-08-14T10:00:00Z",
@@ -34,8 +33,7 @@ export default function Profile() {
     const handleImageChange = (e) => {
         const file = e.target.files?.[0];
         if (file) {
-            const imageUrl = URL.createObjectURL(file);
-            setPreviewImage(imageUrl);
+            setPreviewImage(URL.createObjectURL(file));
         }
     };
 
@@ -46,10 +44,7 @@ export default function Profile() {
 
     const toggleEdit = () => {
         if (!isEditing) {
-            setEditedUser({
-                ...userData,
-                createdAt: new Date().toISOString(),
-            });
+            setEditedUser({ ...userData, createdAt: new Date().toISOString() });
         } else {
             setUserData(editedUser);
         }
@@ -61,21 +56,25 @@ export default function Profile() {
         setIsEditing(false);
     };
 
+    if (!user) return null;
+
     return (
-        <main className="min-h-screen bg-gradient-to-br from-gray-100 to-white flex items-center justify-center p-4 mt-20 mb-16">
-            <Card className="max-w-md w-full rounded-2xl shadow-xl border border-gray-200">
-                <CardHeader className="flex flex-col items-center text-center">
-                    <div className="relative group">
-                        <Avatar className="w-28 h-28 mb-4 ring-4 ring-white shadow-lg transition-transform group-hover:scale-105">
+        <main className="flex items-center justify-center py-10 md:py-16">
+            <div className="w-full max-w-md bg-card rounded-[2.5rem] shadow-xl p-8 md:p-10">
+                <div className="flex flex-col items-center text-center">
+                    <div className="relative">
+                        <Avatar className="w-28 h-28 ring-4 ring-accent/20">
                             <AvatarImage src={previewImage} alt={userData.fullName} />
-                            <AvatarFallback>{userData.fullName?.charAt(0)}</AvatarFallback>
+                            <AvatarFallback className="bg-primary text-primary-foreground text-2xl">
+                                {userData.fullName?.charAt(0)}
+                            </AvatarFallback>
                         </Avatar>
                         <label
                             htmlFor="image-upload"
-                            className="absolute bottom-0 right-0 bg-white border border-gray-300 p-1.5 rounded-full shadow-sm hover:bg-gray-100 transition cursor-pointer"
+                            className="absolute bottom-0 right-0 bg-accent text-accent-foreground p-2 rounded-full shadow-sm hover:bg-accent/90 transition cursor-pointer"
                             title="Change profile picture"
                         >
-                            <Upload size={16} className="text-gray-600" />
+                            <Upload size={14} />
                         </label>
                         <input
                             id="image-upload"
@@ -87,67 +86,68 @@ export default function Profile() {
                     </div>
 
                     {isEditing ? (
-                        <input
-                            type="text"
+                        <Input
                             name="fullName"
                             value={editedUser.fullName}
                             onChange={handleChange}
-                            className="text-xl font-bold text-center text-gray-800 mt-2 px-3 py-1 rounded-md border"
+                            autoComplete="off"
+                            className="text-center text-xl font-semibold mt-4 h-11 rounded-xl max-w-xs"
                         />
                     ) : (
-                        <CardTitle className="text-2xl font-bold text-gray-800 mt-2">
-                            {userData.fullName}
-                        </CardTitle>
+                        <h1 className="text-2xl font-semibold mt-4">{userData.fullName}</h1>
                     )}
 
-                    <p className="text-sm text-gray-500">
-                        Joined on {new Date(userData.createdAt).toLocaleDateString()}
+                    <p className="text-sm text-muted-foreground mt-1">
+                        Joined {new Date(userData.createdAt).toLocaleDateString()}
                     </p>
-                </CardHeader>
+                </div>
 
-                <CardContent className="space-y-4">
+                <div className="space-y-4 mt-8">
                     <div>
-                        <p className="text-sm font-medium text-gray-600">Email</p>
+                        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Email</Label>
                         {isEditing ? (
-                            <input
+                            <Input
                                 type="email"
                                 name="email"
                                 value={editedUser.email}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border rounded-md text-sm mt-1"
+                                autoComplete="off"
+                                className="mt-1.5 h-11 rounded-xl"
                             />
                         ) : (
-                            <p className="text-base text-gray-900">{userData.email}</p>
+                            <p className="mt-1">{userData.email || "—"}</p>
                         )}
                     </div>
 
                     <div>
-                        <p className="text-sm font-medium text-gray-600">Contact</p>
+                        <Label className="text-xs uppercase tracking-wide text-muted-foreground">Contact</Label>
                         {isEditing ? (
-                            <input
-                                type="text"
+                            <Input
                                 name="contact"
                                 value={editedUser.contact}
                                 onChange={handleChange}
-                                className="w-full px-3 py-2 border rounded-md text-sm mt-1"
+                                autoComplete="off"
+                                className="mt-1.5 h-11 rounded-xl"
                             />
                         ) : (
-                            <p className="text-base text-gray-900">{userData.contact}</p>
+                            <p className="mt-1">{userData.contact}</p>
                         )}
                     </div>
 
-                    <div className="flex gap-2 mt-4">
-                        <Button variant="default" className="w-full" onClick={toggleEdit}>
+                    <div className="flex gap-2 mt-6">
+                        <Button variant={isEditing ? "default" : "outline"} className="w-full gap-2" onClick={toggleEdit}>
+                            {isEditing ? <Check className="h-4 w-4" /> : <Pencil className="h-4 w-4" />}
                             {isEditing ? "Save Changes" : "Edit Profile"}
                         </Button>
                         {isEditing && (
-                            <Button variant="ghost" className="w-full text-red-500" onClick={cancelEdit}>
+                            <Button variant="ghost" className="w-full gap-2 text-destructive hover:text-destructive" onClick={cancelEdit}>
+                                <X className="h-4 w-4" />
                                 Cancel
                             </Button>
                         )}
                     </div>
-                </CardContent>
-            </Card>
+                </div>
+            </div>
         </main>
     );
 }

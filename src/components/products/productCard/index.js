@@ -1,83 +1,78 @@
 "use client";
-import React, { useState, useEffect } from "react";
-import { Card, CardHeader, CardContent } from "@/components/ui/card";
+import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { useCart } from "@/lib/cartContext";
-import { Button } from "@/components/ui/button";
-import { ShoppingCart } from "lucide-react";
-import { useToast } from "@/hooks/use-toast";
-import { CartSheet } from "@/components/CartSheet";
+import { Plus } from "lucide-react";
+import { useAddToCart } from "@/lib/useAddToCart";
 
-const ProductCard = ({ title, price, cover, onClick, id }) => {
+const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) => {
   const [isMounted, setIsMounted] = useState(false);
-  const { addToCart } = useCart();
+  const imageWrapperRef = useRef(null);
+  const addProductToCart = useAddToCart();
 
   useEffect(() => {
     setIsMounted(true);
   }, []);
-  const { toast } = useToast();
-  const [isCartOpen, setIsCartOpen] = useState(false);
 
   const handleAddToCart = (e) => {
-    e.stopPropagation(); // Prevent triggering onClick (navigation)
-    // Convert price string to number by removing '$' and ',' symbols
+    e.stopPropagation();
     const numericPrice = parseFloat(price.replace(/[$,]/g, ""));
-    // Use title as unique identifier since we don't have unique IDs in the data
-    const productId = title.toLowerCase().replace(/\s+/g, "-");
-    const productToAdd = {
-      id: productId,
-      title,
-      price: numericPrice,
-      image: cover
-    };
-    console.log("Adding product to cart:", productToAdd);
-    addToCart(productToAdd);
-    setIsCartOpen(true);
-    toast({
-      title: "Added to cart",
-      description: `${title} has been added to your cart`
+    addProductToCart({
+      product: {
+        id: collectionId,
+        title,
+        price: numericPrice,
+        image: cover?.url || cover,
+        type: cover?.type || "image",
+      },
+      sourceEl: imageWrapperRef.current,
     });
   };
+
   if (!isMounted) {
     return null;
   }
 
   return (
-    <>
-      <Card className="overflow-hidden border-none shadow-none">
-        <div onClick={onClick} className="flex justify-center relative">
-          <CardHeader>
-            <Image
-              width={1024}
-              height={720}
-              src={cover}
-              alt={title}
-              className="rounded-lg cursor-pointer transition-all duration-200 hover:scale-110 hover:brightness-35"
-            />
-          </CardHeader>
-          <div className="image-shadow"></div>
-        </div>
-        <div className="p-1 py-1">
-          <CardContent>
-            <h2 className="text-xl font-medium text-gray-600 cursor-pointer">
-              {title}
-            </h2>
-            <div className="flex items-center justify-between mt-2">
-              <p className="text-lg font-semibold">{price}</p>
-              <Button
-                onClick={handleAddToCart}
-                size="sm"
-                className="flex items-center gap-2"
-              >
-                <ShoppingCart className="h-4 w-4" />
-                Add to Cart
-              </Button>
-            </div>
-          </CardContent>
-        </div>
-      </Card>
-      <CartSheet isOpen={isCartOpen} onClose={() => setIsCartOpen(false)} />
-    </>
+    <div className="group bg-card rounded-2xl sm:rounded-3xl p-2 sm:p-3 transition-shadow hover:shadow-lg">
+      <div
+        ref={imageWrapperRef}
+        onClick={onClick}
+        className="image-wrapper cursor-pointer relative"
+      >
+        {cover?.type === "video" ? (
+          <video
+            src={cover.url}
+            className="w-full h-full object-cover"
+            autoPlay
+            loop
+            muted
+            playsInline
+          />
+        ) : (
+          <Image
+            width={1024}
+            height={1024}
+            src={cover?.url || cover}
+            alt={title}
+            priority={priority}
+            className="w-full h-full object-cover"
+          />
+        )}
+
+        <button
+          onClick={handleAddToCart}
+          aria-label={`Add ${title} to cart`}
+          className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-accent transition-colors md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 duration-300"
+        >
+          <Plus className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
+        </button>
+      </div>
+
+      <div onClick={onClick} className="cursor-pointer px-1 sm:px-1.5 pt-2.5 sm:pt-3 pb-1">
+        <h3 className="text-sm md:text-base font-medium truncate">{title}</h3>
+        <p className="text-sm text-muted-foreground mt-0.5">{price}</p>
+      </div>
+    </div>
   );
 };
 

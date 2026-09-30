@@ -131,5 +131,11 @@ export const productMetadata = [
     price: "$700.00",
     category: "Accessories",
     suggestion: true
+  },
+  {
+    collectionId: "Demo",
+    title: "Demo Watch",
+    price: "$199.00",
+    category: "Accessories"
   }
 ];

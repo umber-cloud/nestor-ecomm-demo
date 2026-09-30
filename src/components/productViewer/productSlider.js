@@ -48,34 +48,37 @@ const ThumbnailItem = ({ image }) => {
 };
 
 export default function ProductSlider({ images, cover }) {
-  const [currentView, setCurrentView] = React.useState({ type: "image", url: cover });
+  const [currentView, setCurrentView] = React.useState(cover || { type: "image", url: "" });
 
   const allThumbnails =
     images && images.length > 0
       ? images
-      : [{ url: cover, type: "image" }];
+      : (cover ? [cover] : []);
 
   return (
-    <div className="flex items-center justify-center flex-col">
-      {/* Main viewer */}
-      {renderMainView(currentView)}
+    <div className="flex items-center justify-center flex-col w-full">
+      {/* Main viewer — fixed aspect-square box so switching between images and
+          videos never causes a sudden height jump */}
+      <div className="relative w-full aspect-square overflow-hidden rounded-3xl">
+        {renderMainView(currentView)}
+      </div>
 
-      {/* Small thumbnail strip — fixed to original size */}
-      <div className="flex gap-2 my-2">
-        <Carousel opts={{ align: "start" }} className="w-full max-w-sm">
-          <CarouselContent className="flex items-center justify-center">
+      {/* Small thumbnail strip */}
+      <div className="flex gap-2 mt-4 w-full px-6">
+        <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
+          <CarouselContent className="flex items-center -ml-4">
             {allThumbnails.map((image, index) => (
               <CarouselItem
                 key={index}
-                className="md:basis-1/2 lg:basis-1/3"
+                className="pl-4 basis-1/4 md:basis-1/5"
               >
-                <div className="p-1" onClick={() => setCurrentView(image)}>
+                <div onClick={() => setCurrentView(image)}>
                   <Card
-                    className={`cursor-pointer hover:ring-2 hover:ring-primary transition-all ${
-                      currentView.url === image.url ? "ring-2 ring-primary" : ""
+                    className={`cursor-pointer rounded-2xl overflow-hidden aspect-square hover:ring-2 hover:ring-accent transition-all ${
+                      currentView.url === image.url ? "ring-2 ring-accent" : ""
                     }`}
                   >
-                    <CardContent className="p-1">
+                    <CardContent className="p-1.5 h-full flex items-center justify-center">
                       <ThumbnailItem image={image} />
                     </CardContent>
                   </Card>

@@ -5,20 +5,23 @@ import ProductSugg from "@/components/productSuggestions";
 import ProductInfo from "@/components/productInfo";
 import { getProductBySlug, getProductSuggestions } from "@/lib/shopData";
 import { ProductSlider } from "@/components/productViewer";
-import { PDFViewer } from "@/components/PDFViewer";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import ProductShare from "@/components/productShare";
 import BreadCrumb from "@/components/breadcrumb";
-import { CartSheet } from "@/components/CartSheet";
-import { useCart } from "@/lib/cartContext";
+import { useAddToCart } from "@/lib/useAddToCart";
+import { Skeleton } from "@/components/ui/skeleton";
+import { FileText, ArrowUpRight } from "lucide-react";
+
+const PANEL_TINT = {
+  Apparel: "bg-[#eef1ea]",
+  Accessories: "bg-[#f3e9df]",
+};
 
 function ProductPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
-  const [cartOpen, setCartOpen] = useState(false);
 
-  const { addToCart } = useCart();
+  const addProductToCart = useAddToCart();
 
   useEffect(() => {
     async function loadProduct() {
@@ -52,23 +55,33 @@ function ProductPage({ params }) {
 
   const productUrl = `${baseUrl}/products/${slug}`;
 
-  const handleAddToCart = () => {
+  const handleAddToCart = (quantity = 1, sourceEl = null) => {
     if (!product) return;
-    addToCart({
-      id: product.collectionId,
-      title: product.title,
-      price: product.price,
-      image: product.cover?.url,
+    addProductToCart({
+      product: {
+        id: product.collectionId,
+        title: product.title,
+        price: product.price,
+        image: product.cover?.url,
+        type: product.cover?.type || "image",
+      },
+      quantity,
+      sourceEl,
     });
-    setCartOpen(true);
   };
 
   if (loading) {
     return (
       <div className="mt-16 pt-2">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded w-1/3 mb-4"></div>
-          <div className="h-96 bg-gray-200 rounded"></div>
+        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6">
+          <Skeleton className="aspect-square w-full rounded-[2.5rem]" />
+          <div className="space-y-4 pt-6">
+            <Skeleton className="h-5 w-24 rounded-full" />
+            <Skeleton className="h-10 w-3/4" />
+            <Skeleton className="h-6 w-1/4" />
+            <Skeleton className="h-20 w-full mt-6" />
+            <Skeleton className="h-11 w-full mt-6 rounded-full" />
+          </div>
         </div>
       </div>
     );
@@ -76,71 +89,63 @@ function ProductPage({ params }) {
 
   if (!product) {
     return (
-      <div className="mt-16 pt-2">
-        <h1 className="text-2xl font-bold">Product not found</h1>
+      <div className="mt-16 pt-2 mb-16">
+        <h1 className="text-3xl font-semibold">Product not found</h1>
       </div>
     );
   }
 
-  return (
-    <>
-      {/* Cart drawer */}
-      <CartSheet isOpen={cartOpen} onClose={() => setCartOpen(false)} />
+  const panelTint = PANEL_TINT[product.category] || "bg-muted";
 
-      {/* BreadCrumb */}
-      <div className="mt-16 pt-2">
+  return (
+    <div className="max-w-6xl mx-auto w-full">
+      <div className="mt-16 pt-2 flex items-center justify-between">
         <BreadCrumb />
       </div>
 
-      {/* Product tabs */}
-      <div className="flex flex-col justify-center items-center">
-        {product?.cover && (
-          <Tabs defaultValue="product" className="w-full max-w-6xl">
-            <TabsList className="grid w-full grid-cols-2">
-              <TabsTrigger value="product">Product</TabsTrigger>
-              <TabsTrigger value="documentation">Documentation</TabsTrigger>
-            </TabsList>
+      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 mb-10 items-start">
+        {/* Image panel — tinted, rounded, contains gallery */}
+        <div className={`relative rounded-[1.75rem] sm:rounded-[2.5rem] ${panelTint} p-4 sm:p-6 md:p-8 pb-4 sm:pb-6 w-full lg:w-[440px] shrink-0`}>
+          <ProductSlider images={product?.thumbnails} cover={product?.cover} />
+        </div>
 
-            {/* Share */}
-            <div className="flex justify-center items-center">
-              <ProductShare
-                productUrl={productUrl}
-                productImageUrl={product.cover.url}
-              />
-            </div>
+        {/* Info card */}
+        <div className="relative bg-card rounded-[1.5rem] sm:rounded-[2rem] shadow-xl p-5 sm:p-7 md:p-8 w-full lg:flex-1 z-10">
+          <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
+            <ProductShare productUrl={productUrl} productImageUrl={product.cover?.url} />
+          </div>
+          <ProductInfo product={product} onAddToCart={handleAddToCart} />
 
-            <TabsContent value="product" className="mt-4">
-              <div className="flex gap-2 flex-wrap lg:flex-nowrap">
-                <ProductSlider
-                  images={product?.thumbnails}
-                  cover={product?.cover.url}
-                />
-                <div className="items-end p-5 m-1 gap-1">
-                  <ProductInfo product={product} onAddToCart={handleAddToCart} />
-                </div>
-              </div>
-            </TabsContent>
-
-            <TabsContent value="documentation" className="mt-4">
-              <PDFViewer url={product.pdfUrl} />
-            </TabsContent>
-          </Tabs>
-        )}
+          {product.pdfUrl && (
+            <a
+              href={`/api/pdf-proxy?url=${encodeURIComponent(product.pdfUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mt-6 pt-5 border-t border-border flex items-center justify-between text-sm group"
+            >
+              <span className="flex items-center gap-2 text-foreground">
+                <FileText className="h-4 w-4 text-accent" />
+                Product documentation
+              </span>
+              <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-accent transition-colors" />
+            </a>
+          )}
+        </div>
       </div>
 
-      {/* You May Also Like */}
-      <h1 className="text-2xl font-bold m-5">You May Also Like</h1>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 px-5">
-        {suggestions.map((product, index) => (
-          <ProductSugg
-            key={index}
-            cover={product.cover.url}
-            title={product.title}
-            price={product.price}
-          />
-        ))}
-      </div>
-    </>
+      {suggestions.length > 0 && (
+        <section className="mb-16">
+          <h2 className="text-xl sm:text-2xl md:text-3xl font-semibold mb-6">
+            You May Also <em className="font-serif font-normal">Like</em>
+          </h2>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
+            {suggestions.map((s, index) => (
+              <ProductSugg key={index} cover={s.cover} title={s.title} price={s.price} />
+            ))}
+          </div>
+        </section>
+      )}
+    </div>
   );
 }
 

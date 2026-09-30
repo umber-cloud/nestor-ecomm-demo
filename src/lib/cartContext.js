@@ -23,34 +23,28 @@ export function CartProvider({ children }) {
     }
   }, [cart]);
 
-  const addToCart = (product) => {
-    console.log('Adding product:', product);
+  const addToCart = (product, quantity = 1) => {
     setCart((prevCart) => {
-      console.log('Previous cart:', prevCart);
-      const existingItem = prevCart.find((item) => {
-        console.log('Comparing:', item.id, product.id);
-        return item.id === product.id;
-      });
-      
+      const existingItem = prevCart.find((item) => item.id === product.id);
+
       if (existingItem) {
-        console.log('Found existing item:', existingItem);
-        const newCart = prevCart.map((item) =>
+        return prevCart.map((item) =>
           item.id === product.id
-            ? { ...item, quantity: item.quantity + 1 }
+            ? { ...item, quantity: item.quantity + quantity }
             : item
         );
-        console.log('Updated cart:', newCart);
-        return newCart;
       }
-      
-      const newCart = [...prevCart, { ...product, quantity: 1 }];
-      console.log('Added new item. New cart:', newCart);
-      return newCart;
+
+      return [...prevCart, { ...product, quantity }];
     });
   };
 
   const removeFromCart = (productId) => {
     setCart((prevCart) => prevCart.filter((item) => item.id !== productId));
+  };
+
+  const clearCart = () => {
+    setCart([]);
   };
 
   const updateQuantity = (productId, quantity) => {
@@ -81,6 +75,7 @@ export function CartProvider({ children }) {
         cart,
         addToCart,
         removeFromCart,
+        clearCart,
         updateQuantity,
         getCartTotal,
         getCartItemsCount,

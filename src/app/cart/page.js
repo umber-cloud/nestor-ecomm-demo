@@ -4,7 +4,7 @@ import React from 'react';
 
 function CartPage() {
   return (
-    <div className="mt-12 min-h-screen bg-background">
+    <div className="mt-16 min-h-screen bg-background">
       <ShoppingCart />
     </div>
   );

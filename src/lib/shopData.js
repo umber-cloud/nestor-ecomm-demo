@@ -66,15 +66,3 @@ export async function getProductSuggestions() {
   return products.filter(p => p.suggestion === true);
 }
 
-/**
- * Clear the product cache (useful for forcing refresh)
- */
-export function clearProductCache() {
-  cachedProducts = null;
-  cacheTimestamp = null;
-}
-
-// Export products as a getter for backward compatibility
-// Note: This returns a Promise now, so components need to handle async
-export const products = getProducts();
-

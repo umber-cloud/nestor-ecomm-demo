@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['adn.nestortech.io'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'adn.umbercloud.io',
+      },
+    ],
   },
 };
 

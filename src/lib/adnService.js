@@ -1,8 +1,8 @@
 // ADN (Asset Delivery Network) Service
-// Handles fetching and transforming product assets from Nestor CDN
+// Handles fetching and transforming product assets from Umber CDN
 
-const ADN_API_BASE = "https://adn.nestortech.io/api";
-const ADN_MEDIA_BASE = "https://adn.nestortech.io/api/vi"; // For actual media downloads
+const ADN_API_BASE = "https://adn.umbercloud.io/api";
+const ADN_MEDIA_BASE = "https://adn.umbercloud.io/api/vi"; // For actual media downloads
 const DOMAIN_ID = "67a06a45ea8a39c6628c71c3";
 
 /**
@@ -37,7 +37,7 @@ export async function fetchCollectionAssets(collectionId) {
  */
 function buildMediaUrl(downloadUrl) {
   // downloadUrl format: /67a06a45ea8a39c6628c71c3/SunbeamToteJeff/39eff1030679/dev/generic
-  // Need to convert to: https://adn.nestortech.io/api/vi/67a06a45ea8a39c6628c71c3/SunbeamToteJeff/39eff1030679/dev/generic
+  // Need to convert to: https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/SunbeamToteJeff/39eff1030679/dev/generic
   return `${ADN_MEDIA_BASE}${downloadUrl}`;
 }
 
@@ -48,10 +48,22 @@ function buildMediaUrl(downloadUrl) {
  * @returns {Object} Transformed product object
  */
 export function transformADNToProduct(adnData, metadata) {
-  // Get cover image from anchor asset
-  const coverUrl = adnData.anchorAsset
-    ? buildMediaUrl(adnData.anchorAsset.downloadUrl)
-    : null;
+  // The anchorAsset is meant to be the cover image/video, but some collections
+  // have it misconfigured to point at a non-visual asset (e.g. a PDF) — guard
+  // against that by falling back to the first real image/video asset.
+  const isVisual = (asset) =>
+    asset?.mimetype?.startsWith('image/') || asset?.mimetype?.startsWith('video/');
+
+  const coverAsset = isVisual(adnData.anchorAsset)
+    ? adnData.anchorAsset
+    : adnData.assetItemUrls?.find(isVisual) || null;
+
+  const coverUrl = coverAsset ? buildMediaUrl(coverAsset.downloadUrl) : null;
+
+  let coverType = 'image';
+  if (coverAsset?.mimetype?.startsWith('video/')) {
+    coverType = 'video';
+  }
 
   // Build thumbnails from ALL image/video assets (including anchorAsset)
   const thumbnails = adnData.assetItemUrls
@@ -92,7 +104,8 @@ export function transformADNToProduct(adnData, metadata) {
     category: metadata.category,
     suggestion: metadata.suggestion || false,
     cover: {
-      url: coverUrl
+      url: coverUrl,
+      type: coverType
     },
     thumbnails,
     pdfUrl
@@ -133,37 +146,4 @@ export async function fetchProduct(metadata) {
 export async function fetchAllProducts(metadataArray) {
   const productPromises = metadataArray.map(metadata => fetchProduct(metadata));
   return await Promise.all(productPromises);
-}
-
-/**
- * Fetch a single product by collection ID
- * @param {string} collectionId - The collection identifier
- * @param {Array} metadataArray - Array of all product metadata
- * @returns {Promise<Object|null>} Product object or null if not found
- */
-export async function fetchProductByCollectionId(collectionId, metadataArray) {
-  const metadata = metadataArray.find(m => m.collectionId === collectionId);
-  if (!metadata) {
-    return null;
-  }
-  return await fetchProduct(metadata);
-}
-
-/**
- * Fetch a product by title slug (e.g., "sunbeam-tote-jeff")
- * @param {string} titleSlug - URL-friendly product title
- * @param {Array} metadataArray - Array of all product metadata
- * @returns {Promise<Object|null>} Product object or null if not found
- */
-export async function fetchProductBySlug(titleSlug, metadataArray) {
-  const metadata = metadataArray.find(m => 
-    m.title.replace(/\s+/g, '-') === titleSlug ||
-    m.title.toLowerCase().replace(/\s+/g, '-') === titleSlug.toLowerCase()
-  );
-  
-  if (!metadata) {
-    return null;
-  }
-  
-  return await fetchProduct(metadata);
 }
