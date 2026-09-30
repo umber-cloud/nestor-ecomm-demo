@@ -52,7 +52,7 @@ function Footer() {
                     {error && <span className="text-red-500 text-sm mt-1">{error}</span>}
                     <div className='m-2 p-2 text-gray-800 text-sm'>
                         <span>
-                            © 2025 Your Next Store
+                            © 2026 Your Nestor Store
                             <br />
                             InfinityGadgets commerce for everyone.
                         </span>
