@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState, useEffect } from "react";
 import Image from "next/image";
-import { Plus } from "lucide-react";
+import { Plus, ImageOff } from "lucide-react";
 import { useAddToCart } from "@/lib/useAddToCart";
 
 const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) => {
@@ -21,7 +21,7 @@ const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) =
         id: collectionId,
         title,
         price: numericPrice,
-        image: cover?.url || cover,
+        image: cover?.url || null,
         type: cover?.type || "image",
       },
       sourceEl: imageWrapperRef.current,
@@ -48,15 +48,20 @@ const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) =
             muted
             playsInline
           />
-        ) : (
+        ) : cover?.url ? (
           <Image
             width={1024}
             height={1024}
-            src={cover?.url || cover}
+            src={cover.url}
             alt={title}
             priority={priority}
             className="w-full h-full object-cover"
           />
+        ) : (
+          <div className="w-full h-full flex flex-col items-center justify-center gap-2 text-muted-foreground bg-muted">
+            <ImageOff className="h-6 w-6" />
+            <span className="text-xs">Coming soon</span>
+          </div>
         )}
 
         <button

@@ -53,7 +53,7 @@ export default function ProductSlider({ images, cover }) {
   const allThumbnails =
     images && images.length > 0
       ? images
-      : (cover ? [cover] : []);
+      : (cover?.url ? [cover] : []);
 
   return (
     <div className="flex items-center justify-center flex-col w-full">
@@ -64,32 +64,34 @@ export default function ProductSlider({ images, cover }) {
       </div>
 
       {/* Small thumbnail strip */}
-      <div className="flex gap-2 mt-4 w-full px-6">
-        <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
-          <CarouselContent className="flex items-center -ml-4">
-            {allThumbnails.map((image, index) => (
-              <CarouselItem
-                key={index}
-                className="pl-4 basis-1/4 md:basis-1/5"
-              >
-                <div onClick={() => setCurrentView(image)}>
-                  <Card
-                    className={`cursor-pointer rounded-2xl overflow-hidden aspect-square hover:ring-2 hover:ring-accent transition-all ${
-                      currentView.url === image.url ? "ring-2 ring-accent" : ""
-                    }`}
-                  >
-                    <CardContent className="p-1.5 h-full flex items-center justify-center">
-                      <ThumbnailItem image={image} />
-                    </CardContent>
-                  </Card>
-                </div>
-              </CarouselItem>
-            ))}
-          </CarouselContent>
-          <CarouselPrevious />
-          <CarouselNext />
-        </Carousel>
-      </div>
+      {allThumbnails.length > 0 && (
+        <div className="flex gap-2 mt-4 w-full px-6">
+          <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
+            <CarouselContent className="flex items-center -ml-4">
+              {allThumbnails.map((image, index) => (
+                <CarouselItem
+                  key={index}
+                  className="pl-4 basis-1/4 md:basis-1/5"
+                >
+                  <div onClick={() => setCurrentView(image)}>
+                    <Card
+                      className={`cursor-pointer rounded-2xl overflow-hidden aspect-square hover:ring-2 hover:ring-accent transition-all ${
+                        currentView.url === image.url ? "ring-2 ring-accent" : ""
+                      }`}
+                    >
+                      <CardContent className="p-1.5 h-full flex items-center justify-center">
+                        <ThumbnailItem image={image} />
+                      </CardContent>
+                    </Card>
+                  </div>
+                </CarouselItem>
+              ))}
+            </CarouselContent>
+            <CarouselPrevious />
+            <CarouselNext />
+          </Carousel>
+        </div>
+      )}
     </div>
   );
 }
