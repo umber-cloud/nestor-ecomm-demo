@@ -40,6 +40,7 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 .qodo
+.env*.local
 
 # playwright debug artifacts
 .playwright-mcp/
