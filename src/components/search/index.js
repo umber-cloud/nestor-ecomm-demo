@@ -40,7 +40,7 @@ function Searchbar() {
                     type="search"
                     id="search"
                     placeholder="Search products…"
-                    className="w-44 xl:w-64 h-10 rounded-full border-border bg-muted pr-9 text-sm focus-visible:ring-1 focus-visible:ring-accent"
+                    className="w-44 xl:w-64 h-10 rounded-none border-primary/40 bg-background pr-9 font-mono text-xs tracking-wide focus-visible:ring-1 focus-visible:ring-primary"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     onKeyDown={handleKeyDown}

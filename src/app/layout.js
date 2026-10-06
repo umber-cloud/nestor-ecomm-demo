@@ -1,4 +1,4 @@
-import { Fraunces, Inter } from "next/font/google";
+import { Orbitron, Space_Grotesk, Space_Mono } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
@@ -7,17 +7,22 @@ import { AuthProvider } from "./context/auth-context";
 import { Toaster } from "@/components/ui/toaster";
 import { CartFlyAnimationProvider } from "@/components/cartFlyAnimation";
 
-const fontSerif = Fraunces({
+const fontSerif = Orbitron({
   variable: "--font-serif",
   subsets: ["latin"],
-  weight: ["400", "500", "600"],
-  style: ["normal", "italic"],
+  weight: ["400", "500", "600", "700", "800"],
 });
 
-const fontSans = Inter({
+const fontSans = Space_Grotesk({
   variable: "--font-sans",
   subsets: ["latin"],
   weight: ["300", "400", "500", "600", "700"],
+});
+
+const fontMono = Space_Mono({
+  variable: "--font-mono",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata = {
@@ -31,7 +36,7 @@ export default function RootLayout({ children }) {
     <html lang="en" data-scroll-behavior="smooth">
       <body
         suppressHydrationWarning
-        className={`${fontSerif.variable} ${fontSans.variable} antialiased`}
+        className={`${fontSerif.variable} ${fontSans.variable} ${fontMono.variable} antialiased`}
       >
         <AuthProvider>
           <CartProvider>

@@ -1,7 +1,5 @@
 "use client"
 import React, { useState } from 'react';
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 
@@ -11,7 +9,7 @@ const emailSchema = z.object({
 
 const linkColumns = [
     {
-        heading: "Shop",
+        heading: "SHOP",
         links: [
             { label: "Apparel", href: "/categories/Apparel" },
             { label: "Accessories", href: "/categories/Accessories" },
@@ -19,7 +17,7 @@ const linkColumns = [
         ],
     },
     {
-        heading: "Support",
+        heading: "SUPPORT",
         links: [
             { label: "Contact Us", href: "/contactus" },
             { label: "Your Cart", href: "/cart" },
@@ -46,46 +44,71 @@ function Footer() {
         setError("");
         toast({
             title: "Subscribed",
-            description: `We'll send updates to ${email}`,
+            description: `Signal locked. Updates to ${email}`,
         });
         setEmail("");
     };
 
     return (
-        <footer className="w-full mt-16 px-3 pb-3">
-            <div className="max-w-7xl mx-auto rounded-[2rem] bg-primary text-primary-foreground">
-                <div className="px-6 md:px-14 py-14 grid grid-cols-1 md:grid-cols-3 gap-10">
-                    <div className="md:col-span-1 flex flex-col gap-4">
-                        <span className="font-semibold text-xl">InfinityGadgets</span>
-                        <p className="text-sm text-primary-foreground/60 max-w-xs">
-                            A curated collection of apparel, accessories, and everyday
-                            essentials — <em className="font-serif not-italic md:italic">thoughtfully made.</em>
+        <footer className="relative w-full mt-24 mb-4">
+            <div className="relative border border-border bg-card/80 backdrop-blur-sm">
+                <div className="absolute -top-px -left-px h-4 w-4 border-t-2 border-l-2 border-primary" />
+                <div className="absolute -top-px -right-px h-4 w-4 border-t-2 border-r-2 border-primary" />
+                <div className="absolute -bottom-px -left-px h-4 w-4 border-b-2 border-l-2 border-primary" />
+                <div className="absolute -bottom-px -right-px h-4 w-4 border-b-2 border-r-2 border-primary" />
+
+                <div className="flex items-center justify-between gap-4 border-b border-border px-5 py-2 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                    <span className="flex items-center gap-2">
+                        <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
+                        SYS.ONLINE
+                    </span>
+                    <span className="hidden sm:inline">BUILD 2.0 {"//"} ARCADE-GRADE GADGETS</span>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-12 gap-10 px-5 md:px-10 py-12">
+                    <div className="md:col-span-5 flex flex-col gap-5">
+                        <span className="font-serif text-2xl font-bold tracking-wider text-primary">
+                            INFINITY<span className="text-accent">{"//"}</span>GADGETS
+                        </span>
+                        <p className="font-mono text-sm text-muted-foreground max-w-sm leading-relaxed">
+                            Curated tech for the tinkerers, night-shift coders and retro-futurists.
                         </p>
-                        <form onSubmit={handleSubmit} className="flex items-center gap-2 mt-2">
-                            <Input
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                placeholder="Your email"
-                                className="h-11 rounded-full bg-primary-foreground/10 border-primary-foreground/15 text-primary-foreground placeholder:text-primary-foreground/50"
-                            />
-                            <Button type="submit" className="h-11 bg-accent text-accent-foreground hover:bg-accent/90 shrink-0">
-                                Join
-                            </Button>
+                        <form onSubmit={handleSubmit} className="flex flex-col gap-2 mt-2 max-w-md">
+                            <label htmlFor="footer-email" className="font-mono text-xs uppercase tracking-widest text-secondary">
+                                $ subscribe --feed
+                            </label>
+                            <div className="flex items-stretch border border-border bg-background">
+                                <span className="flex items-center px-3 font-mono text-primary">&gt;</span>
+                                <input
+                                    id="footer-email"
+                                    type="email"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    placeholder="you@domain.tld"
+                                    className="flex-1 min-w-0 bg-transparent py-3 pr-3 font-mono text-sm outline-none placeholder:text-muted-foreground/60"
+                                />
+                                <button
+                                    type="submit"
+                                    className="px-5 font-mono text-xs font-bold uppercase tracking-widest bg-primary text-primary-foreground hover:bg-accent transition-colors"
+                                >
+                                    Join
+                                </button>
+                            </div>
+                            {error && <span className="font-mono text-xs text-destructive">{error}</span>}
                         </form>
-                        {error && <span className="text-red-300 text-sm">{error}</span>}
                     </div>
 
-                    <div className="md:col-span-2 grid grid-cols-2 sm:grid-cols-2 gap-10">
+                    <div className="md:col-span-7 grid grid-cols-2 gap-10">
                         {linkColumns.map((col) => (
                             <div key={col.heading}>
-                                <h4 className="font-medium text-sm tracking-wide uppercase mb-4 text-primary-foreground/50">
-                                    {col.heading}
+                                <h4 className="font-mono text-xs font-bold tracking-[0.25em] text-secondary mb-5">
+                                    &gt; {col.heading}
                                 </h4>
-                                <ul className="space-y-2.5 text-sm text-primary-foreground/80">
+                                <ul className="space-y-3 font-sans text-sm">
                                     {col.links.map((link) => (
                                         <li key={link.label}>
-                                            <a href={link.href} className="hover:text-accent transition-colors">
+                                            <a href={link.href} className="group inline-flex items-center gap-2 text-foreground/80 hover:text-primary transition-colors">
+                                                <span className="font-mono text-primary opacity-0 group-hover:opacity-100 transition-opacity">{'>'}</span>
                                                 {link.label}
                                             </a>
                                         </li>
@@ -96,8 +119,9 @@ function Footer() {
                     </div>
                 </div>
 
-                <div className="border-t border-primary-foreground/10 py-6 px-6 md:px-14 text-xs text-primary-foreground/50">
-                    © {new Date().getFullYear()} InfinityGadgets. Commerce for everyone.
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-t border-border px-5 md:px-10 py-4 font-mono text-[11px] uppercase tracking-widest text-muted-foreground">
+                    <span>© {new Date().getFullYear()} INFINITYGADGETS {"//"} ALL SYSTEMS NOMINAL</span>
+                    <span>[ EST. 2026 ]</span>
                 </div>
             </div>
         </footer>

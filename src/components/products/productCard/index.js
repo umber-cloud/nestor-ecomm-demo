@@ -33,7 +33,7 @@ const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) =
   }
 
   return (
-    <div className="group bg-card rounded-2xl sm:rounded-3xl p-2 sm:p-3 transition-shadow hover:shadow-lg">
+    <div className="group relative bg-card border border-border hover:border-primary p-2 sm:p-3 transition-colors">
       <div
         ref={imageWrapperRef}
         onClick={onClick}
@@ -67,7 +67,7 @@ const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) =
         <button
           onClick={handleAddToCart}
           aria-label={`Add ${title} to cart`}
-          className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 h-9 w-9 sm:h-10 sm:w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center shadow-md hover:bg-accent transition-colors md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 duration-300"
+          className="absolute bottom-2 right-2 sm:bottom-3 sm:right-3 h-9 w-9 sm:h-10 sm:w-10 bg-primary text-primary-foreground flex items-center justify-center hover:bg-accent transition-colors md:opacity-0 md:translate-y-2 md:group-hover:opacity-100 md:group-hover:translate-y-0 duration-300"
         >
           <Plus className="h-4 w-4 sm:h-4.5 sm:w-4.5" />
         </button>
