@@ -31,7 +31,7 @@ export default function ContactUs() {
 
     return (
         <div className="flex items-center justify-center py-10 md:py-16">
-            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 rounded-[2.5rem] overflow-hidden shadow-xl">
+            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 rounded-none overflow-hidden shadow-xl">
                 {/* Decorative panel */}
                 <div className="hidden md:flex flex-col justify-between bg-primary text-primary-foreground p-10">
                     <span className="font-semibold text-lg">InfinityGadgets</span>
@@ -60,19 +60,19 @@ export default function ContactUs() {
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4" autoComplete="off">
                         <div className="space-y-1.5">
                             <Label htmlFor="name">Name</Label>
-                            <Input id="name" autoComplete="off" className="h-11 rounded-xl" {...register('name')} />
+                            <Input id="name" autoComplete="off" className="h-11 rounded-none" {...register('name')} />
                             {errors.name && <p className="text-sm text-destructive">{errors.name.message}</p>}
                         </div>
 
                         <div className="space-y-1.5">
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" autoComplete="off" className="h-11 rounded-xl" {...register('email')} />
+                            <Input id="email" type="email" autoComplete="off" className="h-11 rounded-none" {...register('email')} />
                             {errors.email && <p className="text-sm text-destructive">{errors.email.message}</p>}
                         </div>
 
                         <div className="space-y-1.5">
                             <Label htmlFor="message">Message</Label>
-                            <Textarea id="message" rows={4} autoComplete="off" className="rounded-xl" {...register('message')} />
+                            <Textarea id="message" rows={4} autoComplete="off" className="rounded-none" {...register('message')} />
                             {errors.message && <p className="text-sm text-destructive">{errors.message.message}</p>}
                         </div>
 

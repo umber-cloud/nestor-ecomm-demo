@@ -44,7 +44,7 @@ export function ShoppingCart() {
               key={item.id}
               className="grid grid-cols-[auto_1fr] xs:grid-cols-[auto_1fr_auto] gap-x-4 gap-y-3 items-center py-6"
             >
-              <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-muted shrink-0 overflow-hidden rounded-2xl">
+              <div className="relative w-20 h-20 sm:w-24 sm:h-24 bg-muted shrink-0 overflow-hidden rounded-none">
                 <CartItemThumbnail item={item} className="object-cover" />
               </div>
               <div className="min-w-0">
@@ -52,7 +52,7 @@ export function ShoppingCart() {
                 <p className="text-muted-foreground mt-1">${formatPrice(item.price)}</p>
               </div>
               <div className="col-span-2 xs:col-span-1 flex items-center gap-3 justify-between xs:justify-end">
-                <div className="flex items-center border border-border rounded-full">
+                <div className="flex items-center border border-border rounded-none">
                   <button
                     className="h-9 w-9 flex items-center justify-center hover:text-accent transition-colors"
                     onClick={() => updateQuantity(item.id, item.quantity - 1)}
@@ -81,7 +81,7 @@ export function ShoppingCart() {
           ))}
         </div>
         <div className="lg:w-1/3">
-          <div className="bg-muted rounded-3xl p-5 sm:p-6 lg:sticky lg:top-24">
+          <div className="bg-muted rounded-none p-5 sm:p-6 lg:sticky lg:top-24">
             <h2 className="font-serif text-xl mb-5">Order Summary</h2>
             <div className="space-y-3 text-sm">
               <div className="flex justify-between">

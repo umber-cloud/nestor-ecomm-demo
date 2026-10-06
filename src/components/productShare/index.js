@@ -85,7 +85,7 @@ export default function ProductShare({ productUrl, productImageUrl }) {
 
             {/* Dropdown */}
             {open && (
-                <div className="absolute right-0 mt-2 w-48 bg-card rounded-2xl border border-border shadow-lg overflow-hidden z-10">
+                <div className="absolute right-0 mt-2 w-48 bg-card rounded-none border border-border shadow-lg overflow-hidden z-10">
                     {options.map((opt) => (
                         <a
                             key={opt.label}

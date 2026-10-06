@@ -6,7 +6,7 @@ function ProductSugg({ cover, title, price }) {
     const href = `/products/${title.replace(/\s+/g, '-')}`;
 
     return (
-        <Link href={href} className="group block bg-card rounded-3xl p-3 transition-shadow hover:shadow-lg">
+        <Link href={href} className="group block bg-card rounded-none p-3 transition-shadow hover:shadow-lg">
             <div className="image-wrapper">
                 {cover?.type === 'video' ? (
                     <video

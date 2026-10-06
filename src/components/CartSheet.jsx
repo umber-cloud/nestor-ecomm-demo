@@ -57,14 +57,14 @@ export function CartSheet({ isOpen, onClose }) {
             <div className="flex-1 overflow-y-auto divide-y divide-border">
               {cart.map((item) => (
                 <div key={item.id} className="flex gap-4 py-5">
-                  <div className="relative w-20 h-20 bg-muted shrink-0 overflow-hidden rounded-2xl">
+                  <div className="relative w-20 h-20 bg-muted shrink-0 overflow-hidden rounded-none">
                     <CartItemThumbnail item={item} className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
                     <h3 className="font-medium text-sm truncate">{item.title}</h3>
                     <p className="text-sm text-muted-foreground mt-0.5">${formatPrice(item.price)}</p>
                     <div className="flex items-center gap-3 mt-3">
-                      <div className="flex items-center border border-border rounded-full">
+                      <div className="flex items-center border border-border rounded-none">
                         <button
                           className="h-7 w-7 flex items-center justify-center hover:text-accent transition-colors"
                           onClick={() => updateQuantity(item.id, item.quantity - 1)}

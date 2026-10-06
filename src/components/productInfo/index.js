@@ -9,7 +9,7 @@ function ProductInfo({ product, onAddToCart }) {
 
     return (
         <div className="flex flex-col">
-            <span className="inline-flex w-fit items-center rounded-full bg-muted px-3 py-1 text-xs uppercase tracking-[0.15em] text-accent font-medium">
+            <span className="inline-flex w-fit items-center rounded-none bg-muted px-3 py-1 text-xs uppercase tracking-[0.15em] text-accent font-medium">
                 {product?.category}
             </span>
 
@@ -23,7 +23,7 @@ function ProductInfo({ product, onAddToCart }) {
             </p>
 
             <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 mt-7">
-                <div className="flex items-center justify-center border border-border rounded-full w-fit">
+                <div className="flex items-center justify-center border border-border rounded-none w-fit">
                     <button
                         className="h-11 w-11 flex items-center justify-center hover:text-accent transition-colors"
                         onClick={() => setQuantity((q) => Math.max(1, q - 1))}
@@ -52,15 +52,15 @@ function ProductInfo({ product, onAddToCart }) {
             </div>
 
             <div className="flex flex-wrap gap-2 mt-8">
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3.5 py-2 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 rounded-none bg-muted px-3.5 py-2 text-xs text-muted-foreground">
                     <Truck className="h-3.5 w-3.5 text-accent" />
                     Free shipping
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3.5 py-2 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 rounded-none bg-muted px-3.5 py-2 text-xs text-muted-foreground">
                     <RotateCcw className="h-3.5 w-3.5 text-accent" />
                     30-day returns
                 </span>
-                <span className="inline-flex items-center gap-1.5 rounded-full bg-muted px-3.5 py-2 text-xs text-muted-foreground">
+                <span className="inline-flex items-center gap-1.5 rounded-none bg-muted px-3.5 py-2 text-xs text-muted-foreground">
                     <ShieldCheck className="h-3.5 w-3.5 text-accent" />
                     Secure checkout
                 </span>

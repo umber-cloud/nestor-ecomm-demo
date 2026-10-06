@@ -60,7 +60,7 @@ export function Login() {
 
     return (
         <div className="flex items-center justify-center py-10 md:py-16">
-            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 rounded-[2.5rem] overflow-hidden shadow-xl">
+            <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 rounded-none overflow-hidden shadow-xl">
                 {/* Decorative panel */}
                 <div className="hidden md:flex flex-col justify-between bg-primary text-primary-foreground p-10">
                     <span className="font-semibold text-lg">InfinityGadgets</span>
@@ -91,7 +91,7 @@ export function Login() {
                                 id="email"
                                 type="email"
                                 placeholder="login@example.com"
-                                className="h-11 rounded-xl"
+                                className="h-11 rounded-none"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 autoComplete="off"
@@ -108,7 +108,7 @@ export function Login() {
                                 id="password"
                                 type="password"
                                 placeholder="Password"
-                                className="h-11 rounded-xl"
+                                className="h-11 rounded-none"
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 autoComplete="new-password"

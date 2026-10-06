@@ -60,7 +60,7 @@ export default function Profile() {
 
     return (
         <main className="flex items-center justify-center py-10 md:py-16">
-            <div className="w-full max-w-md bg-card rounded-[2.5rem] shadow-xl p-8 md:p-10">
+            <div className="w-full max-w-md bg-card rounded-none shadow-xl p-8 md:p-10">
                 <div className="flex flex-col items-center text-center">
                     <div className="relative">
                         <Avatar className="w-28 h-28 ring-4 ring-accent/20">
@@ -71,7 +71,7 @@ export default function Profile() {
                         </Avatar>
                         <label
                             htmlFor="image-upload"
-                            className="absolute bottom-0 right-0 bg-accent text-accent-foreground p-2 rounded-full shadow-sm hover:bg-accent/90 transition cursor-pointer"
+                            className="absolute bottom-0 right-0 bg-accent text-accent-foreground p-2 rounded-none shadow-sm hover:bg-accent/90 transition cursor-pointer"
                             title="Change profile picture"
                         >
                             <Upload size={14} />
@@ -91,7 +91,7 @@ export default function Profile() {
                             value={editedUser.fullName}
                             onChange={handleChange}
                             autoComplete="off"
-                            className="text-center text-xl font-semibold mt-4 h-11 rounded-xl max-w-xs"
+                            className="text-center text-xl font-semibold mt-4 h-11 rounded-none max-w-xs"
                         />
                     ) : (
                         <h1 className="text-2xl font-semibold mt-4">{userData.fullName}</h1>
@@ -112,7 +112,7 @@ export default function Profile() {
                                 value={editedUser.email}
                                 onChange={handleChange}
                                 autoComplete="off"
-                                className="mt-1.5 h-11 rounded-xl"
+                                className="mt-1.5 h-11 rounded-none"
                             />
                         ) : (
                             <p className="mt-1">{userData.email || "—"}</p>
@@ -127,7 +127,7 @@ export default function Profile() {
                                 value={editedUser.contact}
                                 onChange={handleChange}
                                 autoComplete="off"
-                                className="mt-1.5 h-11 rounded-xl"
+                                className="mt-1.5 h-11 rounded-none"
                             />
                         ) : (
                             <p className="mt-1">{userData.contact}</p>

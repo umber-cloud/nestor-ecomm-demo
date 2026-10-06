@@ -59,7 +59,7 @@ export default function ProductSlider({ images, cover }) {
     <div className="flex items-center justify-center flex-col w-full">
       {/* Main viewer — fixed aspect-square box so switching between images and
           videos never causes a sudden height jump */}
-      <div className="relative w-full aspect-square overflow-hidden rounded-3xl">
+      <div className="relative w-full aspect-square overflow-hidden rounded-none">
         {renderMainView(currentView)}
       </div>
 
@@ -75,7 +75,7 @@ export default function ProductSlider({ images, cover }) {
                 >
                   <div onClick={() => setCurrentView(image)}>
                     <Card
-                      className={`cursor-pointer rounded-2xl overflow-hidden aspect-square hover:ring-2 hover:ring-accent transition-all ${
+                      className={`cursor-pointer rounded-none overflow-hidden aspect-square hover:ring-2 hover:ring-accent transition-all ${
                         currentView.url === image.url ? "ring-2 ring-accent" : ""
                       }`}
                     >

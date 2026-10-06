@@ -56,7 +56,7 @@ export default function CheckoutPage() {
     if (isComplete) {
         return (
             <div className="flex flex-col items-center justify-center min-h-[60vh] gap-4 text-center">
-                <div className="h-16 w-16 rounded-full bg-accent/10 flex items-center justify-center">
+                <div className="h-16 w-16 rounded-none bg-accent/10 flex items-center justify-center">
                     <CheckCircle2 className="h-8 w-8 text-accent" />
                 </div>
                 <h1 className="font-serif text-3xl">
@@ -95,13 +95,13 @@ export default function CheckoutPage() {
             <p className="text-muted-foreground mt-2">Provide billing and shipping details below.</p>
 
             <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col lg:flex-row gap-8 lg:gap-12 mt-8">
-                <div className="lg:w-2/3 bg-card rounded-[2rem] shadow-xl p-6 md:p-8 space-y-8">
+                <div className="lg:w-2/3 bg-card rounded-none shadow-xl p-6 md:p-8 space-y-8">
                     {/* Contact Info */}
                     <div className="space-y-4">
                         <h2 className="text-xs uppercase tracking-[0.15em] text-muted-foreground">Contact</h2>
                         <div>
                             <Label htmlFor="email">Email</Label>
-                            <Input id="email" type="email" autoComplete="email" className="rounded-xl mt-1.5 h-11" {...register("email")} />
+                            <Input id="email" type="email" autoComplete="email" className="rounded-none mt-1.5 h-11" {...register("email")} />
                             {errors.email ? (
                                 <p className="text-destructive text-sm mt-1">{errors.email.message}</p>
                             ) : emailValue?.length > 0 ? (
@@ -110,7 +110,7 @@ export default function CheckoutPage() {
                         </div>
                         <div>
                             <Label htmlFor="name">Full Name</Label>
-                            <Input id="name" type="text" autoComplete="name" className="rounded-xl mt-1.5 h-11" {...register("name")} />
+                            <Input id="name" type="text" autoComplete="name" className="rounded-none mt-1.5 h-11" {...register("name")} />
                             {errors.name && <p className="text-destructive text-sm mt-1">{errors.name.message}</p>}
                         </div>
                     </div>
@@ -121,7 +121,7 @@ export default function CheckoutPage() {
                         <div>
                             <Label htmlFor="country">Country or Region</Label>
                             <Select onValueChange={(value) => setValue("country", value, { shouldValidate: true })}>
-                                <SelectTrigger id="country" className="rounded-xl mt-1.5 h-11">
+                                <SelectTrigger id="country" className="rounded-none mt-1.5 h-11">
                                     <SelectValue placeholder="Select a country" />
                                 </SelectTrigger>
                                 <SelectContent>
@@ -139,7 +139,7 @@ export default function CheckoutPage() {
                         </div>
                         <div>
                             <Label htmlFor="address">Address</Label>
-                            <Input id="address" type="text" autoComplete="street-address" className="rounded-xl mt-1.5 h-11" {...register("address")} />
+                            <Input id="address" type="text" autoComplete="street-address" className="rounded-none mt-1.5 h-11" {...register("address")} />
                             {errors.address && <p className="text-destructive text-sm mt-1">{errors.address.message}</p>}
                         </div>
                         <div className="flex items-center space-x-2">
@@ -167,7 +167,7 @@ export default function CheckoutPage() {
                                     autoComplete="cc-number"
                                     {...register("cardNumber")}
                                     placeholder="1234 5678 9012 3456"
-                                    className="rounded-xl h-11 pr-10"
+                                    className="rounded-none h-11 pr-10"
                                 />
                                 <CreditCard className="absolute right-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
                             </div>
@@ -179,14 +179,14 @@ export default function CheckoutPage() {
                         <div className="grid grid-cols-2 gap-4">
                             <div>
                                 <Label htmlFor="exp-date">Expiration Date</Label>
-                                <Input id="exp-date" type="text" autoComplete="cc-exp" placeholder="MM/YY" className="rounded-xl mt-1.5 h-11" {...register("expDate")} />
+                                <Input id="exp-date" type="text" autoComplete="cc-exp" placeholder="MM/YY" className="rounded-none mt-1.5 h-11" {...register("expDate")} />
                                 {errors.expDate && (
                                     <p className="text-destructive text-sm mt-1">{errors.expDate.message}</p>
                                 )}
                             </div>
                             <div>
                                 <Label htmlFor="cvc">Security Code</Label>
-                                <Input id="cvc" type="password" autoComplete="cc-csc" className="rounded-xl mt-1.5 h-11" {...register("cvc")} />
+                                <Input id="cvc" type="password" autoComplete="cc-csc" className="rounded-none mt-1.5 h-11" {...register("cvc")} />
                                 {errors.cvc && (
                                     <p className="text-destructive text-sm mt-1">{errors.cvc.message}</p>
                                 )}
@@ -202,12 +202,12 @@ export default function CheckoutPage() {
 
                 {/* Order summary */}
                 <div className="lg:w-1/3">
-                    <div className="bg-muted rounded-3xl p-6 lg:sticky lg:top-24">
+                    <div className="bg-muted rounded-none p-6 lg:sticky lg:top-24">
                         <h2 className="font-serif text-xl mb-5">Order Summary</h2>
                         <div className="space-y-4 max-h-72 overflow-y-auto pr-1">
                             {cart.map((item) => (
                                 <div key={item.id} className="flex items-center gap-3">
-                                    <div className="relative w-14 h-14 bg-card shrink-0 overflow-hidden rounded-xl">
+                                    <div className="relative w-14 h-14 bg-card shrink-0 overflow-hidden rounded-none">
                                         <CartItemThumbnail item={item} className="object-cover" />
                                     </div>
                                     <div className="flex-1 min-w-0">
