@@ -25,7 +25,11 @@ export async function fetchCollectionAssets(collectionId) {
 
     return await response.json();
   } catch (error) {
-    console.error(`Error fetching collection ${collectionId}:`, error);
+    // Expected for a product whose ADN collection hasn't been uploaded yet —
+    // fetchProduct() below catches this and falls back to a placeholder, so
+    // this isn't a real application error. Use warn, not error, so Next's
+    // dev overlay doesn't treat it as a blocking crash.
+    console.warn(`Collection not available yet: ${collectionId} (${error.message})`);
     throw error;
   }
 }
@@ -121,9 +125,9 @@ export async function fetchProduct(metadata) {
   try {
     const adnData = await fetchCollectionAssets(metadata.collectionId);
     return transformADNToProduct(adnData, metadata);
-  } catch (error) {
-    console.error(`Error fetching product ${metadata.title}:`, error);
-    // Return product with metadata only (no images) on error
+  } catch {
+    // Already logged in fetchCollectionAssets. Return product with
+    // metadata only (no images) so the UI can show its placeholder state.
     return {
       id: metadata.collectionId,
       collectionId: metadata.collectionId,
