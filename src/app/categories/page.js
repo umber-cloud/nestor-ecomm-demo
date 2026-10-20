@@ -21,7 +21,8 @@ function CategoriesPage() {
                 const products = await getProducts();
                 const byCategory = new Map();
                 for (const product of products) {
-                    if (!byCategory.has(product.category)) {
+                    const existing = byCategory.get(product.category);
+                    if (!existing || (!existing.cover?.url && product.cover?.url)) {
                         byCategory.set(product.category, product);
                     }
                 }
@@ -54,7 +55,7 @@ function CategoriesPage() {
                         <CategoryGrid
                             key={category}
                             title={category}
-                            cover={product.cover?.url}
+                            cover={product.cover?.url || null}
                             description={CATEGORY_DESCRIPTIONS[category] || "Shop now"}
                         />
                     ))}
