@@ -3,7 +3,7 @@ import Banner from "@/components/banner";
 import CategoryCard from "@/components/categories/categorieCard";
 import ProductGrid from "@/components/products/productGrid";
 
-// this is the home page of the app
+// this is the home page of the app!!!
 export default function Home() {
   return (
     <>
