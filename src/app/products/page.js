@@ -29,10 +29,10 @@ function ProductsPageContent() {
 
     const visibleProducts = searchTerm
         ? products.filter((product) =>
-              `${product.title} ${product.category}`
-                  .toLowerCase()
-                  .includes(searchTerm.toLowerCase())
-          )
+            `${product.title} ${product.category}`
+                .toLowerCase()
+                .includes(searchTerm.toLowerCase())
+        )
         : products;
 
     return (

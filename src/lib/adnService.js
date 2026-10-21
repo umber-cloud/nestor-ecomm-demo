@@ -3,6 +3,7 @@
 
 const ADN_API_BASE = "https://adn.umbercloud.io/api";
 const ADN_MEDIA_BASE = "https://adn.umbercloud.io/api/vi"; // For actual media downloads
+// domain id is added here
 const DOMAIN_ID = "67a06a45ea8a39c6628c71c3";
 
 /**

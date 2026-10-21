@@ -3,6 +3,7 @@
 
 import { productMetadata } from './productMetadata';
 import { fetchAllProducts } from './adnService';
+import { getCategoryProductBySlug } from '@/data/categoryCatalog';
 
 // Cache for products to avoid repeated API calls
 let cachedProducts = null;
@@ -41,10 +42,13 @@ export async function getProducts() {
  */
 export async function getProductBySlug(slug) {
   const products = await getProducts();
-  return products.find(p => 
+  const found = products.find(p => 
     p.title.replace(/\s+/g, '-') === slug ||
     p.title.toLowerCase().replace(/\s+/g, '-') === slug.toLowerCase()
-  ) || null;
+  );
+  if (found) return found;
+
+  return getCategoryProductBySlug(slug);
 }
 
 /**

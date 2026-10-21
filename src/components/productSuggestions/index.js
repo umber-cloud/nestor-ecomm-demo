@@ -3,8 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ImageOff } from 'lucide-react';
 
-function ProductSugg({ cover, title, price }) {
-    const href = `/products/${title.replace(/\s+/g, '-')}`;
+function ProductSugg({ cover, title, price, href: customHref }) {
+    const href = customHref || `/products/${title.replace(/\s+/g, '-')}`;
     const rawUrl = typeof cover === 'string' ? cover : cover?.url;
     const mediaUrl = typeof rawUrl === 'string' && rawUrl.trim().length > 0 ? rawUrl : null;
 

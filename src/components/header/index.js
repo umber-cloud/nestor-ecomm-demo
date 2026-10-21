@@ -17,9 +17,11 @@ import { useCartFlyAnimation } from "@/components/cartFlyAnimation";
 
 const components = [
     { title: "HOME", href: "/" },
-    { title: "APPAREL", href: "/categories/Apparel" },
-    { title: "ACCESSORIES", href: "/categories/Accessories" },
-    { title: "DIGITAL", href: "/categories/Digital" },
+    { title: "CATEGORY", href: "/category" },
+    // commented as everything is shifted to category
+    // { title: "APPAREL", href: "/categories/Apparel" },
+    // { title: "ACCESSORIES", href: "/categories/Accessories" },
+    // { title: "DIGITAL", href: "/categories/Digital" },
 ];
 
 export default function Header() {
