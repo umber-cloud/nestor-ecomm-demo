@@ -9,9 +9,11 @@
 // (NovaSightGlasses, LunaRestPod) are placeholders awaiting their ADN
 // collections to be uploaded. The rest of the catalog is commented out,
 // not deleted, so it's easy to bring back later.
-
+// collectionId is manually typed and statically defined here for each product.
+// These string IDs directly match collection names in Umber ADN (e.g., "NovaSightGlasses", "EchoBassHeadphones").
 export const productMetadata = [
   {
+    // collectionId typed manually here
     collectionId: "NovaSightGlasses",
     title: "Nova Sight Glasses",
     price: "$699.00",

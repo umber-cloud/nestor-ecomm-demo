@@ -64,6 +64,7 @@ function ProductsPageContent() {
                             onClick={() =>
                                 router.push(`/products/${product.title.replace(/\s+/g, "-")}`)
                             }
+                            // collectionId passed from fetched product (used by ProductCard for cart management)
                             collectionId={product.collectionId}
                             cover={product.cover}
                             title={product.title}

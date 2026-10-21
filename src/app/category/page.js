@@ -240,6 +240,7 @@ function CategoryPageContent() {
         {filteredProducts.map((product, index) => (
           <ProductCard
             key={product.id || index}
+            // collectionId passed from category item (used by ProductCard for cart management)
             collectionId={product.collectionId}
             cover={product.cover}
             title={product.title}

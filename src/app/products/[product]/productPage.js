@@ -54,6 +54,7 @@ function ProductPage({ params }) {
     if (!product) return;
     addProductToCart({
       product: {
+        // collectionId from fetched product metadata used as cart item ID
         id: product.collectionId,
         title: product.title,
         price: product.price,

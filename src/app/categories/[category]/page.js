@@ -62,6 +62,7 @@ function CategoriesPage({ params }) {
                     {products.map((product, index) => (
                         <ProductCard
                             key={index}
+                            // collectionId passed from fetched product (used by ProductCard for cart management)
                             collectionId={product.collectionId}
                             cover={product.cover}
                             title={product.title}

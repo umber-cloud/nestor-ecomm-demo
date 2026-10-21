@@ -4,6 +4,7 @@ import Image from "next/image";
 import { Plus, ImageOff } from "lucide-react";
 import { useAddToCart } from "@/lib/useAddToCart";
 
+// collectionId is passed down from product objects (originally defined in productMetadata.js or categoryCatalog.js)
 const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) => {
   const [isMounted, setIsMounted] = useState(false);
   const imageWrapperRef = useRef(null);
@@ -18,6 +19,7 @@ const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) =
     const numericPrice = parseFloat(price.replace(/[$,]/g, ""));
     addProductToCart({
       product: {
+        // collectionId used as the unique product ID in the cart store
         id: collectionId,
         title,
         price: numericPrice,

@@ -7,6 +7,7 @@ export const CATEGORY_ITEMS = [
   // ==========================================
   {
     id: "steam-deck",
+    // collectionId is manually typed here for ADN collection mapping (e.g. "SteamDeck")
     collectionId: "SteamDeck",
     title: "Steam Deck OLED",
     category: "Fun",

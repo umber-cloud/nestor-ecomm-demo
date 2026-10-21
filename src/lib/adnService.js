@@ -8,11 +8,13 @@ const DOMAIN_ID = "67a06a45ea8a39c6628c71c3";
 
 /**
  * Fetch asset collection data from ADN API
- * @param {string} collectionId - The collection identifier (e.g., "SunbeamToteJeff")
+ * @param {string} collectionId - The collection identifier (e.g., "SunbeamToteJeff", "EchoBassHeadphones")
+ *                                passed from metadata.collectionId (typed in productMetadata.js)
  * @returns {Promise<Object>} ADN collection data
  */
 export async function fetchCollectionAssets(collectionId) {
   try {
+    // collectionId is injected dynamically into the Umber ADN collection URL path:
     const response = await fetch(
       `${ADN_API_BASE}/vc/${DOMAIN_ID}/${collectionId}/dev`,
       {
@@ -124,12 +126,14 @@ export function transformADNToProduct(adnData, metadata) {
  */
 export async function fetchProduct(metadata) {
   try {
+    // metadata.collectionId (typed manually in productMetadata.js) is passed to fetchCollectionAssets here:
     const adnData = await fetchCollectionAssets(metadata.collectionId);
     return transformADNToProduct(adnData, metadata);
   } catch {
     // Already logged in fetchCollectionAssets. Return product with
     // metadata only (no images) so the UI can show its placeholder state.
     return {
+      // collectionId is preserved on the product object for cart and UI keys
       id: metadata.collectionId,
       collectionId: metadata.collectionId,
       title: metadata.title,

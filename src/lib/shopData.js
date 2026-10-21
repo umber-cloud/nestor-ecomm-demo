@@ -24,6 +24,7 @@ export async function getProducts() {
   
   // Fetch fresh data
   try {
+    // Passes productMetadata (which contains manually typed collectionIds) to ADN service to fetch assets
     const products = await fetchAllProducts(productMetadata);
     cachedProducts = products;
     cacheTimestamp = now;
