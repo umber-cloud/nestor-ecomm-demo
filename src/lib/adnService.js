@@ -1,158 +1,152 @@
-// ADN (Asset Delivery Network) Service
-// Handles fetching and transforming product assets from Umber CDN
+// ============================================================================
+// File: src/lib/adnService.js
+// Purpose: Umber Cloud Asset Delivery Network (ADN) Client & Transformer
+//          Fetches live edge collection metadata and maps media streams
+//          into clean storefront product representations.
+// ============================================================================
 
-const ADN_API_BASE = "https://adn.umbercloud.io/api";
-const ADN_MEDIA_BASE = "https://adn.umbercloud.io/api/vi"; // For actual media downloads
-// domain id is added here
-const DOMAIN_ID = "67a06a45ea8a39c6628c71c3";
+// Umber Cloud Edge ADN CDN Configuration
+export const ADN_CONFIG = {
+  domainId: "6ae094fb1701f00439587797",
+  host: "https://harbour-wren-3226.umberadn.com",
+  apiBase: "https://harbour-wren-3226.umberadn.com/api",
+  mediaBase: "https://harbour-wren-3226.umberadn.com/api/vi",
+  environment: "DEV",
+};
+
+const ADN_API_BASE = ADN_CONFIG.apiBase;
+const ADN_MEDIA_BASE = ADN_CONFIG.mediaBase;
+const DOMAIN_ID = ADN_CONFIG.domainId;
+const ENV_ID = ADN_CONFIG.environment;
 
 /**
- * Fetch asset collection data from ADN API
- * @param {string} collectionId - The collection identifier (e.g., "SunbeamToteJeff", "EchoBassHeadphones")
- *                                passed from metadata.collectionId (typed in productMetadata.js)
- * @returns {Promise<Object>} ADN collection data
+ * Fetch asset collection metadata from Umber ADN Edge CDN
+ * @param {string} collectionId - The collection identifier (e.g., "steam-deck", "air-purifier")
+ * @returns {Promise<Object>} Raw ADN collection payload
  */
 export async function fetchCollectionAssets(collectionId) {
+  if (!collectionId) {
+    throw new Error("fetchCollectionAssets requires a valid collectionId");
+  }
+
   try {
-    // collectionId is injected dynamically into the Umber ADN collection URL path:
-    const response = await fetch(
-      `${ADN_API_BASE}/vc/${DOMAIN_ID}/${collectionId}/dev`,
-      {
-        next: { revalidate: 60 } // Cache for 60 seconds, then revalidate
-      }
-    );
+    const endpointUrl = `${ADN_API_BASE}/vc/${DOMAIN_ID}/${collectionId}/${ENV_ID}`;
+    const response = await fetch(endpointUrl, {
+      next: { revalidate: 60 }, // ISR edge revalidation every 60s
+    });
 
     if (!response.ok) {
-      throw new Error(`Failed to fetch assets for ${collectionId}: ${response.status}`);
+      throw new Error(`ADN returned HTTP ${response.status} for collection "${collectionId}"`);
     }
 
     return await response.json();
   } catch (error) {
-    // Expected for a product whose ADN collection hasn't been uploaded yet —
-    // fetchProduct() below catches this and falls back to a placeholder, so
-    // this isn't a real application error. Use warn, not error, so Next's
-    // dev overlay doesn't treat it as a blocking crash.
-    console.warn(`Collection not available yet: ${collectionId} (${error.message})`);
+    console.warn(`[ADN Warning] Collection "${collectionId}" unavailable: ${error.message}`);
     throw error;
   }
 }
 
 /**
- * Build media URL from download path
- * @param {string} downloadUrl - Relative download URL from API
- * @returns {string} Full media URL
+ * Constructs an absolute public media stream URL from Umber's download path
+ * @param {string} downloadUrl - Relative path (e.g. "/6ae.../item/DEV/generic") or absolute URL
+ * @returns {string} Fully qualified CDN media stream URL
  */
-function buildMediaUrl(downloadUrl) {
-  // downloadUrl format: /67a06a45ea8a39c6628c71c3/SunbeamToteJeff/39eff1030679/dev/generic
-  // Need to convert to: https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/SunbeamToteJeff/39eff1030679/dev/generic
-  return `${ADN_MEDIA_BASE}${downloadUrl}`;
+export function buildMediaUrl(downloadUrl) {
+  if (!downloadUrl) return null;
+  if (downloadUrl.startsWith("http://") || downloadUrl.startsWith("https://")) {
+    return downloadUrl;
+  }
+  // Ensure leading slash formatting
+  const normalizedPath = downloadUrl.startsWith("/") ? downloadUrl : `/${downloadUrl}`;
+  return `${ADN_MEDIA_BASE}${normalizedPath}`;
 }
 
 /**
- * Transform ADN asset data to application product format
- * @param {Object} adnData - Raw ADN API response
- * @param {Object} metadata - Product metadata (title, price, category)
- * @returns {Object} Transformed product object
+ * Transforms raw Umber ADN collection response into standardized storefront product format
+ * @param {Object} adnData - Raw Umber ADN API response
+ * @param {Object} metadata - Catalog product business metadata (title, price, category, etc.)
+ * @returns {Object} Hydrated product object with live CDN cover & thumbnails
  */
 export function transformADNToProduct(adnData, metadata) {
-  // The anchorAsset is meant to be the cover image/video, but some collections
-  // have it misconfigured to point at a non-visual asset (e.g. a PDF) — guard
-  // against that by falling back to the first real image/video asset.
   const isVisual = (asset) =>
-    asset?.mimetype?.startsWith('image/') || asset?.mimetype?.startsWith('video/');
+    asset?.mimetype?.startsWith("image/") || asset?.mimetype?.startsWith("video/");
 
-  const coverAsset = isVisual(adnData.anchorAsset)
+  // Select anchor asset as primary cover; fallback to first visual asset if misconfigured
+  const coverAsset = isVisual(adnData?.anchorAsset)
     ? adnData.anchorAsset
-    : adnData.assetItemUrls?.find(isVisual) || null;
+    : adnData?.assetItemUrls?.find(isVisual) || null;
 
   const coverUrl = coverAsset ? buildMediaUrl(coverAsset.downloadUrl) : null;
+  const coverType = coverAsset?.mimetype?.startsWith("video/") ? "video" : "image";
 
-  let coverType = 'image';
-  if (coverAsset?.mimetype?.startsWith('video/')) {
-    coverType = 'video';
-  }
+  // Build gallery thumbnails from all image and video assets
+  const rawItems = Array.isArray(adnData?.assetItemUrls) ? adnData.assetItemUrls : [];
+  const thumbnails = rawItems
+    .filter(isVisual)
+    .map((asset) => ({
+      assetItemId: asset.assetItemId,
+      name: asset.assetItemName || "",
+      url: buildMediaUrl(asset.downloadUrl),
+      type: asset.mimetype?.startsWith("video/") ? "video" : "image",
+      mimetype: asset.mimetype,
+    }));
 
-  // Build thumbnails from ALL image/video assets (including anchorAsset)
-  const thumbnails = adnData.assetItemUrls
-    .filter(asset =>
-      asset.mimetype &&
-      (
-        asset.mimetype.startsWith('image/') ||
-        asset.mimetype.startsWith('video/')
-      )
-    )
-    .map(asset => {
-      const thumbnail = {
-        assetItemId: asset.assetItemId,
-        name: asset.assetItemName || '',
-        url: buildMediaUrl(asset.downloadUrl)
-      };
-
-      // Mark videos with type property
-      if (asset.mimetype.startsWith('video/')) {
-        thumbnail.type = 'video';
-      }
-
-      return thumbnail;
-    });
-
-
-  // Find PDF for documentation
-  const pdfAsset = adnData.assetItemUrls.find(
-    asset => asset.mimetype === 'application/pdf'
-  );
+  // Extract optional product spec PDF if present
+  const pdfAsset = rawItems.find((asset) => asset.mimetype === "application/pdf");
   const pdfUrl = pdfAsset ? buildMediaUrl(pdfAsset.downloadUrl) : null;
 
   return {
-    id: metadata.collectionId,
-    collectionId: metadata.collectionId,
+    id: metadata.collectionId || metadata.id,
+    collectionId: metadata.collectionId || metadata.id,
     title: metadata.title,
     price: metadata.price,
     category: metadata.category,
-    suggestion: metadata.suggestion || false,
+    description: metadata.description || "",
+    features: metadata.features || [],
+    suggestion: Boolean(metadata.suggestion),
     cover: {
       url: coverUrl,
-      type: coverType
+      type: coverType,
     },
     thumbnails,
-    pdfUrl
+    pdfUrl,
   };
 }
 
 /**
- * Fetch and transform a single product
- * @param {Object} metadata - Product metadata
- * @returns {Promise<Object>} Complete product object
+ * Fetch and hydrate a single product using its metadata definition
+ * @param {Object} metadata - Product catalog metadata item
+ * @returns {Promise<Object>} Hydrated product object
  */
 export async function fetchProduct(metadata) {
   try {
-    // metadata.collectionId (typed manually in productMetadata.js) is passed to fetchCollectionAssets here:
     const adnData = await fetchCollectionAssets(metadata.collectionId);
     return transformADNToProduct(adnData, metadata);
   } catch {
-    // Already logged in fetchCollectionAssets. Return product with
-    // metadata only (no images) so the UI can show its placeholder state.
+    // Graceful fallback for UI placeholders
     return {
-      // collectionId is preserved on the product object for cart and UI keys
-      id: metadata.collectionId,
-      collectionId: metadata.collectionId,
+      id: metadata.collectionId || metadata.id,
+      collectionId: metadata.collectionId || metadata.id,
       title: metadata.title,
       price: metadata.price,
       category: metadata.category,
-      cover: { url: null },
+      description: metadata.description || "",
+      features: metadata.features || [],
+      cover: { url: null, type: "image" },
       thumbnails: [],
       pdfUrl: null,
-      error: true
+      error: true,
     };
   }
 }
 
 /**
- * Fetch all products in parallel
- * @param {Array} metadataArray - Array of product metadata
- * @returns {Promise<Array>} Array of complete product objects
+ * Concurrently fetches and hydrates all catalog products
+ * @param {Array<Object>} metadataArray - Array of product catalog metadata
+ * @returns {Promise<Array<Object>>} Hydrated product array
  */
 export async function fetchAllProducts(metadataArray) {
-  const productPromises = metadataArray.map(metadata => fetchProduct(metadata));
+  if (!Array.isArray(metadataArray)) return [];
+  const productPromises = metadataArray.map((metadata) => fetchProduct(metadata));
   return await Promise.all(productPromises);
 }

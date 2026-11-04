@@ -1,166 +1,253 @@
-// Product metadata - business data only (title, price, category)
-// Asset URLs are fetched dynamically from ADN API
-//
-// 2026-10-05: Catalog trimmed to 3 featured products per the e-commerces.no
-// sheet (row 13 — the 3 blue-highlighted cells): AR glasses, premium
-// headphones, and a smart sleep pod. We can't use the real brands' own
-// photos (no rights), so these are generic, non-branded stand-ins —
-// EchoBassHeadphones already existed with real assets; the other two
-// (NovaSightGlasses, LunaRestPod) are placeholders awaiting their ADN
-// collections to be uploaded. The rest of the catalog is commented out,
-// not deleted, so it's easy to bring back later.
-// collectionId is manually typed and statically defined here for each product.
-// These string IDs directly match collection names in Umber ADN (e.g., "NovaSightGlasses", "EchoBassHeadphones").
+// ============================================================================
+// File: src/lib/productMetadata.js
+// Purpose: Product Catalog Business Metadata for Nestor E-Commerce Demo
+//          Each product references its deployed collectionId in Umber Cloud ADN.
+//          Domain ID: 6ae094fb1701f00439587797 | Host: harbour-wren-3226.umberadn.com
+// ============================================================================
+
 export const productMetadata = [
+  // --------------------------------------------------------------------------
+  // Category: FUN
+  // --------------------------------------------------------------------------
   {
-    // collectionId typed manually here
-    collectionId: "NovaSightGlasses",
-    title: "Nova Sight Glasses",
-    price: "$699.00",
-    category: "Accessories"
+    collectionId: "steam-deck",
+    title: "Steam Deck OLED",
+    category: "Fun",
+    price: "$649.00",
+    description: "Handheld gaming powerhouse featuring a custom AMD APU, 7.4-inch 90Hz HDR OLED display, premium haptics, and full PC gaming library compatibility on the go.",
+    features: [
+      "7.4-inch 90Hz HDR OLED display (1000 nits peak)",
+      "Custom 6nm AMD APU (Zen 2 + RDNA 2)",
+      "50Wh battery with 3-12 hours of gameplay",
+      "Full SteamOS with desktop Linux environment"
+    ],
   },
   {
-    collectionId: "EchoBassHeadphones",
-    title: "EchoBass Headphones",
-    price: "$4,110.00",
-    category: "Accessories"
-  },
-  {
-    collectionId: "LunaRestPod",
-    title: "Luna Rest Pod",
-    price: "$1,999.00",
-    category: "Accessories"
+    collectionId: "gaming-consoles",
+    title: "Modular Gaming Console",
+    category: "Fun",
+    price: "$499.00",
+    description: "Dual-architecture hybrid entertainment system with high-refresh graphics, low-latency wireless controllers, and multi-platform cloud syncing.",
+    features: [
+      "4K 120Hz HDMI 2.1 video output with HDR support",
+      "Custom ultra-fast NVMe storage expansion",
+      "Tactile haptic feedback controllers included",
+      "Whisper-quiet liquid cooling chamber"
+    ],
   },
 
-  // --- Rest of catalog, kept for easy restore ---
-  // {
-  //   collectionId: "SunbeamToteJeff",
-  //   title: "Sunbeam Tote Jeff",
-  //   price: "$25.00",
-  //   category: "Accessories"
-  // },
-  // {
-  //   collectionId: "ShadowStrideShoes",
-  //   title: "Shadow Strike Shoes",
-  //   price: "$20.00",
-  //   category: "Apparel"
-  // },
-  // {
-  //   collectionId: "HorizonGazeSunglasses",
-  //   title: "Horizon Gaze Sunglasses",
-  //   price: "$20.00",
-  //   category: "Apparel"
-  // },
-  // {
-  //   collectionId: "ZebraBlendTShirt",
-  //   title: "ZebraBlend T-Shirt",
-  //   price: "$55.00",
-  //   category: "Apparel"
-  // },
-  // {
-  //   collectionId: "Gloveswithholes",
-  //   title: "Gloves With holes",
-  //   price: "$1,299.00",
-  //   category: "Apparel"
-  // },
-  // {
-  //   collectionId: "AquaStrideBottle",
-  //   title: "Aqua Stride Bottle",
-  //   price: "$20.00",
-  //   category: "Accessories"
-  // },
-  // {
-  //   collectionId: "One_shoe",
-  //   title: "One shoe",
-  //   price: "$299.00",
-  //   category: "Apparel"
-  // },
-  // {
-  //   collectionId: "Rolling_Travel_Suitcase",
-  //   title: "Rolling Travel Suitcase",
-  //   price: "$2,200.00",
-  //   category: "Apparel"
-  // },
-  // {
-  //   collectionId: "ArcticCircleNeckWarmer",
-  //   title: "Arctic Circle Neck Warmer",
-  //   price: "$120.00",
-  //   category: "Apparel"
-  // },
-  // {
-  //   collectionId: "Anotherhandbag",
-  //   title: "Another handbag",
-  //   price: "$1,999.00",
-  //   category: "Accessories"
-  // },
-  // {
-  //   collectionId: "Watch",
-  //   title: "Watch",
-  //   price: "$249,999.00",
-  //   category: "Accessories"
-  // },
-  // {
-  //   collectionId: "AllWeatherDryBag",
-  //   title: "All Weather Dry Bag",
-  //   price: "$500.00",
-  //   category: "Accessories"
-  // },
-  // {
-  //   collectionId: "TwinTightBelts",
-  //   title: "Twin Tight Belts",
-  //   price: "$45.00",
-  //   category: "Accessories"
-  // },
-  // {
-  //   collectionId: "AzureEscapeBag",
-  //   title: "Azure Escape Bag",
-  //   price: "$250.00",
-  //   category: "Accessories"
-  // },
-  // {
-  //   collectionId: "EchoesofTomorrow",
-  //   title: "Echoes of Tomorrow",
-  //   price: "$110.00",
-  //   category: "Digital"
-  // },
-  // {
-  //   collectionId: "WorkspaceCraftPro",
-  //   title: "Workspace Craft Pro",
-  //   price: "$150.00",
-  //   category: "Digital"
-  // },
-  // {
-  //   collectionId: "ChestnutCarryallBag",
-  //   title: "Chestnut Carryall Bag",
-  //   price: "$10.00",
-  //   category: "Accessories",
-  //   suggestion: true
-  // },
-  // {
-  //   collectionId: "VersatileToteBackpack",
-  //   title: "Versatile Tote Backpack",
-  //   price: "$1,000.00",
-  //   category: "Accessories",
-  //   suggestion: true
-  // },
-  // {
-  //   collectionId: "EcoFriendlyTote",
-  //   title: "Eco friendly Tote",
-  //   price: "$300.00",
-  //   category: "Accessories",
-  //   suggestion: true
-  // },
-  // {
-  //   collectionId: "ClassicMessengerBag",
-  //   title: "Classic Messenger Bag",
-  //   price: "$700.00",
-  //   category: "Accessories",
-  //   suggestion: true
-  // },
-  // {
-  //   collectionId: "Demo",
-  //   title: "Demo Watch",
-  //   price: "$199.00",
-  //   category: "Accessories"
-  // }
+  // --------------------------------------------------------------------------
+  // Category: AI
+  // --------------------------------------------------------------------------
+  {
+    collectionId: "sp-speaker",
+    title: "Spherical Magnetic Fluid Audio Speaker",
+    category: "AI",
+    price: "$380.00",
+    description: "Futuristic visual acoustic speaker featuring responsive ferrofluid suspended inside a transparent sphere that dances to music frequencies with AI-tuned room acoustics.",
+    features: [
+      "Pure NASA-grade black magnetic ferrofluid visualization",
+      "AI audio frequency separation & responsive electromagnet control",
+      "360-degree high-fidelity neodymium audio drivers",
+      "Bluetooth 5.3 + lossless wireless streaming"
+    ],
+  },
+  {
+    collectionId: "ray-bans",
+    title: "Meta Ray-Ban Smart Audio Sunglasses",
+    category: "AI",
+    price: "$299.00",
+    description: "Next-gen smart eyewear combining iconic Wayfarer frames with multimodal Meta AI. Stream POV video, capture 12MP photos, and ask questions about your surroundings hands-free.",
+    features: [
+      "Ultra-wide 12MP camera for hands-free 1080p video recording",
+      "Open-ear custom directional speakers with 5-mic array",
+      "Multimodal Meta AI assistant for visual and voice inquiries",
+      "Charging case providing up to 36 hours of battery life"
+    ],
+  },
+  {
+    collectionId: "x-real-ar-glasses",
+    title: "XREAL One Pro AR Glasses",
+    category: "AI",
+    price: "$499.00",
+    description: "Spatial computing glasses projecting a massive 120Hz virtual display right before your eyes. Powered by dual Sony Micro-OLED panels with 52-degree field of view.",
+    features: [
+      "Dual Sony 0.68-inch Micro-OLED displays with 1080p per eye",
+      "120Hz refresh rate with 500 nits perceived brightness",
+      "Electrochromic dimming lenses for outdoor/indoor adaptability",
+      "Direct USB-C DisplayPort support for PC, Mac, consoles and iPhone"
+    ],
+  },
+
+  // --------------------------------------------------------------------------
+  // Category: PRODUCTIVITY
+  // --------------------------------------------------------------------------
+  {
+    collectionId: "ai-voice-recorder",
+    title: "AI Voice Recorder & Transcriber",
+    category: "Productivity",
+    price: "$159.00",
+    description: "Compact titanium smart voice recorder with dual Knowles microphones and onboard LLM acceleration. Transcribes conversations in real time, distinguishes speakers, and exports instant summaries.",
+    features: [
+      "Dual Knowles beamforming microphones with AGC (Auto Gain Control)",
+      "GPT-4o powered automated meeting minutes & action item extraction",
+      "64GB onboard encrypted eMMC flash storage (approx 480 hrs audio)",
+      "Magnetic clip mounting & continuous 30-hour record battery"
+    ],
+  },
+  {
+    collectionId: "rollable-laptop",
+    title: "Lenovo ThinkBook Rollable Laptop",
+    category: "Productivity",
+    price: "$2,899.00",
+    description: "Breakthrough concept laptop with an internal motorized rollable OLED screen that expands vertically from 12.7 inches to an expansive 15.3 inches at the tap of a button.",
+    features: [
+      "Motorized rollable OLED screen extending from 12.7\" (4:3) to 15.3\" (8:9)",
+      "Intel Core Ultra 7 processor with dedicated NPU for local AI workloads",
+      "Dual-channel LPDDR5X RAM and 1TB PCIe Gen 4 SSD",
+      "Dual-pivot chassis with reinforced carbon fiber frame"
+    ],
+  },
+
+  // --------------------------------------------------------------------------
+  // Category: WELLNESS
+  // --------------------------------------------------------------------------
+  {
+    collectionId: "air-purifier",
+    title: "Smart HEPA Room Air Purifier",
+    category: "Wellness",
+    price: "$249.00",
+    description: "Compact smart room air purifier equipped with laser air-quality diagnostics and a 3-layer medical-grade True HEPA H13 filtration core that cleans up to 500 sq ft in 30 minutes.",
+    features: [
+      "Medical-grade True HEPA H13 filter capturing 99.97% of PM2.5 particulates",
+      "Dual laser particulate sensor reporting real-time AQI metrics",
+      "Whisper-quiet sleep cycle at 22dB sound level",
+      "App-connected scheduling and automated fan velocity adjustment"
+    ],
+    suggestion: true,
+  },
+  {
+    collectionId: "sc-bottle",
+    title: "Self-Cleaning UV-C Smart Water Bottle",
+    category: "Wellness",
+    price: "$95.00",
+    description: "Intelligent double-wall vacuum insulated stainless steel water bottle. An integrated 280nm UV-C LED in the cap automatically purifies drinking water and eliminates odor every 2 hours.",
+    features: [
+      "Eradicates up to 99.99% of bio-contaminants with 280nm UV-C LED",
+      "Keeps liquids cold for 24 hours or hot for 12 hours",
+      "Magnetic USB waterproof charging port with 1-month battery per charge",
+      "BPA-free electropolished 18/8 food-grade stainless steel"
+    ],
+    suggestion: true,
+  },
+  {
+    collectionId: "smart-ring",
+    title: "Smart Health & Fitness Ring",
+    category: "Wellness",
+    price: "$399.00",
+    description: "Featherlight titanium smart ring engineered for 24/7 biometric awareness. Monitors sleep debt, resting heart rate, skin temperature, and daily Energy Scores inside an ultra-comfortable ring form factor.",
+    features: [
+      "Grade 5 concave titanium chassis weighing less than 3 grams",
+      "10ATM water resistance and IP68 dust-proof rating",
+      "Up to 7 days continuous tracking on a single charge",
+      "AI-driven Galaxy AI Energy Score and Sleep Apnea detection"
+    ],
+    suggestion: true,
+  },
+  {
+    collectionId: "muse-headband",
+    title: "Muse S Meditation & Sleep Headband",
+    category: "Wellness",
+    price: "$399.00",
+    description: "Multi-sensor EEG meditation and sleep tracker woven into a soft, flexible fabric headband. Offers real-time audio biofeedback on brainwave activity, heart rate, and movement to cultivate deep restorative sleep.",
+    features: [
+      "4 electroencephalography (EEG) channels for active brainwave measurement",
+      "PPG optical sensor for heart rate and breathing rhythms",
+      "Go-to-Sleep responsive sound journeys that quiet mental chatter",
+      "10-hour rechargeable battery designed for all-night comfort"
+    ],
+  },
+
+  // --------------------------------------------------------------------------
+  // Category: TRAVEL
+  // --------------------------------------------------------------------------
+  {
+    collectionId: "multiport-charger",
+    title: "GaN III 140W Multi-Port Travel Charger",
+    category: "Travel",
+    price: "$79.00",
+    description: "One small brick charges a laptop, phone and tablet simultaneously. Powered by cutting-edge Gallium Nitride (GaN III) semiconductor technology for high-efficiency travel power.",
+    features: [
+      "One small brick charges a laptop, phone and tablet simultaneously",
+      "140W total output delivering full-speed fast charging to laptop and gear",
+      "Foldable wall prongs with universal 100V-240V international travel voltage",
+      "ActiveShield 2.0 temperature sensor checking heat over 3 million times daily"
+    ],
+    suggestion: true,
+  },
+  {
+    collectionId: "high-capacity-pb",
+    title: "High-Capacity 250W USB-C PD Power Bank",
+    category: "Travel",
+    price: "$139.00",
+    description: "High-capacity power bank keeping laptops going through long days. Features 27,650mAh capacity, 250W multi-device output, and an intelligent digital smart screen.",
+    features: [
+      "Keeps laptops going through long days with 27,650mAh capacity",
+      "250W maximum multi-device output with 140W single-port USB-C PD 3.1",
+      "Real-time TFT smart screen reporting battery health, wattage, and recharge time",
+      "Airline-approved TSA carry-on battery capacity (99.54Wh)"
+    ],
+  },
+  {
+    collectionId: "item-trackers",
+    title: "Precision Smart Item Trackers",
+    category: "Travel",
+    price: "$29.00",
+    description: "Precision finding beacons that utilize ultra-wideband radio and global crowd networks to safeguard travel luggage, backpacks, and key gear.",
+    features: [
+      "Precision Finding with Ultra-Wideband arrow guidance",
+      "Global encrypted crowd-sourced Bluetooth mesh find network",
+      "IP67 water-resistant up to 1 meter depth for 30 minutes",
+      "User-replaceable coin battery lasting over one full year"
+    ],
+  },
+  {
+    collectionId: "minion-router",
+    title: "Devolink 6G Minion Wi-Fi Mesh Travel Router",
+    category: "Travel",
+    price: "$189.00",
+    description: "Ultra-compact travel-ready wireless router engineered for digital nomads with multi-band carrier failover, captive-portal bypass, and VPN encryption.",
+    features: [
+      "Wi-Fi 6E/7 dual-band transmission pushing up to 3000Mbps speeds",
+      "Pre-installed OpenWrt with one-click WireGuard / Cloudflare WARP tunneling",
+      "Hotel & airport captive portal clone and instant multi-device bridge",
+      "Gigabit Ethernet WAN/LAN ports + USB-C 5V/3A power input"
+    ],
+  },
+  {
+    collectionId: "solar-umb",
+    title: "Anix Solix Solar Charging Umbrella",
+    category: "Travel",
+    price: "$199.00",
+    description: "Storm-tested travel umbrella integrated with high-efficiency flexible solar panels across the canopy and a 10,000mAh fast-charging battery inside the ergonomic handle.",
+    features: [
+      "15W flexible monocrystalline solar cells laminated into waterproof fabric",
+      "10,000mAh handle battery with USB-C 20W PD output",
+      "Double-canopy inverted wind venting withstanding gusts up to 55 mph",
+      "Hydrophobic Teflon coating repelling water instantly with UV50+ block"
+    ],
+  },
+  {
+    collectionId: "vaccum-compression",
+    title: "Vacuum Compression Travel Luggage",
+    category: "Travel",
+    price: "$340.00",
+    description: "Heavy-duty aerospace-grade polycarbonate carry-on suitcase featuring an internal built-in mechanical ratchet compression divider that maximizes packing volume.",
+    features: [
+      "Integrated mechanical ratchet compression board expands pack space by 45%",
+      "Indestructible 100% German Bayer Makrolon polycarbonate shell",
+      "Hinomoto 360-degree silent Japanese dual-caster ball bearing wheels",
+      "TSA-approved integrated combination lock with hidden AirTag pocket"
+    ],
+  },
 ];

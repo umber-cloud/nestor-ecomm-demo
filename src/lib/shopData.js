@@ -1,73 +1,101 @@
-// Dynamic product data fetching from ADN (Asset Delivery Network)
-// Products are now fetched from the API and cached for performance
+// ============================================================================
+// File: src/lib/shopData.js
+// Purpose: Storefront Product Data Aggregator & In-Memory Cache
+//          Orchestrates calls to Umber Cloud ADN and provides query helpers.
+// ============================================================================
 
-import { productMetadata } from './productMetadata';
-import { fetchAllProducts } from './adnService';
-import { getCategoryProductBySlug } from '@/data/categoryCatalog';
+import { productMetadata } from './productMetadata.js';
+import { fetchAllProducts } from './adnService.js';
+import { getCategoryProductBySlug } from '../data/categoryCatalog.js';
 
-// Cache for products to avoid repeated API calls
+// In-memory cache for fetched products to eliminate redundant edge queries
 let cachedProducts = null;
 let cacheTimestamp = null;
 const CACHE_DURATION = 60000; // 60 seconds
 
 /**
- * Get all products (with caching)
- * @returns {Promise<Array>} Array of product objects
+ * Retrieves all catalog products hydrated with live Umber ADN media assets
+ * @returns {Promise<Array<Object>>} Hydrated product array
  */
 export async function getProducts() {
   const now = Date.now();
-  
-  // Return cached products if still valid
-  if (cachedProducts && cacheTimestamp && (now - cacheTimestamp) < CACHE_DURATION) {
+
+  // Return cached products if within TTL
+  if (cachedProducts && cacheTimestamp && now - cacheTimestamp < CACHE_DURATION) {
     return cachedProducts;
   }
-  
-  // Fetch fresh data
+
   try {
-    // Passes productMetadata (which contains manually typed collectionIds) to ADN service to fetch assets
     const products = await fetchAllProducts(productMetadata);
     cachedProducts = products;
     cacheTimestamp = now;
     return products;
   } catch (error) {
-    console.error('Error fetching products:', error);
-    // Return cached data even if expired, or empty array
+    console.error('[ShopData Error] Failed to fetch products from ADN:', error);
     return cachedProducts || [];
   }
 }
 
 /**
- * Get a single product by title slug
- * @param {string} slug - URL-friendly product title (e.g., "sunbeam-tote-jeff")
- * @returns {Promise<Object|null>} Product object or null
+ * Resolves a single product by URL slug, collectionId, or title
+ * @param {string} slug - Raw or formatted URL slug
+ * @returns {Promise<Object|null>} Matching product or null
  */
 export async function getProductBySlug(slug) {
+  if (!slug) return null;
+
+  const decodedSlug = decodeURIComponent(slug).trim().toLowerCase();
+  const normalizedSlug = decodedSlug.replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+
   const products = await getProducts();
-  const found = products.find(p => 
-    p.title.replace(/\s+/g, '-') === slug ||
-    p.title.toLowerCase().replace(/\s+/g, '-') === slug.toLowerCase()
-  );
+
+  const found = products.find((p) => {
+    if (!p) return false;
+    const titleSlug = p.title?.toLowerCase().replace(/[^\w\s-]/g, '').replace(/\s+/g, '-');
+    const rawTitle = p.title?.toLowerCase().replace(/\s+/g, '-');
+    const colId = p.collectionId?.toLowerCase();
+    const pId = p.id?.toLowerCase();
+
+    return (
+      titleSlug === normalizedSlug ||
+      rawTitle === decodedSlug ||
+      colId === decodedSlug ||
+      colId === normalizedSlug ||
+      pId === decodedSlug
+    );
+  });
+
   if (found) return found;
 
+  // Fallback to static category catalog specs
   return getCategoryProductBySlug(slug);
 }
 
 /**
- * Get products by category
- * @param {string} category - Category name
- * @returns {Promise<Array>} Filtered products
+ * Filters hydrated catalog by category name
+ * @param {string} category - Target category (e.g., "Fun", "AI", "Wellness")
+ * @returns {Promise<Array<Object>>} Matching product list
  */
 export async function getProductsByCategory(category) {
+  if (!category || category.toLowerCase() === 'all') {
+    return await getProducts();
+  }
   const products = await getProducts();
-  return products.filter(p => p.category === category);
+  return products.filter(
+    (p) => p.category?.toLowerCase() === category.toLowerCase()
+  );
 }
 
 /**
- * Get products flagged as suggestions (shown in "You May Also Like")
- * @returns {Promise<Array>} Suggestion products
+ * Returns products flagged for the "Related Gear" suggestion strip
+ * @returns {Promise<Array<Object>>} Suggested products
  */
 export async function getProductSuggestions() {
   const products = await getProducts();
-  return products.filter(p => p.suggestion === true);
+  const suggestions = products.filter((p) => p.suggestion === true);
+  // If fewer than 4 suggestions flagged, backfill with first few products
+  if (suggestions.length < 4) {
+    return products.slice(0, 4);
+  }
+  return suggestions;
 }
-

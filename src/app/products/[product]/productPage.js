@@ -1,6 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 "use client";
-import React, { useState, useEffect } from "react";
+
+import { useState, useEffect } from "react";
 import ProductSugg from "@/components/productSuggestions";
 import ProductInfo from "@/components/productInfo";
 import { getProductBySlug, getProductSuggestions } from "@/lib/shopData";
@@ -11,7 +12,7 @@ import { useAddToCart } from "@/lib/useAddToCart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileText, ArrowUpRight } from "lucide-react";
 
-function ProductPage({ params }) {
+export default function ProductPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
@@ -19,26 +20,36 @@ function ProductPage({ params }) {
   const addProductToCart = useAddToCart();
 
   useEffect(() => {
+    let isMounted = true;
     async function loadProduct() {
       try {
         const id = (await params).product;
         const productData = await getProductBySlug(id);
-        setProduct(productData);
+        if (isMounted) {
+          setProduct(productData);
+        }
 
         const suggestionData = await getProductSuggestions();
-        setSuggestions(suggestionData);
+        if (isMounted) {
+          setSuggestions(suggestionData);
+        }
       } catch (error) {
-        console.error('Error loading product:', error);
+        console.error("Error loading product:", error);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
     loadProduct();
-  }, []);
+    return () => {
+      isMounted = false;
+    };
+  }, [params]);
 
   const baseUrl =
     process.env.NEXT_PUBLIC_BASE_URL ||
-    (typeof window !== 'undefined' ? window.location.origin : '');
+    (typeof window !== "undefined" ? window.location.origin : "");
 
   const slug =
     product?.title &&
@@ -54,7 +65,6 @@ function ProductPage({ params }) {
     if (!product) return;
     addProductToCart({
       product: {
-        // collectionId from fetched product metadata used as cart item ID
         id: product.collectionId,
         title: product.title,
         price: product.price,
@@ -98,7 +108,7 @@ function ProductPage({ params }) {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 mb-12 items-stretch">
-        {/* Media frame — bordered monitor with HUD corners */}
+        {/* Media frame */}
         <div className="relative border border-primary/50 bg-card p-4 sm:p-6 w-full lg:w-[440px] shrink-0">
           <div className="absolute -top-px -left-px h-5 w-5 border-t-2 border-l-2 border-accent" />
           <div className="absolute -bottom-px -right-px h-5 w-5 border-b-2 border-r-2 border-accent" />
@@ -148,5 +158,3 @@ function ProductPage({ params }) {
     </div>
   );
 }
-
-export default ProductPage;

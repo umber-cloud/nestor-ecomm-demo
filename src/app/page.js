@@ -3,7 +3,7 @@ import Banner from "@/components/banner";
 import CategoryCard from "@/components/categories/categorieCard";
 import ProductGrid from "@/components/products/productGrid";
 
-// this is the home page of the app!!!
+// Homepage of Nestor E-Commerce Demo showcasing live Umber ADN media
 export default function Home() {
   return (
     <>
@@ -15,16 +15,26 @@ export default function Home() {
         <h2 className="text-2xl md:text-3xl font-semibold mb-6">
           Shop by <em className="font-serif font-normal">Category</em>
         </h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <CategoryCard
-            cover={"https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/ZebraBlendTShirt/7f011a7fc68a/dev/generic"}
-            title={"Apparel"}
-            description={"Shop Now"}
+            cover="https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/steam-deck/9d9efd2d0b90/DEV/generic"
+            title="Fun"
+            description="Explore"
           />
           <CategoryCard
-            cover={"https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/Anotherhandbag/4dfe02122855/dev/generic"}
-            title={"Accessories"}
-            description={"Shop Now"}
+            cover="https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/sp-speaker/4d58a2f43ba2/DEV/generic"
+            title="AI"
+            description="Explore"
+          />
+          <CategoryCard
+            cover="https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/air-purifier/e0acf7014109/DEV/generic"
+            title="Wellness"
+            description="Explore"
+          />
+          <CategoryCard
+            cover="https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/multiport-charger/c663aa30dd57/DEV/generic"
+            title="Travel"
+            description="Explore"
           />
         </div>
       </section>

@@ -1,6 +1,6 @@
 "use client";
-import React, { useState, useMemo, Suspense } from "react";
-import Link from "next/link";
+
+import { useState, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import BreadCrumb from "@/components/breadcrumb";
 import ProductCard from "@/components/products/productCard";
@@ -12,13 +12,11 @@ import {
   HeartPulse,
   Compass,
   Layers,
-  Sparkles,
-  ArrowRight,
   X,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 
-// The 5 requested categories
+// The 5 hardware categories
 const CATEGORIES = [
   {
     id: "Fun",
@@ -26,7 +24,6 @@ const CATEGORIES = [
     tagline: "Handhelds & entertainment",
     icon: Gamepad2,
     accent: "from-purple-500/20 to-pink-500/10",
-    badgeColor: "text-purple-400 border-purple-500/30",
   },
   {
     id: "AI",
@@ -34,7 +31,6 @@ const CATEGORIES = [
     tagline: "Neural acoustics & optics",
     icon: Cpu,
     accent: "from-cyan-500/20 to-blue-500/10",
-    badgeColor: "text-cyan-400 border-cyan-500/30",
   },
   {
     id: "Productivity",
@@ -42,7 +38,6 @@ const CATEGORIES = [
     tagline: "Workstations, audio & rollables",
     icon: Laptop,
     accent: "from-amber-500/20 to-orange-500/10",
-    badgeColor: "text-amber-400 border-amber-500/30",
   },
   {
     id: "Wellness",
@@ -50,7 +45,6 @@ const CATEGORIES = [
     tagline: "Biometrics, sleep & air",
     icon: HeartPulse,
     accent: "from-emerald-500/20 to-teal-500/10",
-    badgeColor: "text-emerald-400 border-emerald-500/30",
   },
   {
     id: "Travel",
@@ -58,7 +52,6 @@ const CATEGORIES = [
     tagline: "GaN power, routers & solar",
     icon: Compass,
     accent: "from-yellow-500/20 to-amber-500/10",
-    badgeColor: "text-yellow-400 border-yellow-500/30",
   },
 ];
 
@@ -235,12 +228,11 @@ function CategoryPageContent() {
         )}
       </div>
 
-      {/* Products Grid — Same UI as Site Cards */}
+      {/* Products Grid */}
       <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-20">
         {filteredProducts.map((product, index) => (
           <ProductCard
             key={product.id || index}
-            // collectionId passed from category item (used by ProductCard for cart management)
             collectionId={product.collectionId}
             cover={product.cover}
             title={product.title}

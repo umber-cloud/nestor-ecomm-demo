@@ -1,5 +1,5 @@
 /* eslint-disable @next/next/no-img-element */
-import * as React from "react";
+import { useState } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import {
   Carousel,
@@ -30,7 +30,9 @@ const ThumbnailItem = ({ image }) => {
           className="w-full h-full object-cover rounded"
           muted
           preload="metadata"
-          onLoadedMetadata={(e) => { e.target.currentTime = 0.1; }}
+          onLoadedMetadata={(e) => {
+            e.target.currentTime = 0.1;
+          }}
         />
         <div className="absolute inset-0 flex items-center justify-center bg-black/30 rounded">
           <Play className="w-4 h-4 text-white fill-white" />
@@ -48,17 +50,14 @@ const ThumbnailItem = ({ image }) => {
 };
 
 export default function ProductSlider({ images, cover }) {
-  const [currentView, setCurrentView] = React.useState(cover || { type: "image", url: "" });
+  const [currentView, setCurrentView] = useState(cover || { type: "image", url: "" });
 
   const allThumbnails =
-    images && images.length > 0
-      ? images
-      : (cover?.url ? [cover] : []);
+    images && images.length > 0 ? images : cover?.url ? [cover] : [];
 
   return (
     <div className="flex items-center justify-center flex-col w-full">
-      {/* Main viewer — fixed aspect-square box so switching between images and
-          videos never causes a sudden height jump */}
+      {/* Main viewer */}
       <div className="relative w-full aspect-square overflow-hidden rounded-none">
         {renderMainView(currentView)}
       </div>
@@ -69,10 +68,7 @@ export default function ProductSlider({ images, cover }) {
           <Carousel opts={{ align: "start", dragFree: true }} className="w-full">
             <CarouselContent className="flex items-center -ml-4">
               {allThumbnails.map((image, index) => (
-                <CarouselItem
-                  key={index}
-                  className="pl-4 basis-1/4 md:basis-1/5"
-                >
+                <CarouselItem key={index} className="pl-4 basis-1/4 md:basis-1/5">
                   <div onClick={() => setCurrentView(image)}>
                     <Card
                       className={`cursor-pointer rounded-none overflow-hidden aspect-square hover:ring-2 hover:ring-accent transition-all ${

@@ -1,8 +1,8 @@
 "use client";
-import React, { useState, useEffect, use, Suspense } from "react";
+
+import { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
-import BreadCrumb from "@/components/breadcrumb";
 import { ProductSlider } from "@/components/productViewer";
 import ProductInfo from "@/components/productInfo";
 import ProductShare from "@/components/productShare";
@@ -11,7 +11,7 @@ import { getCategoryProductBySlug, getCategoryProducts } from "@/data/categoryCa
 import { getProductBySlug } from "@/lib/shopData";
 import { useAddToCart } from "@/lib/useAddToCart";
 import { Skeleton } from "@/components/ui/skeleton";
-import { FileText, ArrowUpRight, ArrowLeft, CheckCircle2 } from "lucide-react";
+import { FileText, ArrowUpRight, ArrowLeft } from "lucide-react";
 
 function CategoryProductContent({ slug }) {
   const searchParams = useSearchParams();
@@ -24,30 +24,39 @@ function CategoryProductContent({ slug }) {
   const addProductToCart = useAddToCart();
 
   useEffect(() => {
+    let isMounted = true;
     async function loadItem() {
       try {
         if (!slug) return;
-        // Search category catalog first, then shopData
+        // Search category catalog first, fallback to shopData
         let item = getCategoryProductBySlug(slug);
         if (!item) {
           item = await getProductBySlug(slug);
         }
-        setProduct(item);
+        if (isMounted) {
+          setProduct(item);
+        }
 
         if (item) {
-          // Find related products in same category
           const categoryItems = getCategoryProducts(item.category).filter(
             (p) => p.id !== item.id
           );
-          setRelated(categoryItems.slice(0, 4));
+          if (isMounted) {
+            setRelated(categoryItems.slice(0, 4));
+          }
         }
       } catch (error) {
         console.error("Error loading category product:", error);
       } finally {
-        setLoading(false);
+        if (isMounted) {
+          setLoading(false);
+        }
       }
     }
     loadItem();
+    return () => {
+      isMounted = false;
+    };
   }, [slug]);
 
   const baseUrl =
@@ -148,36 +157,12 @@ function CategoryProductContent({ slug }) {
         </div>
 
         {/* Spec & Buy Panel */}
-        <div className="relative border border-border bg-card/80 p-5 sm:p-7 md:p-8 w-full lg:flex-1 flex flex-col justify-between">
+        <div className="relative border border-border bg-card/80 p-5 sm:p-7 md:p-8 w-full lg:flex-1">
           <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
             <ProductShare productUrl={productUrl} productImageUrl={product.cover?.url} />
           </div>
+          <ProductInfo product={product} onAddToCart={handleAddToCart} />
 
-          <div>
-            <ProductInfo product={product} onAddToCart={handleAddToCart} />
-
-            {/* Hardware Key Features */}
-            {product.features && product.features.length > 0 && (
-              <div className="mt-8 pt-6 border-t border-border">
-                <h4 className="font-mono text-xs uppercase tracking-[0.2em] text-secondary mb-3">
-                  // HARDWARE SPECIFICATIONS
-                </h4>
-                <ul className="space-y-2">
-                  {product.features.map((feat, i) => (
-                    <li
-                      key={i}
-                      className="flex items-start gap-2.5 font-mono text-xs text-foreground/90 leading-relaxed"
-                    >
-                      <CheckCircle2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
-                      <span>{feat}</span>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-
-          {/* PDF Spec Sheet (if available) */}
           {product.pdfUrl && (
             <a
               href={`/api/pdf-proxy?url=${encodeURIComponent(product.pdfUrl)}`}
@@ -195,28 +180,23 @@ function CategoryProductContent({ slug }) {
         </div>
       </div>
 
-      {/* Related Category Products */}
+      {/* Related Products Strip */}
       {related.length > 0 && (
         <section className="mb-20">
-          <div className="flex items-baseline justify-between border-b border-border/80 pb-3 mb-6">
-            <h3 className="text-xl sm:text-2xl font-bold uppercase font-serif text-foreground">
-              More in <span className="text-primary">{product.category}</span>
-            </h3>
-            <Link
-              href={`/category?filter=${encodeURIComponent(product.category)}`}
-              className="font-mono text-xs text-muted-foreground hover:text-primary tracking-widest uppercase transition-colors"
-            >
-              View All &gt;
-            </Link>
-          </div>
+          <h2 className="text-xl sm:text-2xl font-bold uppercase font-serif mb-6">
+            Related in <span className="text-primary">{product.category}</span>
+          </h2>
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 sm:gap-4">
             {related.map((item, index) => (
               <ProductSugg
-                key={index}
-                href={`/category/${item.id}`}
+                key={item.id || index}
                 cover={item.cover}
                 title={item.title}
                 price={item.price}
+                onClick={() => {
+                  const query = fromParam ? `?from=${encodeURIComponent(fromParam)}` : "";
+                  window.location.href = `/category/${item.id}${query}`;
+                }}
               />
             ))}
           </div>
@@ -227,18 +207,26 @@ function CategoryProductContent({ slug }) {
 }
 
 export default function CategoryProductPage({ params }) {
-  // Unwrap params using React.use() or direct access
-  const unwrappedParams = typeof params?.then === "function" ? use(params) : params;
-  const slug = unwrappedParams?.slug;
+  const [slug, setSlug] = useState(null);
+
+  useEffect(() => {
+    async function resolveParams() {
+      const p = await params;
+      setSlug(p?.slug);
+    }
+    resolveParams();
+  }, [params]);
+
+  if (!slug) {
+    return (
+      <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 mt-16 pt-2">
+        <Skeleton className="h-96 w-full" />
+      </div>
+    );
+  }
 
   return (
-    <Suspense
-      fallback={
-        <div className="max-w-6xl mx-auto w-full px-4 sm:px-6 mt-16 pt-8">
-          <Skeleton className="h-96 w-full" />
-        </div>
-      }
-    >
+    <Suspense fallback={null}>
       <CategoryProductContent slug={slug} />
     </Suspense>
   );

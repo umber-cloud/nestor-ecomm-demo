@@ -44,6 +44,23 @@ next-env.d.ts
 
 # playwright debug artifacts
 .playwright-mcp/
+/test-results/
+/playwright-report/
+/blob-report/
+/.playwright/
+.playwright-storage.json
+scripts/.auth-state.json
+*.auth-state.json
+
+# raw media for uploads (do not commit large video/image files)
+/raw-media/
+/media-uploads/
+/assets-to-upload/
+
+# automation scripts and secrets
+/scripts/
 
 # local documentation / analysis
 .info/
+
+umber-migrate.config.json

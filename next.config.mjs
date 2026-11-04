@@ -6,6 +6,14 @@ const nextConfig = {
         protocol: 'https',
         hostname: 'adn.umbercloud.io',
       },
+      {
+        protocol: 'https',
+        hostname: 'harbour-wren-3226.umberadn.com',
+      },
+      {
+        protocol: 'https',
+        hostname: '*.umberadn.com',
+      },
     ],
   },
 };
