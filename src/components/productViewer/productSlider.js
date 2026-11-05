@@ -8,8 +8,9 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { Play } from "lucide-react";
+import { Play, Box } from "lucide-react";
 import ProductVideo from "./productVideo";
+import ProductModel3D from "./productModel3D";
 import ImageView from "../imageView";
 
 /** Large main view area */
@@ -17,11 +18,22 @@ const renderMainView = (view) => {
   if (view?.type === "video") {
     return <ProductVideo url={view.url} />;
   }
+  if (view?.type === "model") {
+    return <ProductModel3D url={view.url} />;
+  }
   return <ImageView cover={view?.url} />;
 };
 
-/** Small thumbnail — video shows first frame + play icon overlay */
+/** Small thumbnail — video shows first frame + play icon overlay, 3D shows a badge */
 const ThumbnailItem = ({ image }) => {
+  if (image.type === "model") {
+    return (
+      <div className="relative w-full h-full flex flex-col items-center justify-center gap-1 bg-muted text-primary">
+        <Box className="w-5 h-5" />
+        <span className="font-mono text-[9px] uppercase tracking-widest">3D</span>
+      </div>
+    );
+  }
   if (image.type === "video") {
     return (
       <div className="relative w-full h-full">

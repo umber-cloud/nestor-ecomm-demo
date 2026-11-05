@@ -1,7 +1,7 @@
 "use client";
 import React, { useRef, useState } from 'react'
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Truck, RotateCcw, ShieldCheck, Minus, Plus } from "lucide-react";
+import { ShoppingBag, Truck, RotateCcw, ShieldCheck, Minus, Plus, Terminal } from "lucide-react";
 
 function ProductInfo({ product, onAddToCart }) {
     const [quantity, setQuantity] = useState(1);
@@ -17,9 +17,13 @@ function ProductInfo({ product, onAddToCart }) {
             <p className="text-xl sm:text-2xl text-muted-foreground mt-2">{product?.price}</p>
 
             <p className="text-muted-foreground leading-relaxed mt-5 text-sm sm:text-base">
-                Meet the {product?.title} — thoughtfully designed within our{" "}
-                <em className="font-serif not-italic md:italic">{product?.category?.toLowerCase()}</em>{" "}
-                range, made to look good and hold up to everyday use.
+                {product?.description || (
+                    <>
+                        Meet the {product?.title} — thoughtfully designed within our{" "}
+                        <em className="font-serif not-italic md:italic">{product?.category?.toLowerCase()}</em>{" "}
+                        range, made to look good and hold up to everyday use.
+                    </>
+                )}
             </p>
 
             <div className="flex flex-col xs:flex-row items-stretch xs:items-center gap-3 mt-7">
@@ -65,6 +69,23 @@ function ProductInfo({ product, onAddToCart }) {
                     Secure checkout
                 </span>
             </div>
+
+            {Array.isArray(product?.features) && product.features.length > 0 && (
+                <div className="mt-8 pt-6 border-t border-border">
+                    <h2 className="flex items-center gap-2 font-mono text-xs uppercase tracking-widest text-secondary mb-3">
+                        <Terminal className="h-3.5 w-3.5" />
+                        Spec sheet
+                    </h2>
+                    <ul className="space-y-2 font-mono text-xs sm:text-sm text-foreground/80">
+                        {product.features.map((feature, index) => (
+                            <li key={index} className="flex gap-2">
+                                <span className="text-primary shrink-0">{">"}</span>
+                                {feature}
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+            )}
         </div>
     )
 }
