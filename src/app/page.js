@@ -3,7 +3,7 @@ import Banner from "@/components/banner";
 import CategoryCard from "@/components/categories/categorieCard";
 import ProductGrid from "@/components/products/productGrid";
 
-// Homepage of Nestor E-Commerce Demo showcasing live Umber ADN media
+// Homepage of Nestor ECommerce Demo showcasing live Umber ADN media
 export default function Home() {
   return (
     <>
