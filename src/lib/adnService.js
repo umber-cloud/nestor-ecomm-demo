@@ -67,6 +67,17 @@ export function buildMediaUrl(downloadUrl) {
  * @param {Object} metadata - Catalog product business metadata (title, price, category, etc.)
  * @returns {Object} Hydrated product object with live CDN cover & thumbnails
  */
+const MODEL_EXTENSIONS = /\.(glb|gltf|usdz)$/i;
+
+// 3D assets may arrive as model/gltf-binary, model/gltf+json, model/vnd.usdz+zip,
+// or as application/octet-stream with a .glb/.gltf/.usdz filename — CDNs often
+// don't set a precise mimetype for binary 3D formats, so check both.
+const isModel = (asset) =>
+  Boolean(asset) &&
+  (asset.mimetype?.startsWith("model/") ||
+    MODEL_EXTENSIONS.test(asset.downloadUrl || "") ||
+    MODEL_EXTENSIONS.test(asset.assetItemName || ""));
+
 export function transformADNToProduct(adnData, metadata) {
   const isVisual = (asset) =>
     asset?.mimetype?.startsWith("image/") || asset?.mimetype?.startsWith("video/");
@@ -79,20 +90,25 @@ export function transformADNToProduct(adnData, metadata) {
   const coverUrl = coverAsset ? buildMediaUrl(coverAsset.downloadUrl) : null;
   const coverType = coverAsset?.mimetype?.startsWith("video/") ? "video" : "image";
 
-  // Build gallery thumbnails from all image and video assets
+  // Build gallery thumbnails from all image, video and 3D model assets
   const rawItems = Array.isArray(adnData?.assetItemUrls) ? adnData.assetItemUrls : [];
   const thumbnails = rawItems
-    .filter(isVisual)
-    .map((asset) => ({
-      assetItemId: asset.assetItemId,
-      name: asset.assetItemName || "",
-      url: buildMediaUrl(asset.downloadUrl),
-      type: asset.mimetype?.startsWith("video/") ? "video" : "image",
-      mimetype: asset.mimetype,
-    }));
+    .filter((asset) => isVisual(asset) || isModel(asset))
+    .map((asset) => {
+      const type = isModel(asset) ? "model" : asset.mimetype?.startsWith("video/") ? "video" : "image";
+      return {
+        assetItemId: asset.assetItemId,
+        name: asset.assetItemName || "",
+        url: buildMediaUrl(asset.downloadUrl),
+        type,
+        mimetype: asset.mimetype,
+      };
+    });
 
   // Extract optional product spec PDF if present
-  const pdfAsset = rawItems.find((asset) => asset.mimetype === "application/pdf");
+  const pdfAsset = rawItems.find(
+    (asset) => asset.mimetype === "application/pdf" || /\.pdf$/i.test(asset.downloadUrl || "")
+  );
   const pdfUrl = pdfAsset ? buildMediaUrl(pdfAsset.downloadUrl) : null;
 
   return {

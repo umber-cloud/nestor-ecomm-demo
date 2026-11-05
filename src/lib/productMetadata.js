@@ -78,6 +78,19 @@ export const productMetadata = [
       "Direct USB-C DisplayPort support for PC, Mac, consoles and iPhone"
     ],
   },
+  {
+    collectionId: "headphones",
+    title: "EchoBass Studio Headphones",
+    category: "AI",
+    price: "$349.00",
+    description: "Reference-grade over-ear headphones with adaptive AI noise cancellation, tuned for studio-accurate sound whether you're mixing tracks or tuning out the world.",
+    features: [
+      "Adaptive AI noise cancellation with transparency mode",
+      "40mm bio-cellulose drivers for studio-accurate response",
+      "Bluetooth 5.3 multipoint with lossless wired fallback",
+      "38-hour battery life with 5-minute quick-charge boost"
+    ],
+  },
 
   // --------------------------------------------------------------------------
   // Category: PRODUCTIVITY

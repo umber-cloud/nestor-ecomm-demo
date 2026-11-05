@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
+import { ADN_CONFIG } from "@/lib/adnService";
 
-const ALLOWED_HOST = "adn.umbercloud.io";
+const ALLOWED_HOST = new URL(ADN_CONFIG.host).hostname;
 
 export async function GET(request) {
   const { searchParams } = new URL(request.url);

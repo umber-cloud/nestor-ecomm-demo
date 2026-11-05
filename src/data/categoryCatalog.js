@@ -139,6 +139,31 @@ export const CATEGORY_ITEMS = [
     ],
     pdfUrl: null,
   },
+  {
+    id: "echobass-studio-headphones",
+    collectionId: "headphones",
+    title: "EchoBass Studio Headphones",
+    category: "AI",
+    price: "$349.00",
+    description: "Reference-grade over-ear headphones with adaptive AI noise cancellation, tuned for studio-accurate sound whether you're mixing tracks or tuning out the world.",
+    cover: {
+      url: `${CDN_BASE}/headphones/6aaf980d4fdd/DEV/generic`,
+      type: "image",
+    },
+    thumbnails: [
+      { url: `${CDN_BASE}/headphones/6aaf980d4fdd/DEV/generic`, name: "headphone image 1", type: "image" },
+      { url: `${CDN_BASE}/headphones/77c9ad78549e/DEV/generic`, name: "headphone image 2", type: "image" },
+      { url: `${CDN_BASE}/headphones/cb8e00386d2b/DEV/generic`, name: "headphone image 3", type: "image" },
+      { url: `${CDN_BASE}/headphones/1595c5e4428e/DEV/generic`, name: "headphone video", type: "video" },
+    ],
+    features: [
+      "Adaptive AI noise cancellation with transparency mode",
+      "40mm bio-cellulose drivers for studio-accurate response",
+      "Bluetooth 5.3 multipoint with lossless wired fallback",
+      "38-hour battery life with 5-minute quick-charge boost",
+    ],
+    pdfUrl: null,
+  },
 
   // ==========================================
   // 3. PRODUCTIVITY
