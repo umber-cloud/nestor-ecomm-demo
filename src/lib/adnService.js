@@ -139,7 +139,10 @@ export async function fetchProduct(metadata) {
     const adnData = await fetchCollectionAssets(metadata.collectionId);
     return transformADNToProduct(adnData, metadata);
   } catch {
-    // Graceful fallback for UI placeholders
+    // Live ADN fetch failed (collection not uploaded yet, etc). Some catalog
+    // entries carry their own hardcoded cover/thumbnails as a manual
+    // fallback for exactly this case — use them instead of a blank
+    // placeholder when present.
     return {
       id: metadata.collectionId || metadata.id,
       collectionId: metadata.collectionId || metadata.id,
@@ -148,9 +151,9 @@ export async function fetchProduct(metadata) {
       category: metadata.category,
       description: metadata.description || "",
       features: metadata.features || [],
-      cover: { url: null, type: "image" },
-      thumbnails: [],
-      pdfUrl: null,
+      cover: metadata.cover || { url: null, type: "image" },
+      thumbnails: metadata.thumbnails || [],
+      pdfUrl: metadata.pdfUrl || null,
       error: true,
     };
   }
