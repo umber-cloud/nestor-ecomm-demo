@@ -67,7 +67,7 @@ export const productMetadata = [
     ],
   },
   {
-    collectionId: "soly-headphones",
+    collectionId: "headphones",
     title: "Soly",
     category: "AI",
     price: "$399.00",
@@ -80,14 +80,29 @@ export const productMetadata = [
       "Up to 40 hours battery life with 3-minute quick charge for 3 hours"
     ],
     cover: {
-      url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/EchoBassHeadphones/7226f7b4e309/dev/generic",
+      url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/6aaf980d4fdd/DEV/generic",
       type: "image"
     },
     thumbnails: [
       {
-        url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/EchoBassHeadphones/7226f7b4e309/dev/generic",
-        name: "soly-1.jpg",
+        url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/6aaf980d4fdd/DEV/generic",
+        name: "headphone image 1",
         type: "image"
+      },
+      {
+        url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/77c9ad78549e/DEV/generic",
+        name: "headphone image 2",
+        type: "image"
+      },
+      {
+        url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/cb8e00386d2b/DEV/generic",
+        name: "headphone image 3",
+        type: "image"
+      },
+      {
+        url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/1595c5e4428e/DEV/generic",
+        name: "headphone video",
+        type: "video"
       }
     ],
   },

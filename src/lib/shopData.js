@@ -111,7 +111,7 @@ export async function getFeaturedProducts() {
   const products = await getProducts();
   
   // Specific target order
-  const targetKeys = ['ray-bans', 'soly-headphones', 'sc-bottle'];
+  const targetKeys = ['ray-bans', 'headphones', 'sc-bottle'];
   const orderedFeatured = [];
 
   for (const key of targetKeys) {
@@ -120,7 +120,7 @@ export async function getFeaturedProducts() {
         p.collectionId?.toLowerCase() === key ||
         p.id?.toLowerCase() === key ||
         (key === 'ray-bans' && p.title?.toLowerCase().includes('iray')) ||
-        (key === 'soly-headphones' && p.title?.toLowerCase().includes('soly')) ||
+        (key === 'headphones' && (p.title?.toLowerCase().includes('soly') || p.collectionId === 'headphones' || p.collectionId === 'soly-headphones')) ||
         (key === 'sc-bottle' && p.title?.toLowerCase().includes('iclean'))
     );
     if (item) {

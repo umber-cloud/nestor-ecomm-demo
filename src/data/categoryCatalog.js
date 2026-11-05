@@ -119,23 +119,22 @@ export const CATEGORY_ITEMS = [
   },
   {
     id: "soly",
-    collectionId: "soly-headphones",
+    collectionId: "headphones",
     title: "Soly",
     category: "AI",
     price: "$399.00",
     featured: true,
-    aliases: ["sony-headphones", "sony-xm6-headphone", "echobassheadphones", "soly-headphones"],
+    aliases: ["headphones", "sony-headphones", "sony-xm6-headphone", "echobassheadphones", "soly-headphones"],
     description: "Next-generation industry-benchmark wireless noise-canceling headphones. Equipped with custom carbon fiber composite acoustic drivers, dual noise-canceling processors, and AI spatial audio.",
     cover: {
-      url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/EchoBassHeadphones/7226f7b4e309/dev/generic",
+      url: `${CDN_BASE}/headphones/6aaf980d4fdd/DEV/generic`,
       type: "image",
     },
     thumbnails: [
-      {
-        url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/EchoBassHeadphones/7226f7b4e309/dev/generic",
-        name: "soly-1.jpg",
-        type: "image",
-      },
+      { url: `${CDN_BASE}/headphones/6aaf980d4fdd/DEV/generic`, name: "headphone-1", type: "image" },
+      { url: `${CDN_BASE}/headphones/77c9ad78549e/DEV/generic`, name: "headphone-2", type: "image" },
+      { url: `${CDN_BASE}/headphones/cb8e00386d2b/DEV/generic`, name: "headphone-3", type: "image" },
+      { url: `${CDN_BASE}/headphones/1595c5e4428e/DEV/generic`, name: "headphone-video", type: "video" },
     ],
     features: [
       "Dual HD Noise Canceling Processor with 8 precision microphones",
@@ -143,7 +142,7 @@ export const CATEGORY_ITEMS = [
       "Hi-Res Audio Wireless with LDAC and AI acoustic upscaling",
       "Up to 40 hours battery life with 3-minute quick charge for 3 hours",
     ],
-    pdfUrl: null,
+    pdfUrl: `${CDN_BASE}/headphones/1b1244ef2a2f/DEV/generic`,
   },
   {
     id: "xreal-one-pro-ar-glasses",
