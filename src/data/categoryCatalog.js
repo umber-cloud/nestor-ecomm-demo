@@ -92,12 +92,14 @@ export const CATEGORY_ITEMS = [
     pdfUrl: null,
   },
   {
-    id: "meta-ray-bans",
+    id: "iray-glasses",
     collectionId: "ray-bans",
-    title: "Meta Ray-Ban Smart Audio Sunglasses",
+    title: "IRay glasses",
     category: "AI",
     price: "$299.00",
-    description: "Next-gen smart eyewear combining iconic Wayfarer frames with multimodal Meta AI. Stream POV video, capture 12MP photos, and ask questions about your surroundings hands-free.",
+    featured: true,
+    aliases: ["meta-ray-bans", "ray-bans", "meta-ray-ban"],
+    description: "Next-gen smart eyewear combining iconic frames with multimodal AI. Stream POV video, capture 12MP photos, and ask questions about your surroundings hands-free.",
     cover: {
       url: `${CDN_BASE}/ray-bans/b23cdee905e6/DEV/generic`,
       type: "image",
@@ -110,8 +112,36 @@ export const CATEGORY_ITEMS = [
     features: [
       "Ultra-wide 12MP camera for hands-free 1080p video recording",
       "Open-ear custom directional speakers with 5-mic array",
-      "Multimodal Meta AI assistant for visual and voice inquiries",
+      "Multimodal AI assistant for visual and voice inquiries",
       "Charging case providing up to 36 hours of battery life",
+    ],
+    pdfUrl: null,
+  },
+  {
+    id: "soly",
+    collectionId: "soly-headphones",
+    title: "Soly",
+    category: "AI",
+    price: "$399.00",
+    featured: true,
+    aliases: ["sony-headphones", "sony-xm6-headphone", "echobassheadphones", "soly-headphones"],
+    description: "Next-generation industry-benchmark wireless noise-canceling headphones. Equipped with custom carbon fiber composite acoustic drivers, dual noise-canceling processors, and AI spatial audio.",
+    cover: {
+      url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/EchoBassHeadphones/7226f7b4e309/dev/generic",
+      type: "image",
+    },
+    thumbnails: [
+      {
+        url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/EchoBassHeadphones/7226f7b4e309/dev/generic",
+        name: "soly-1.jpg",
+        type: "image",
+      },
+    ],
+    features: [
+      "Dual HD Noise Canceling Processor with 8 precision microphones",
+      "Specially developed 30mm carbon composite precision sound unit",
+      "Hi-Res Audio Wireless with LDAC and AI acoustic upscaling",
+      "Up to 40 hours battery life with 3-minute quick charge for 3 hours",
     ],
     pdfUrl: null,
   },
@@ -219,12 +249,14 @@ export const CATEGORY_ITEMS = [
   // 4. WELLNESS
   // ==========================================
   {
-    id: "self-cleaning-bottle",
+    id: "iclean",
     collectionId: "sc-bottle",
-    title: "Self-Cleaning UV-C Smart Water Bottle",
+    title: "IClean",
     category: "Wellness",
     price: "$95.00",
-    description: "Intelligent double-wall vacuum insulated stainless steel water bottle. An integrated 280nm UV-C LED in the cap automatically purifies drinking water and eliminates odor every 2 hours.",
+    featured: true,
+    aliases: ["self-cleaning-bottle", "sc-bottle", "self-cleaning-uv-c-smart-water-bottle"],
+    description: "IClean intelligent double-wall vacuum insulated stainless steel water bottle. An integrated 280nm UV-C LED in the cap automatically purifies drinking water and eliminates odor every 2 hours.",
     cover: {
       url: `${CDN_BASE}/sc-bottle/6ebf71a98964/DEV/generic`,
       type: "image",
@@ -481,16 +513,21 @@ export function getCategoryProducts(category) {
 
 export function getCategoryProductBySlug(slug) {
   if (!slug) return null;
-  const normalized = slug.trim().toLowerCase().replace(/\s+/g, "-");
+  const decoded = decodeURIComponent(slug).trim().toLowerCase();
+  const normalized = decoded.replace(/[^\w\s-]/g, "").replace(/\s+/g, "-");
   return (
     CATEGORY_ITEMS.find((item) => {
-      const itemSlug = item.id || item.title.trim().toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-");
-      const titleSlug = item.title.trim().toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-");
+      const itemSlug = (item.id || "").toLowerCase();
+      const titleSlug = (item.title || "").trim().toLowerCase().replace(/[^\w\s-]/g, "").replace(/\s+/g, "-");
+      const colId = (item.collectionId || "").toLowerCase();
+      const matchesAlias = Array.isArray(item.aliases) && item.aliases.some((a) => a.toLowerCase() === normalized || a.toLowerCase() === decoded);
       return (
         itemSlug === normalized ||
+        itemSlug === decoded ||
         titleSlug === normalized ||
-        item.id === slug ||
-        item.collectionId === slug
+        colId === normalized ||
+        colId === decoded ||
+        matchesAlias
       );
     }) || null
   );

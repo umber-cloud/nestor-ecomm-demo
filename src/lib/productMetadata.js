@@ -54,15 +54,41 @@ export const productMetadata = [
   },
   {
     collectionId: "ray-bans",
-    title: "Meta Ray-Ban Smart Audio Sunglasses",
+    title: "IRay glasses",
     category: "AI",
     price: "$299.00",
-    description: "Next-gen smart eyewear combining iconic Wayfarer frames with multimodal Meta AI. Stream POV video, capture 12MP photos, and ask questions about your surroundings hands-free.",
+    featured: true,
+    description: "Next-gen smart eyewear combining iconic frames with multimodal AI. Stream POV video, capture 12MP photos, and ask questions about your surroundings hands-free.",
     features: [
       "Ultra-wide 12MP camera for hands-free 1080p video recording",
       "Open-ear custom directional speakers with 5-mic array",
-      "Multimodal Meta AI assistant for visual and voice inquiries",
+      "Multimodal AI assistant for visual and voice inquiries",
       "Charging case providing up to 36 hours of battery life"
+    ],
+  },
+  {
+    collectionId: "soly-headphones",
+    title: "Soly",
+    category: "AI",
+    price: "$399.00",
+    featured: true,
+    description: "Next-generation industry-benchmark wireless noise-canceling headphones. Equipped with custom carbon fiber composite acoustic drivers, dual noise-canceling processors, and AI spatial audio.",
+    features: [
+      "Dual HD Noise Canceling Processor with 8 precision microphones",
+      "Specially developed 30mm carbon composite precision sound unit",
+      "Hi-Res Audio Wireless with LDAC and AI acoustic upscaling",
+      "Up to 40 hours battery life with 3-minute quick charge for 3 hours"
+    ],
+    cover: {
+      url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/EchoBassHeadphones/7226f7b4e309/dev/generic",
+      type: "image"
+    },
+    thumbnails: [
+      {
+        url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/EchoBassHeadphones/7226f7b4e309/dev/generic",
+        name: "soly-1.jpg",
+        type: "image"
+      }
     ],
   },
   {
@@ -141,10 +167,11 @@ export const productMetadata = [
   },
   {
     collectionId: "sc-bottle",
-    title: "Self-Cleaning UV-C Smart Water Bottle",
+    title: "IClean",
     category: "Wellness",
     price: "$95.00",
-    description: "Intelligent double-wall vacuum insulated stainless steel water bottle. An integrated 280nm UV-C LED in the cap automatically purifies drinking water and eliminates odor every 2 hours.",
+    featured: true,
+    description: "IClean intelligent double-wall vacuum insulated stainless steel water bottle. An integrated 280nm UV-C LED in the cap automatically purifies drinking water and eliminates odor every 2 hours.",
     features: [
       "Eradicates up to 99.99% of bio-contaminants with 280nm UV-C LED",
       "Keeps liquids cold for 24 hours or hot for 12 hours",

@@ -99,3 +99,45 @@ export async function getProductSuggestions() {
   }
   return suggestions;
 }
+
+/**
+ * Returns the 3 curated Featured Products for the homepage showcase:
+ * 1. IRay glasses
+ * 2. Soly
+ * 3. IClean
+ * @returns {Promise<Array<Object>>} The 3 featured products
+ */
+export async function getFeaturedProducts() {
+  const products = await getProducts();
+  
+  // Specific target order
+  const targetKeys = ['ray-bans', 'soly-headphones', 'sc-bottle'];
+  const orderedFeatured = [];
+
+  for (const key of targetKeys) {
+    const item = products.find(
+      (p) =>
+        p.collectionId?.toLowerCase() === key ||
+        p.id?.toLowerCase() === key ||
+        (key === 'ray-bans' && p.title?.toLowerCase().includes('iray')) ||
+        (key === 'soly-headphones' && p.title?.toLowerCase().includes('soly')) ||
+        (key === 'sc-bottle' && p.title?.toLowerCase().includes('iclean'))
+    );
+    if (item) {
+      orderedFeatured.push(item);
+    }
+  }
+
+  // Fallback to static catalog if any missing
+  if (orderedFeatured.length < 3) {
+    const fallbackKeys = ['iray-glasses', 'soly', 'iclean'];
+    for (const fbKey of fallbackKeys) {
+      if (!orderedFeatured.some((p) => p.id === fbKey || p.title?.toLowerCase() === fbKey)) {
+        const fbItem = getCategoryProductBySlug(fbKey);
+        if (fbItem) orderedFeatured.push(fbItem);
+      }
+    }
+  }
+
+  return orderedFeatured.slice(0, 3);
+}
