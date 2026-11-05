@@ -1,7 +1,7 @@
 "use client";
 import Banner from "@/components/banner";
 import CategoryCard from "@/components/categories/categorieCard";
-import ProductGrid from "@/components/products/productGrid";
+import FeaturedProducts from "@/components/products/featuredProducts";
 
 // Homepage of Nestor ECommerce Demo showcasing live Umber ADN media
 export default function Home() {
@@ -9,7 +9,7 @@ export default function Home() {
     <>
       <Banner />
 
-      <ProductGrid />
+      <FeaturedProducts />
 
       <section className="mt-20 mb-8">
         <h2 className="text-2xl md:text-3xl font-semibold mb-6">

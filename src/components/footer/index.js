@@ -67,9 +67,14 @@ function Footer() {
 
                 <div className="grid grid-cols-1 md:grid-cols-12 gap-10 px-5 md:px-10 py-12">
                     <div className="md:col-span-5 flex flex-col gap-5">
-                        <span className="font-serif text-2xl font-bold tracking-wider text-primary">
-                            INFINITY<span className="text-accent">{"//"}</span>GADGETS
-                        </span>
+                        <div className="flex items-baseline gap-2.5 flex-wrap">
+                            <span className="font-serif text-2xl font-bold tracking-wider text-primary">
+                                INFINITY<span className="text-accent">{"//"}</span>GADGETS
+                            </span>
+                            <span className="font-mono text-[10px] text-muted-foreground/80 lowercase border border-border/70 px-1.5 py-0.5 bg-muted/30">
+                                powered by umber
+                            </span>
+                        </div>
                         <p className="font-mono text-sm text-muted-foreground max-w-sm leading-relaxed">
                             Curated tech for the tinkerers, night-shift coders and retro-futurists.
                         </p>

@@ -81,10 +81,15 @@ export default function Header() {
                         <span className="relative flex h-8 w-8 items-center justify-center border-2 border-primary font-serif text-sm font-bold text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
                             IG
                         </span>
-                        <span className="hidden sm:flex flex-col leading-none">
-                            <span className="font-serif text-sm font-bold tracking-[0.2em] text-foreground">INFINITY</span>
-                            <span className="font-mono text-[10px] tracking-[0.35em] text-secondary">GADGETS_</span>
-                        </span>
+                        <div className="flex items-center gap-2">
+                            <span className="hidden sm:flex flex-col leading-none">
+                                <span className="font-serif text-sm font-bold tracking-[0.2em] text-foreground">INFINITY</span>
+                                <span className="font-mono text-[10px] tracking-[0.35em] text-secondary">GADGETS_</span>
+                            </span>
+                            <span className="font-mono text-[9px] sm:text-[10px] text-muted-foreground/80 lowercase border border-border/70 px-1.5 py-0.5 rounded-none bg-muted/40 tracking-normal whitespace-nowrap">
+                                powered by umber
+                            </span>
+                        </div>
                     </Link>
 
                     <div className="hidden lg:flex items-center gap-1 font-mono text-xs tracking-widest">
