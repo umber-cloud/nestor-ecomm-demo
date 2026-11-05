@@ -134,6 +134,30 @@ export const productMetadata = [
       "Dual-pivot chassis with reinforced carbon fiber frame"
     ],
   },
+  {
+    collectionId: "mx-master-3s",
+    title: "MX Master 3S Wireless Mouse",
+    category: "Productivity",
+    price: "$99.00",
+    description: "Industry-standard performance wireless productivity mouse engineered for coders, designers, and power users. Features 8,000 DPI Darkfield sensor tracking on glass, ultra-quiet mechanical clicks, and MagSpeed electromagnetic scrolling.",
+    features: [
+      "8,000 DPI Darkfield optical sensor that tracks accurately on any surface including glass",
+      "MagSpeed electromagnetic scroll wheel shifting from ratchet to hyper-fast 1,000 lines/sec",
+      "Quiet Click switches reducing click acoustic noise by 90%",
+      "USB-C rechargeable battery lasting up to 70 days per full charge"
+    ],
+    cover: {
+      url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/WorkspaceCraftPro/0adcc9141b11/dev/generic",
+      type: "image"
+    },
+    thumbnails: [
+      {
+        url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/WorkspaceCraftPro/0adcc9141b11/dev/generic",
+        name: "mx-master-1.jpg",
+        type: "image"
+      }
+    ],
+  },
 
   // --------------------------------------------------------------------------
   // Category: WELLNESS
