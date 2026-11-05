@@ -7,8 +7,8 @@ import { ProductSlider } from "@/components/productViewer";
 import ProductInfo from "@/components/productInfo";
 import ProductShare from "@/components/productShare";
 import ProductSugg from "@/components/productSuggestions";
-import { getCategoryProductBySlug, getCategoryProducts } from "@/data/categoryCatalog";
-import { getProductBySlug } from "@/lib/shopData";
+import { getProductBySlug, getProductsByCategory } from "@/lib/shopData";
+import { getCategoryProductBySlug } from "@/data/categoryCatalog";
 import { useAddToCart } from "@/lib/useAddToCart";
 import { Skeleton } from "@/components/ui/skeleton";
 import { FileText, ArrowUpRight, ArrowLeft } from "lucide-react";
@@ -28,18 +28,19 @@ function CategoryProductContent({ slug }) {
     async function loadItem() {
       try {
         if (!slug) return;
-        // Search category catalog first, fallback to shopData
-        let item = getCategoryProductBySlug(slug);
+        // Search live ADN products first, fallback to category catalog
+        let item = await getProductBySlug(slug);
         if (!item) {
-          item = await getProductBySlug(slug);
+          item = getCategoryProductBySlug(slug);
         }
         if (isMounted) {
           setProduct(item);
         }
 
         if (item) {
-          const categoryItems = getCategoryProducts(item.category).filter(
-            (p) => p.id !== item.id
+          const categoryProducts = await getProductsByCategory(item.category);
+          const categoryItems = categoryProducts.filter(
+            (p) => (p.collectionId || p.id) !== (item.collectionId || item.id)
           );
           if (isMounted) {
             setRelated(categoryItems.slice(0, 4));

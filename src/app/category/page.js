@@ -1,10 +1,11 @@
 "use client";
 
-import { useState, useMemo, Suspense } from "react";
+import { useState, useEffect, useMemo, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import BreadCrumb from "@/components/breadcrumb";
 import ProductCard from "@/components/products/productCard";
-import { CATEGORY_ITEMS } from "@/data/categoryCatalog";
+import { getProducts } from "@/lib/shopData";
+import { Skeleton } from "@/components/ui/skeleton";
 import {
   Gamepad2,
   Cpu,
@@ -60,6 +61,30 @@ function CategoryPageContent() {
   const searchParams = useSearchParams();
   const initialCategory = searchParams.get("filter") || null;
   const [activeCategory, setActiveCategory] = useState(initialCategory);
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    let isMounted = true;
+    async function loadProducts() {
+      try {
+        const data = await getProducts();
+        if (isMounted) {
+          setProducts(data);
+        }
+      } catch (error) {
+        console.error("Error loading products for category page:", error);
+      } finally {
+        if (isMounted) {
+          setLoading(false);
+        }
+      }
+    }
+    loadProducts();
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   const handleSelectCategory = (categoryId) => {
     setActiveCategory(categoryId);
@@ -70,16 +95,16 @@ function CategoryPageContent() {
   // Filter products based on selected category
   const filteredProducts = useMemo(() => {
     if (!activeCategory || activeCategory.toLowerCase() === "all") {
-      return CATEGORY_ITEMS;
+      return products;
     }
-    return CATEGORY_ITEMS.filter(
-      (item) => item.category.toLowerCase() === activeCategory.toLowerCase()
+    return products.filter(
+      (item) => item.category?.toLowerCase() === activeCategory.toLowerCase()
     );
-  }, [activeCategory]);
+  }, [products, activeCategory]);
 
   const getItemCount = (categoryId) => {
-    return CATEGORY_ITEMS.filter(
-      (item) => item.category.toLowerCase() === categoryId.toLowerCase()
+    return products.filter(
+      (item) => item.category?.toLowerCase() === categoryId.toLowerCase()
     ).length;
   };
 
@@ -102,7 +127,7 @@ function CategoryPageContent() {
               Shop by <span className="text-primary italic">Categories</span>
             </h1>
             <p className="font-mono text-xs sm:text-sm text-muted-foreground mt-2 max-w-2xl leading-relaxed">
-              Curated hardware index spanning entertainment, generative AI interfaces, professional workspaces, biometric health, and high-mobility travel infrastructure.
+              Curated hardware index spanning entertainment, generative AI interfaces, professional workstations, biometric health, and high-mobility travel infrastructure.
             </p>
           </div>
 
@@ -117,7 +142,7 @@ function CategoryPageContent() {
             )}
           >
             <Layers className="h-4 w-4" />
-            <span>ALL ({CATEGORY_ITEMS.length})</span>
+            <span>ALL ({loading ? "..." : products.length})</span>
           </button>
         </div>
 
@@ -172,7 +197,7 @@ function CategoryPageContent() {
                         : "border-border bg-background/80 text-muted-foreground group-hover:border-primary/50 group-hover:text-foreground"
                     )}
                   >
-                    {count} {count === 1 ? "unit" : "units"}
+                    {loading ? "..." : `${count} ${count === 1 ? "unit" : "units"}`}
                   </span>
                   <div
                     className={cn(
@@ -213,7 +238,7 @@ function CategoryPageContent() {
             {activeCategory ? `${activeCategory} Collection` : "All Categorized Hardware"}
           </h2>
           <span className="font-mono text-xs text-muted-foreground uppercase tracking-widest">
-            [{filteredProducts.length} {filteredProducts.length === 1 ? "PIECE" : "PIECES"}]
+            [{loading ? "..." : `${filteredProducts.length} ${filteredProducts.length === 1 ? "PIECE" : "PIECES"}`}]
           </span>
         </div>
 
@@ -229,22 +254,39 @@ function CategoryPageContent() {
       </div>
 
       {/* Products Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-20">
-        {filteredProducts.map((product, index) => (
-          <ProductCard
-            key={product.id || index}
-            collectionId={product.collectionId}
-            cover={product.cover}
-            title={product.title}
-            price={product.price}
-            priority={index < 4}
-            onClick={() => {
-              const query = activeCategory ? `?from=${encodeURIComponent(activeCategory)}` : "";
-              router.push(`/category/${product.id}${query}`);
-            }}
-          />
-        ))}
-      </div>
+      {loading ? (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-20">
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="space-y-3">
+              <Skeleton className="aspect-square w-full rounded-none" />
+              <Skeleton className="h-4 w-3/4" />
+              <Skeleton className="h-4 w-1/4" />
+            </div>
+          ))}
+        </div>
+      ) : filteredProducts.length === 0 ? (
+        <p className="text-muted-foreground mb-20 font-mono text-sm">
+          No hardware found in this category.
+        </p>
+      ) : (
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 mb-20">
+          {filteredProducts.map((product, index) => (
+            <ProductCard
+              key={product.collectionId || product.id || index}
+              collectionId={product.collectionId}
+              cover={product.cover}
+              title={product.title}
+              price={product.price}
+              priority={index < 4}
+              onClick={() => {
+                router.push(
+                  `/products/${encodeURIComponent(product.title.replace(/\s+/g, "-"))}`
+                );
+              }}
+            />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

@@ -2,13 +2,14 @@
 // File: src/lib/productMetadata.js
 // Purpose: Product Catalog Business Metadata for Nestor E-Commerce Demo
 //          Each product references its deployed collectionId in Umber Cloud ADN.
-//          Domain ID: 6ae094fb1701f00439587797 | Host: harbour-wren-3226.umberadn.com
+//          Asset URLs, thumbnails, and covers are fetched and formed dynamically
+//          via Umber Cloud ADN APIs using environment variables.
 // ============================================================================
 
 export const productMetadata = [
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   // Category: FUN
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   {
     collectionId: "steam-deck",
     title: "Steam Deck OLED",
@@ -19,7 +20,7 @@ export const productMetadata = [
       "7.4-inch 90Hz HDR OLED display (1000 nits peak)",
       "Custom 6nm AMD APU (Zen 2 + RDNA 2)",
       "50Wh battery with 3-12 hours of gameplay",
-      "Full SteamOS with desktop Linux environment"
+      "Full SteamOS with desktop Linux environment",
     ],
   },
   {
@@ -32,24 +33,90 @@ export const productMetadata = [
       "4K 120Hz HDMI 2.1 video output with HDR support",
       "Custom ultra-fast NVMe storage expansion",
       "Tactile haptic feedback controllers included",
-      "Whisper-quiet liquid cooling chamber"
+      "Whisper-quiet liquid cooling chamber",
+    ],
+  },
+  {
+    collectionId: "emoji-alarm-clock",
+    title: "Emoji Expression Smart Alarm Clock",
+    category: "Fun",
+    price: "$39.00",
+    description: "Interactive desktop digital clock with animated pixel emoji facial reactions, voice-activated nightlight, and temperature sensor.",
+    features: [
+      "Expressive retro pixel LED screen with over 20 animated mood expressions",
+      "Voice and clap-activated soft ambient nightlight with step-less dimming",
+      "Dual programmable alarms with weekend snooze and graduated wake tones",
+      "Onboard ambient temperature and humidity sensors with real-time display",
+    ],
+  },
+  {
+    collectionId: "gameboy-mug",
+    title: "Retro Game Boy Heat-Sensitive Ceramic Mug",
+    category: "Fun",
+    price: "$19.00",
+    description: "Nostalgic retro gaming mug that reveals a classic 8-bit game screen when filled with hot coffee, tea, or cocoa.",
+    features: [
+      "Thermo-chromatic ink coating reveals game scene when hot liquid is poured",
+      "Authentic D-Pad and action button detailing embossed on high-grade ceramic",
+      "12oz (350ml) volume capacity with ergonomic comfort handle",
+      "Durable glazed finish preserves retro artwork through countless brews",
+    ],
+  },
+  {
+    collectionId: "led-glasses",
+    title: "Cyberpunk Programmable LED Party Glasses",
+    category: "Fun",
+    price: "$45.00",
+    description: "Futuristic illuminated eyewear featuring customizable LED text, dynamic animations, and music-rhythm equalizer visualization.",
+    features: [
+      "Full-frame high-density RGB LED array with wide-angle see-through visibility",
+      "Smartphone app integration for custom text scrolling and pixel doodles",
+      "Built-in acoustic sensor for real-time music audio spectrum visualization",
+      "Lightweight ergonomic frame with rechargeable 5-hour continuous battery",
+    ],
+  },
+  {
+    collectionId: "retro-gramophone",
+    title: "Retro Acoustic Gramophone Bluetooth Speaker",
+    category: "Fun",
+    price: "$129.00",
+    description: "Vintage brass-horn acoustic amplifier combined with modern Bluetooth 5.3 wireless lossless audio streaming and wood-grain base.",
+    features: [
+      "Precision-crafted resonant brass horn passively amplifies high frequencies",
+      "Subwoofer base driver delivering warm, room-filling bass response",
+      "Bluetooth 5.3 wireless connection plus 3.5mm AUX and micro-SD playback",
+      "Vintage rotary brass volume dial with tactile feedback",
+    ],
+  },
+  {
+    collectionId: "runaway-alarm-clock",
+    title: "Clocky Runaway Wheeled Alarm Clock",
+    category: "Fun",
+    price: "$35.00",
+    description: "The notorious runaway alarm clock that jumps off your nightstand and rolls away beeping to force deep sleepers out of bed.",
+    features: [
+      "Twin all-terrain shock-absorbing rubber wheels leap up to 3 feet safely",
+      "Randomized directional obstacle-avoidance algorithm runs and hides",
+      "Extra-loud 85dB robotic beeping sequence guarantees instant wakefulness",
+      "One-snooze grace period option before the runaway sequence triggers",
     ],
   },
 
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   // Category: AI
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   {
-    collectionId: "sp-speaker",
-    title: "Spherical Magnetic Fluid Audio Speaker",
+    collectionId: "headphones",
+    title: "Soly",
     category: "AI",
-    price: "$380.00",
-    description: "Futuristic visual acoustic speaker featuring responsive ferrofluid suspended inside a transparent sphere that dances to music frequencies with AI-tuned room acoustics.",
+    price: "$399.00",
+    featured: true,
+    description: "Next-generation industry-benchmark wireless noise-canceling headphones. Equipped with custom carbon fiber composite acoustic drivers, dual noise-canceling processors, and AI spatial audio.",
     features: [
-      "Pure NASA-grade black magnetic ferrofluid visualization",
-      "AI audio frequency separation & responsive electromagnet control",
-      "360-degree high-fidelity neodymium audio drivers",
-      "Bluetooth 5.3 + lossless wireless streaming"
+      "Dual HD Noise Canceling Processor with 8 precision microphones",
+      "Specially developed 30mm carbon composite precision sound unit",
+      "Hi-Res Audio Wireless with LDAC and AI acoustic upscaling",
+      "Up to 40 hours battery life with 3-minute quick charge for 3 hours",
     ],
   },
   {
@@ -63,47 +130,20 @@ export const productMetadata = [
       "Ultra-wide 12MP camera for hands-free 1080p video recording",
       "Open-ear custom directional speakers with 5-mic array",
       "Multimodal AI assistant for visual and voice inquiries",
-      "Charging case providing up to 36 hours of battery life"
+      "Charging case providing up to 36 hours of battery life",
     ],
   },
   {
-    collectionId: "headphones",
-    title: "Soly",
+    collectionId: "sp-speaker",
+    title: "Spherical Magnetic Fluid Audio Speaker",
     category: "AI",
-    price: "$399.00",
-    featured: true,
-    description: "Next-generation industry-benchmark wireless noise-canceling headphones. Equipped with custom carbon fiber composite acoustic drivers, dual noise-canceling processors, and AI spatial audio.",
+    price: "$380.00",
+    description: "Futuristic visual acoustic speaker featuring responsive ferrofluid suspended inside a transparent sphere that dances to music frequencies with AI-tuned room acoustics.",
     features: [
-      "Dual HD Noise Canceling Processor with 8 precision microphones",
-      "Specially developed 30mm carbon composite precision sound unit",
-      "Hi-Res Audio Wireless with LDAC and AI acoustic upscaling",
-      "Up to 40 hours battery life with 3-minute quick charge for 3 hours"
-    ],
-    cover: {
-      url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/6aaf980d4fdd/DEV/generic",
-      type: "image"
-    },
-    thumbnails: [
-      {
-        url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/6aaf980d4fdd/DEV/generic",
-        name: "headphone image 1",
-        type: "image"
-      },
-      {
-        url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/77c9ad78549e/DEV/generic",
-        name: "headphone image 2",
-        type: "image"
-      },
-      {
-        url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/cb8e00386d2b/DEV/generic",
-        name: "headphone image 3",
-        type: "image"
-      },
-      {
-        url: "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/headphones/1595c5e4428e/DEV/generic",
-        name: "headphone video",
-        type: "video"
-      }
+      "Pure NASA-grade black magnetic ferrofluid visualization",
+      "AI audio frequency separation & responsive electromagnet control",
+      "360-degree high-fidelity neodymium audio drivers",
+      "Bluetooth 5.3 + lossless wireless streaming",
     ],
   },
   {
@@ -116,26 +156,52 @@ export const productMetadata = [
       "Dual Sony 0.68-inch Micro-OLED displays with 1080p per eye",
       "120Hz refresh rate with 500 nits perceived brightness",
       "Electrochromic dimming lenses for outdoor/indoor adaptability",
-      "Direct USB-C DisplayPort support for PC, Mac, consoles and iPhone"
+      "Direct USB-C DisplayPort support for PC, Mac, consoles and iPhone",
     ],
   },
   {
-    collectionId: "headphones",
-    title: "EchoBass Studio Headphones",
+    collectionId: "ai-agent-dispatcher",
+    title: "AI Agent Dispatcher Hub",
     category: "AI",
-    price: "$349.00",
-    description: "Reference-grade over-ear headphones with adaptive AI noise cancellation, tuned for studio-accurate sound whether you're mixing tracks or tuning out the world.",
+    price: "$189.00",
+    description: "Physical desktop terminal for autonomous AI agent dispatching, workflow monitoring, and multimodal task delegation.",
     features: [
-      "Adaptive AI noise cancellation with transparency mode",
-      "40mm bio-cellulose drivers for studio-accurate response",
-      "Bluetooth 5.3 multipoint with lossless wired fallback",
-      "38-hour battery life with 5-minute quick-charge boost"
+      "Dedicated dual-display task monitoring and priority dispatching interface",
+      "Hardware kill-switch and local agent execution authorization keys",
+      "Wi-Fi 6E + Bluetooth 5.3 low-latency agent mesh synchronizer",
+      "Universal API bridge compatible with major LLM agent frameworks",
+    ],
+  },
+  {
+    collectionId: "magic-ai-glasses",
+    title: "Magic AI Vision Glasses",
+    category: "AI",
+    price: "$329.00",
+    description: "Ultra-lightweight smart eyeglasses featuring real-time visual AI recognition, live translation heads-up display, and spatial audio.",
+    features: [
+      "MicroLED optical waveguide display projecting floating heads-up text",
+      "Instant foreign language translation and contextual scene comprehension",
+      "Directional bone-conduction audio transducers with zero sound leakage",
+      "Featherlight 42g titanium frame styled for all-day prescription lens wear",
+    ],
+  },
+  {
+    collectionId: "self-flying-pocket-cam",
+    title: "Hover Self-Flying AI Pocket Camera",
+    category: "AI",
+    price: "$299.00",
+    description: "Enclosed-propeller autonomous palm-launch pocket drone with AI visual person tracking, hands-free 4K video recording, and auto-return.",
+    features: [
+      "Zero-controller palm launch and auto-land with AI optical hand tracking",
+      "Fully enclosed carbon-fiber propeller cage safe for indoor and group use",
+      "4K UHD HDR video stabilization with AI face and body follow modes",
+      "Foldable pocket-sized form factor weighing less than 125 grams (no FAA cert required)",
     ],
   },
 
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   // Category: PRODUCTIVITY
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   {
     collectionId: "ai-voice-recorder",
     title: "AI Voice Recorder & Transcriber",
@@ -146,7 +212,7 @@ export const productMetadata = [
       "Dual Knowles beamforming microphones with AGC (Auto Gain Control)",
       "GPT-4o powered automated meeting minutes & action item extraction",
       "64GB onboard encrypted eMMC flash storage (approx 480 hrs audio)",
-      "Magnetic clip mounting & continuous 30-hour record battery"
+      "Magnetic clip mounting & continuous 30-hour record battery",
     ],
   },
   {
@@ -159,51 +225,39 @@ export const productMetadata = [
       "Motorized rollable OLED screen extending from 12.7\" (4:3) to 15.3\" (8:9)",
       "Intel Core Ultra 7 processor with dedicated NPU for local AI workloads",
       "Dual-channel LPDDR5X RAM and 1TB PCIe Gen 4 SSD",
-      "Dual-pivot chassis with reinforced carbon fiber frame"
+      "Dual-pivot chassis with reinforced carbon fiber frame",
     ],
   },
   {
-    collectionId: "mx-master-3s",
-    title: "MX Master 3S Wireless Mouse",
+    collectionId: "banana-hub-port",
+    title: "Banana Hub 4-Port USB Expander",
     category: "Productivity",
-    price: "$99.00",
-    description: "Industry-standard performance wireless productivity mouse engineered for coders, designers, and power users. Features 8,000 DPI Darkfield sensor tracking on glass, ultra-quiet mechanical clicks, and MagSpeed electromagnetic scrolling.",
+    price: "$24.00",
+    description: "Playful silicone 4-port high-speed USB 3.0 data hub shaped like a banana, offering flexible plug angles and 5Gbps transfer rates.",
     features: [
-      "8,000 DPI Darkfield optical sensor that tracks accurately on any surface including glass",
-      "MagSpeed electromagnetic scroll wheel shifting from ratchet to hyper-fast 1,000 lines/sec",
-      "Quiet Click switches reducing click acoustic noise by 90%",
-      "USB-C rechargeable battery lasting up to 70 days per full charge"
+      "4 high-speed USB-A 3.0 ports with up to 5Gbps data transfer speeds",
+      "Shock-absorbing food-grade silicone casing with bendable trunk",
+      "Plug-and-play driverless support for Windows, macOS, Linux, and Android",
+      "Integrated over-current and surge protection on all ports",
     ],
-    cover: {
-      url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/WorkspaceCraftPro/0adcc9141b11/dev/generic",
-      type: "image"
-    },
-    thumbnails: [
-      {
-        url: "https://adn.umbercloud.io/api/vi/67a06a45ea8a39c6628c71c3/WorkspaceCraftPro/0adcc9141b11/dev/generic",
-        name: "mx-master-1.jpg",
-        type: "image"
-      }
+  },
+  {
+    collectionId: "night-vision-camera",
+    title: "Infrared Tactical Night Vision Camera",
+    category: "Productivity",
+    price: "$149.00",
+    description: "Full HD pocket night-vision camera with 850nm infrared illuminator, 5x digital zoom, and ultra-low-light starlight sensor.",
+    features: [
+      "High-sensitivity starlight sensor captures vivid detail in complete darkness",
+      "Stealth 850nm infrared spotlight beam with up to 200 meters night reach",
+      "1080p Full HD video recording and 12MP high-resolution snapshot capture",
+      "Pocket-sized ruggedized body with universal 1/4-inch tripod thread",
     ],
   },
 
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   // Category: WELLNESS
-  // --------------------------------------------------------------------------
-  {
-    collectionId: "air-purifier",
-    title: "Smart HEPA Room Air Purifier",
-    category: "Wellness",
-    price: "$249.00",
-    description: "Compact smart room air purifier equipped with laser air-quality diagnostics and a 3-layer medical-grade True HEPA H13 filtration core that cleans up to 500 sq ft in 30 minutes.",
-    features: [
-      "Medical-grade True HEPA H13 filter capturing 99.97% of PM2.5 particulates",
-      "Dual laser particulate sensor reporting real-time AQI metrics",
-      "Whisper-quiet sleep cycle at 22dB sound level",
-      "App-connected scheduling and automated fan velocity adjustment"
-    ],
-    suggestion: true,
-  },
+  // ==========================================================================
   {
     collectionId: "sc-bottle",
     title: "IClean",
@@ -215,7 +269,21 @@ export const productMetadata = [
       "Eradicates up to 99.99% of bio-contaminants with 280nm UV-C LED",
       "Keeps liquids cold for 24 hours or hot for 12 hours",
       "Magnetic USB waterproof charging port with 1-month battery per charge",
-      "BPA-free electropolished 18/8 food-grade stainless steel"
+      "BPA-free electropolished 18/8 food-grade stainless steel",
+    ],
+    suggestion: true,
+  },
+  {
+    collectionId: "air-purifier",
+    title: "Smart HEPA Room Air Purifier",
+    category: "Wellness",
+    price: "$249.00",
+    description: "Compact smart room air purifier equipped with laser air-quality diagnostics and a 3-layer medical-grade True HEPA H13 filtration core that cleans up to 500 sq ft in 30 minutes.",
+    features: [
+      "Medical-grade True HEPA H13 filter capturing 99.97% of PM2.5 particulates",
+      "Dual laser particulate sensor reporting real-time AQI metrics",
+      "Whisper-quiet sleep cycle at 22dB sound level",
+      "App-connected scheduling and automated fan velocity adjustment",
     ],
     suggestion: true,
   },
@@ -229,7 +297,7 @@ export const productMetadata = [
       "Grade 5 concave titanium chassis weighing less than 3 grams",
       "10ATM water resistance and IP68 dust-proof rating",
       "Up to 7 days continuous tracking on a single charge",
-      "AI-driven Galaxy AI Energy Score and Sleep Apnea detection"
+      "AI-driven Galaxy AI Energy Score and Sleep Apnea detection",
     ],
     suggestion: true,
   },
@@ -243,13 +311,39 @@ export const productMetadata = [
       "4 electroencephalography (EEG) channels for active brainwave measurement",
       "PPG optical sensor for heart rate and breathing rhythms",
       "Go-to-Sleep responsive sound journeys that quiet mental chatter",
-      "10-hour rechargeable battery designed for all-night comfort"
+      "10-hour rechargeable battery designed for all-night comfort",
+    ],
+  },
+  {
+    collectionId: "train-humidifier",
+    title: "Steam Locomotive Ultrasonic Train Humidifier",
+    category: "Wellness",
+    price: "$49.00",
+    description: "Whimsical vintage steam train tabletop ultrasonic cool mist humidifier with realistic puffing chimney steam and LED warm nightlight.",
+    features: [
+      "Ultrasonic cold atomization emits puffing steam rings from the train chimney",
+      "Warm vintage LED headlamp doubles as a soothing bedside nightlight",
+      "Whisper-quiet 20dB operation with auto-shutoff when water level runs dry",
+      "Large 350ml water reservoir provides up to 8 hours of continuous mist",
+    ],
+  },
+  {
+    collectionId: "volcano-humidifier",
+    title: "Erupting Volcano Flame Mist Humidifier",
+    category: "Wellness",
+    price: "$54.00",
+    description: "Volcanic eruption aroma diffuser and ultrasonic humidifier featuring pulsating ring mist puffs and realistic flame glow ambient effects.",
+    features: [
+      "Dual mist eruption modes: realistic continuous volcanic flame and pulsating smoke rings",
+      "Ambient warm amber and cool glacier blue LED lighting modes",
+      "Aromatherapy essential oil compatible tank with whisper-silent oscillation",
+      "Intelligent smart timer (2h/8h) with dry-burn auto power-off protection",
     ],
   },
 
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   // Category: TRAVEL
-  // --------------------------------------------------------------------------
+  // ==========================================================================
   {
     collectionId: "multiport-charger",
     title: "GaN III 140W Multi-Port Travel Charger",
@@ -260,7 +354,7 @@ export const productMetadata = [
       "One small brick charges a laptop, phone and tablet simultaneously",
       "140W total output delivering full-speed fast charging to laptop and gear",
       "Foldable wall prongs with universal 100V-240V international travel voltage",
-      "ActiveShield 2.0 temperature sensor checking heat over 3 million times daily"
+      "ActiveShield 2.0 temperature sensor checking heat over 3 million times daily",
     ],
     suggestion: true,
   },
@@ -274,7 +368,33 @@ export const productMetadata = [
       "Keeps laptops going through long days with 27,650mAh capacity",
       "250W maximum multi-device output with 140W single-port USB-C PD 3.1",
       "Real-time TFT smart screen reporting battery health, wattage, and recharge time",
-      "Airline-approved TSA carry-on battery capacity (99.54Wh)"
+      "Airline-approved TSA carry-on battery capacity (99.54Wh)",
+    ],
+  },
+  {
+    collectionId: "cargo-container-powerbank",
+    title: "Cargo Container Heavy-Duty Powerbank",
+    category: "Travel",
+    price: "$79.00",
+    description: "Industrial miniature intermodal shipping container design packing a rugged 20,000mAh battery with multi-protocol USB-C fast charging.",
+    features: [
+      "20,000mAh high-density Li-ion cell inside an all-metal die-cast container shell",
+      "Dual 65W USB-C Power Delivery 3.0 ports + 22.5W USB-A QC 4.0 port",
+      "Intelligent LED charge level and temperature status gauge",
+      "Shockproof corrugated corners engineered for rigorous travel",
+    ],
+  },
+  {
+    collectionId: "pocket-powerbank",
+    title: "Ultra-Slim Magnetic Pocket Powerbank",
+    category: "Travel",
+    price: "$39.00",
+    description: "Credit-card sized magnetic wireless powerbank engineered for effortless everyday carry and fast wireless phone topping-off.",
+    features: [
+      "Ultra-thin 8.8mm aerospace aluminum profile slips into any wallet or pocket",
+      "Strong N52 neodymium magnetic ring locks firmly onto compatible phones",
+      "15W MagSafe-compatible wireless fast charging + 20W bidirectional USB-C",
+      "Smart thermal regulation prevents device heating during high-speed top-offs",
     ],
   },
   {
@@ -287,7 +407,7 @@ export const productMetadata = [
       "Precision Finding with Ultra-Wideband arrow guidance",
       "Global encrypted crowd-sourced Bluetooth mesh find network",
       "IP67 water-resistant up to 1 meter depth for 30 minutes",
-      "User-replaceable coin battery lasting over one full year"
+      "User-replaceable coin battery lasting over one full year",
     ],
   },
   {
@@ -300,7 +420,7 @@ export const productMetadata = [
       "Wi-Fi 6E/7 dual-band transmission pushing up to 3000Mbps speeds",
       "Pre-installed OpenWrt with one-click WireGuard / Cloudflare WARP tunneling",
       "Hotel & airport captive portal clone and instant multi-device bridge",
-      "Gigabit Ethernet WAN/LAN ports + USB-C 5V/3A power input"
+      "Gigabit Ethernet WAN/LAN ports + USB-C 5V/3A power input",
     ],
   },
   {
@@ -313,7 +433,7 @@ export const productMetadata = [
       "15W flexible monocrystalline solar cells laminated into waterproof fabric",
       "10,000mAh handle battery with USB-C 20W PD output",
       "Double-canopy inverted wind venting withstanding gusts up to 55 mph",
-      "Hydrophobic Teflon coating repelling water instantly with UV50+ block"
+      "Hydrophobic Teflon coating repelling water instantly with UV50+ block",
     ],
   },
   {
@@ -326,7 +446,7 @@ export const productMetadata = [
       "Integrated mechanical ratchet compression board expands pack space by 45%",
       "Indestructible 100% German Bayer Makrolon polycarbonate shell",
       "Hinomoto 360-degree silent Japanese dual-caster ball bearing wheels",
-      "TSA-approved integrated combination lock with hidden AirTag pocket"
+      "TSA-approved integrated combination lock with hidden AirTag pocket",
     ],
   },
 ];
