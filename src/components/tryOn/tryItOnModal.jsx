@@ -181,6 +181,19 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
               }
               glassesGroup.position.copy(smoothedPos);
               glassesGroup.quaternion.copy(smoothedQuat);
+              // decompose() can only express a proper rotation in the
+              // quaternion, so if MediaPipe's matrix carries a mirror
+              // (common for a selfie-camera convention), it survives as a
+              // negative scale component here. Dropping it (as an earlier
+              // version of this code did) silently un-mirrors the model,
+              // which reads as the temple arms flipping to point forward.
+              // Preserve the sign (not the magnitude, which can wobble) so
+              // the reflection the matrix actually encodes is kept.
+              glassesGroup.scale.set(
+                rawScale.x < 0 ? -1 : 1,
+                rawScale.y < 0 ? -1 : 1,
+                rawScale.z < 0 ? -1 : 1
+              );
 
               // Re-derive a metric inter-pupillary distance from the 2D iris
               // landmarks + this frame's metric head depth (rawPos.z), then
