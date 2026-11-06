@@ -15,9 +15,9 @@ import { Loader2, CameraOff, Glasses } from "lucide-react";
 // origin roughly between the eyes). Source models vary in scale/orientation,
 // so these are tuned by eye against a live camera feed, not computed —
 // adjust them here if the glasses sit too big/small or offset on a real face.
-const GLASSES_SCALE = 0.09;
-const GLASSES_OFFSET = [0, -0.015, 0.02];
-const GLASSES_ROTATION = [0, Math.PI, 0];
+const GLASSES_SCALE = 0.0594;
+const GLASSES_OFFSET = [-0.05, -0.019, 0.014];
+const GLASSES_ROTATION = [0, 3.0216, 0];
 
 const WASM_BASE = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.2/wasm";
 const FACE_MODEL_URL =
