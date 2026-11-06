@@ -42,20 +42,11 @@ const LEFT_IRIS_CENTER = 473;
 const RIGHT_IRIS_CENTER = 468;
 
 /** Camera-based virtual try-on: tracks the viewer's face and overlays a 3D glasses model. */
-const DEFAULT_ADJUST = { scaleMult: 1, ox: 0, oy: 0, oz: 0, rx: 0, ry: 0, rz: 0 };
-
 function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const modelRef = useRef(null);
-  const adjustRef = useRef({ ...DEFAULT_ADJUST });
   const [status, setStatus] = useState("idle"); // idle | loading | ready | denied | error
-  const [adjust, setAdjust] = useState({ ...DEFAULT_ADJUST });
-
-  const updateAdjust = (key, value) => {
-    adjustRef.current = { ...adjustRef.current, [key]: value };
-    setAdjust(adjustRef.current);
-  };
 
   useEffect(() => {
     if (!open || !modelUrl) return;
@@ -225,20 +216,9 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
               }
             }
             if (modelRef.current) {
-              const a = adjustRef.current;
-              modelRef.current.scale.setScalar(
-                GLASSES_SCALE * a.scaleMult * smoothedIpdScaleFactor
-              );
-              modelRef.current.position.set(
-                GLASSES_OFFSET[0] + a.ox,
-                GLASSES_OFFSET[1] + a.oy,
-                GLASSES_OFFSET[2] + a.oz
-              );
-              modelRef.current.rotation.set(
-                GLASSES_ROTATION[0] + a.rx,
-                GLASSES_ROTATION[1] + a.ry,
-                GLASSES_ROTATION[2] + a.rz
-              );
+              modelRef.current.scale.setScalar(GLASSES_SCALE * smoothedIpdScaleFactor);
+              modelRef.current.position.set(...GLASSES_OFFSET);
+              modelRef.current.rotation.set(...GLASSES_ROTATION);
             }
             renderer.render(scene, camera);
           }
@@ -263,8 +243,6 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
       if (faceLandmarker) faceLandmarker.close();
       if (renderer) renderer.dispose();
       modelRef.current = null;
-      adjustRef.current = { ...DEFAULT_ADJUST };
-      setAdjust({ ...DEFAULT_ADJUST });
       setStatus("idle");
     };
   }, [open, modelUrl, frameColor]);
@@ -312,46 +290,6 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
             </div>
           )}
         </div>
-
-        {status === "ready" && (
-          <div className="mt-2 space-y-2 border border-dashed border-border p-3 font-mono text-[11px]">
-            <p className="uppercase tracking-widest text-muted-foreground">
-              Calibration (temporary — tune until the glasses sit right, then send me these numbers)
-            </p>
-            {[
-              { key: "scaleMult", label: "Scale ×", min: 0.1, max: 3, step: 0.01 },
-              { key: "ox", label: "Offset X", min: -0.15, max: 0.15, step: 0.001 },
-              { key: "oy", label: "Offset Y", min: -0.15, max: 0.15, step: 0.001 },
-              { key: "oz", label: "Offset Z", min: -0.15, max: 0.15, step: 0.001 },
-              { key: "rx", label: "Rotate X", min: -3.2, max: 3.2, step: 0.01 },
-              { key: "ry", label: "Rotate Y", min: -3.2, max: 3.2, step: 0.01 },
-              { key: "rz", label: "Rotate Z", min: -3.2, max: 3.2, step: 0.01 },
-            ].map(({ key, label, min, max, step }) => (
-              <div key={key} className="flex items-center gap-2">
-                <span className="w-16 shrink-0 text-muted-foreground">{label}</span>
-                <input
-                  type="range"
-                  min={min}
-                  max={max}
-                  step={step}
-                  value={adjust[key]}
-                  onChange={(e) => updateAdjust(key, parseFloat(e.target.value))}
-                  className="flex-1"
-                />
-                <span className="w-16 shrink-0 text-right">{adjust[key].toFixed(3)}</span>
-              </div>
-            ))}
-            <p className="text-muted-foreground">
-              scale={(GLASSES_SCALE * adjust.scaleMult).toFixed(4)}, offset=[
-              {(GLASSES_OFFSET[0] + adjust.ox).toFixed(4)},{" "}
-              {(GLASSES_OFFSET[1] + adjust.oy).toFixed(4)},{" "}
-              {(GLASSES_OFFSET[2] + adjust.oz).toFixed(4)}], rotation=[
-              {(GLASSES_ROTATION[0] + adjust.rx).toFixed(4)},{" "}
-              {(GLASSES_ROTATION[1] + adjust.ry).toFixed(4)},{" "}
-              {(GLASSES_ROTATION[2] + adjust.rz).toFixed(4)}]
-            </p>
-          </div>
-        )}
       </DialogContent>
     </Dialog>
   );
