@@ -101,9 +101,21 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
         const camera = new THREE.PerspectiveCamera(63, 1, 0.01, 5000);
 
         const glassesGroup = new THREE.Group();
-        glassesGroup.matrixAutoUpdate = false;
         glassesGroup.visible = false;
         scene.add(glassesGroup);
+
+        // Per-frame head pose is noisy (landmark jitter), so smooth toward it
+        // instead of snapping, which is what makes commercial try-on feel
+        // "locked on" rather than swimming. Rotation uses slerp since lerping
+        // quaternion components directly isn't a valid rotation interpolation.
+        const SMOOTHING = 0.35; // lower = smoother/laggier, higher = snappier/jitterier
+        const rawMatrix = new THREE.Matrix4();
+        const rawPos = new THREE.Vector3();
+        const rawQuat = new THREE.Quaternion();
+        const rawScale = new THREE.Vector3();
+        const smoothedPos = new THREE.Vector3();
+        const smoothedQuat = new THREE.Quaternion();
+        let hasTrackedOnce = false;
 
         new GLTFLoader().load(modelUrl, (gltf) => {
           const model = gltf.scene;
@@ -135,9 +147,22 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
           if (video.readyState >= 2) {
             const results = faceLandmarker.detectForVideo(video, performance.now());
             const matrixData = results.facialTransformationMatrixes?.[0]?.data;
-            glassesGroup.visible = Boolean(matrixData);
+            glassesGroup.visible = Boolean(matrixData) || hasTrackedOnce;
             if (matrixData) {
-              glassesGroup.matrix.fromArray(matrixData);
+              rawMatrix.fromArray(matrixData);
+              rawMatrix.decompose(rawPos, rawQuat, rawScale);
+              if (!hasTrackedOnce) {
+                // Snap on the very first detection so the glasses don't
+                // swoop in from the scene origin.
+                smoothedPos.copy(rawPos);
+                smoothedQuat.copy(rawQuat);
+                hasTrackedOnce = true;
+              } else {
+                smoothedPos.lerp(rawPos, SMOOTHING);
+                smoothedQuat.slerp(rawQuat, SMOOTHING);
+              }
+              glassesGroup.position.copy(smoothedPos);
+              glassesGroup.quaternion.copy(smoothedQuat);
             }
             if (modelRef.current) {
               const a = adjustRef.current;
