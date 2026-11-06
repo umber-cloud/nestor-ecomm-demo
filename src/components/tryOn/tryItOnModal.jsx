@@ -17,7 +17,7 @@ import { Loader2, CameraOff, Glasses } from "lucide-react";
 // adjust them here if the glasses sit too big/small or offset on a real face.
 const GLASSES_SCALE = 0.0594;
 const GLASSES_OFFSET = [-0.05, -0.019, 0.014];
-const GLASSES_ROTATION = [0, 3.0216, 0];
+const GLASSES_ROTATION = [0, 3.0216 - Math.PI, 0];
 
 const WASM_BASE = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.2/wasm";
 const FACE_MODEL_URL =
@@ -233,10 +233,10 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
             </p>
             {[
               { key: "scaleMult", label: "Scale ×", min: 0.1, max: 3, step: 0.01 },
-              { key: "ox", label: "Offset X", min: -0.05, max: 0.05, step: 0.001 },
-              { key: "oy", label: "Offset Y", min: -0.05, max: 0.05, step: 0.001 },
-              { key: "oz", label: "Offset Z", min: -0.05, max: 0.05, step: 0.001 },
-              { key: "ry", label: "Rotate Y", min: -0.5, max: 0.5, step: 0.01 },
+              { key: "ox", label: "Offset X", min: -0.15, max: 0.15, step: 0.001 },
+              { key: "oy", label: "Offset Y", min: -0.15, max: 0.15, step: 0.001 },
+              { key: "oz", label: "Offset Z", min: -0.15, max: 0.15, step: 0.001 },
+              { key: "ry", label: "Rotate Y", min: -3.2, max: 3.2, step: 0.01 },
             ].map(({ key, label, min, max, step }) => (
               <div key={key} className="flex items-center gap-2">
                 <span className="w-16 shrink-0 text-muted-foreground">{label}</span>
