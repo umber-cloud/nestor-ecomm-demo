@@ -28,10 +28,20 @@ const FACE_MODEL_URL =
 const FRAME_MATERIAL_NAMES = new Set(["frame", "arm"]);
 
 /** Camera-based virtual try-on: tracks the viewer's face and overlays a 3D glasses model. */
+const DEFAULT_ADJUST = { scaleMult: 1, ox: 0, oy: 0, oz: 0, ry: 0 };
+
 function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const modelRef = useRef(null);
+  const adjustRef = useRef({ ...DEFAULT_ADJUST });
   const [status, setStatus] = useState("idle"); // idle | loading | ready | denied | error
+  const [adjust, setAdjust] = useState({ ...DEFAULT_ADJUST });
+
+  const updateAdjust = (key, value) => {
+    adjustRef.current = { ...adjustRef.current, [key]: value };
+    setAdjust(adjustRef.current);
+  };
 
   useEffect(() => {
     if (!open || !modelUrl) return;
@@ -97,9 +107,7 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
 
         new GLTFLoader().load(modelUrl, (gltf) => {
           const model = gltf.scene;
-          model.scale.setScalar(GLASSES_SCALE);
-          model.position.set(...GLASSES_OFFSET);
-          model.rotation.set(...GLASSES_ROTATION);
+          modelRef.current = model;
           if (frameColor) {
             const tint = new THREE.Color(frameColor);
             model.traverse((child) => {
@@ -131,6 +139,20 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
             if (matrixData) {
               glassesGroup.matrix.fromArray(matrixData);
             }
+            if (modelRef.current) {
+              const a = adjustRef.current;
+              modelRef.current.scale.setScalar(GLASSES_SCALE * a.scaleMult);
+              modelRef.current.position.set(
+                GLASSES_OFFSET[0] + a.ox,
+                GLASSES_OFFSET[1] + a.oy,
+                GLASSES_OFFSET[2] + a.oz
+              );
+              modelRef.current.rotation.set(
+                GLASSES_ROTATION[0],
+                GLASSES_ROTATION[1] + a.ry,
+                GLASSES_ROTATION[2]
+              );
+            }
             renderer.render(scene, camera);
           }
           rafId = requestAnimationFrame(loop);
@@ -153,6 +175,9 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
       if (stream) stream.getTracks().forEach((t) => t.stop());
       if (faceLandmarker) faceLandmarker.close();
       if (renderer) renderer.dispose();
+      modelRef.current = null;
+      adjustRef.current = { ...DEFAULT_ADJUST };
+      setAdjust({ ...DEFAULT_ADJUST });
       setStatus("idle");
     };
   }, [open, modelUrl, frameColor]);
@@ -200,6 +225,42 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
             </div>
           )}
         </div>
+
+        {status === "ready" && (
+          <div className="mt-2 space-y-2 border border-dashed border-border p-3 font-mono text-[11px]">
+            <p className="uppercase tracking-widest text-muted-foreground">
+              Calibration (temporary — tune until the glasses sit right, then send me these numbers)
+            </p>
+            {[
+              { key: "scaleMult", label: "Scale ×", min: 0.1, max: 3, step: 0.01 },
+              { key: "ox", label: "Offset X", min: -0.05, max: 0.05, step: 0.001 },
+              { key: "oy", label: "Offset Y", min: -0.05, max: 0.05, step: 0.001 },
+              { key: "oz", label: "Offset Z", min: -0.05, max: 0.05, step: 0.001 },
+              { key: "ry", label: "Rotate Y", min: -0.5, max: 0.5, step: 0.01 },
+            ].map(({ key, label, min, max, step }) => (
+              <div key={key} className="flex items-center gap-2">
+                <span className="w-16 shrink-0 text-muted-foreground">{label}</span>
+                <input
+                  type="range"
+                  min={min}
+                  max={max}
+                  step={step}
+                  value={adjust[key]}
+                  onChange={(e) => updateAdjust(key, parseFloat(e.target.value))}
+                  className="flex-1"
+                />
+                <span className="w-16 shrink-0 text-right">{adjust[key].toFixed(3)}</span>
+              </div>
+            ))}
+            <p className="text-muted-foreground">
+              scale={(GLASSES_SCALE * adjust.scaleMult).toFixed(4)}, offset=[
+              {(GLASSES_OFFSET[0] + adjust.ox).toFixed(4)},{" "}
+              {(GLASSES_OFFSET[1] + adjust.oy).toFixed(4)},{" "}
+              {(GLASSES_OFFSET[2] + adjust.oz).toFixed(4)}], rotationY=
+              {(GLASSES_ROTATION[1] + adjust.ry).toFixed(4)}
+            </p>
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );

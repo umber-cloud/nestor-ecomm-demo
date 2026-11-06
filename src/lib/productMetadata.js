@@ -134,7 +134,7 @@ export const productMetadata = [
     ],
     variants: [
       { id: "matte-black", label: "Matte Black", hex: "#1a1a1a", collectionId: "ray-bans", available: true },
-      { id: "tortoise-brown", label: "Tortoise Brown", hex: "#6b4423", collectionId: "ray-bans-brown", available: false },
+      { id: "tortoise-brown", label: "Tortoise Brown", hex: "#6b4423", collectionId: "ray-bans-brown", available: true },
     ],
     defaultVariantId: "matte-black",
     tryOn: {
