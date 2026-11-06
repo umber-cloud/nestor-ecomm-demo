@@ -15,9 +15,9 @@ import { Loader2, CameraOff, Glasses } from "lucide-react";
 // origin roughly between the eyes). Source models vary in scale/orientation,
 // so these are tuned by eye against a live camera feed, not computed —
 // adjust them here if the glasses sit too big/small or offset on a real face.
-const GLASSES_SCALE = 0.09;
-const GLASSES_OFFSET = [0, -0.015, 0.02];
-const GLASSES_ROTATION = [0, Math.PI, 0];
+const GLASSES_SCALE = 0.0594;
+const GLASSES_OFFSET = [-0.05, -0.019, 0.014];
+const GLASSES_ROTATION = [0, 3.0216 - Math.PI, 0];
 
 const WASM_BASE = "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@1.2.2/wasm";
 const FACE_MODEL_URL =
@@ -27,10 +27,25 @@ const FACE_MODEL_URL =
 // pad, which should stay untinted) — see public material inspection notes.
 const FRAME_MATERIAL_NAMES = new Set(["frame", "arm"]);
 
+// Vertical FOV assumed by both the MediaPipe facial transformation matrix's
+// metric space and our PerspectiveCamera below -- must match the `camera`
+// construction further down. Used to re-derive a metric inter-pupillary
+// distance from the 2D iris landmarks + the matrix's metric head depth, so
+// glasses scale to the real detected face instead of one guessed constant
+// (the same anchoring technique commercial try-on, e.g. MediaPipe's own
+// glasses-fitting writeup, uses iris size/position for).
+const CAMERA_VERTICAL_FOV_DEG = 63;
+const AVERAGE_ADULT_IPD_CM = 6.3;
+// MediaPipe FaceLandmarker's 478-point mesh: 468 = right-eye iris center,
+// 473 = left-eye iris center (ring points around each are 469-472 / 474-477).
+const LEFT_IRIS_CENTER = 473;
+const RIGHT_IRIS_CENTER = 468;
+
 /** Camera-based virtual try-on: tracks the viewer's face and overlays a 3D glasses model. */
 function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
+  const modelRef = useRef(null);
   const [status, setStatus] = useState("idle"); // idle | loading | ready | denied | error
 
   useEffect(() => {
@@ -88,18 +103,32 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
         dirLight.position.set(0, 1, 1);
         scene.add(dirLight);
 
-        const camera = new THREE.PerspectiveCamera(63, 1, 0.01, 5000);
+        const camera = new THREE.PerspectiveCamera(CAMERA_VERTICAL_FOV_DEG, 1, 0.01, 5000);
+        const focalLengthPx = () =>
+          (video.videoHeight || 480) / 2 / Math.tan((CAMERA_VERTICAL_FOV_DEG * Math.PI) / 180 / 2);
 
         const glassesGroup = new THREE.Group();
-        glassesGroup.matrixAutoUpdate = false;
         glassesGroup.visible = false;
         scene.add(glassesGroup);
 
+        // Per-frame head pose is noisy (landmark jitter), so smooth toward it
+        // instead of snapping, which is what makes commercial try-on feel
+        // "locked on" rather than swimming. Rotation uses slerp since lerping
+        // quaternion components directly isn't a valid rotation interpolation.
+        const SMOOTHING = 0.35; // lower = smoother/laggier, higher = snappier/jitterier
+        const rawMatrix = new THREE.Matrix4();
+        const rawPos = new THREE.Vector3();
+        const rawQuat = new THREE.Quaternion();
+        const rawScale = new THREE.Vector3();
+        const smoothedPos = new THREE.Vector3();
+        const smoothedQuat = new THREE.Quaternion();
+        let hasTrackedOnce = false;
+        let smoothedIpdScaleFactor = 1;
+        let hasIpdOnce = false;
+
         new GLTFLoader().load(modelUrl, (gltf) => {
           const model = gltf.scene;
-          model.scale.setScalar(GLASSES_SCALE);
-          model.position.set(...GLASSES_OFFSET);
-          model.rotation.set(...GLASSES_ROTATION);
+          modelRef.current = model;
           if (frameColor) {
             const tint = new THREE.Color(frameColor);
             model.traverse((child) => {
@@ -127,9 +156,69 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
           if (video.readyState >= 2) {
             const results = faceLandmarker.detectForVideo(video, performance.now());
             const matrixData = results.facialTransformationMatrixes?.[0]?.data;
-            glassesGroup.visible = Boolean(matrixData);
+            glassesGroup.visible = Boolean(matrixData) || hasTrackedOnce;
             if (matrixData) {
-              glassesGroup.matrix.fromArray(matrixData);
+              rawMatrix.fromArray(matrixData);
+              rawMatrix.decompose(rawPos, rawQuat, rawScale);
+              if (!hasTrackedOnce) {
+                // Snap on the very first detection so the glasses don't
+                // swoop in from the scene origin.
+                smoothedPos.copy(rawPos);
+                smoothedQuat.copy(rawQuat);
+                hasTrackedOnce = true;
+              } else {
+                smoothedPos.lerp(rawPos, SMOOTHING);
+                smoothedQuat.slerp(rawQuat, SMOOTHING);
+              }
+              glassesGroup.position.copy(smoothedPos);
+              glassesGroup.quaternion.copy(smoothedQuat);
+              // decompose() can only express a proper rotation in the
+              // quaternion, so if MediaPipe's matrix carries a mirror
+              // (common for a selfie-camera convention), it survives as a
+              // negative scale component here. Dropping it (as an earlier
+              // version of this code did) silently un-mirrors the model,
+              // which reads as the temple arms flipping to point forward.
+              // Preserve the sign (not the magnitude, which can wobble) so
+              // the reflection the matrix actually encodes is kept.
+              glassesGroup.scale.set(
+                rawScale.x < 0 ? -1 : 1,
+                rawScale.y < 0 ? -1 : 1,
+                rawScale.z < 0 ? -1 : 1
+              );
+
+              // Re-derive a metric inter-pupillary distance from the 2D iris
+              // landmarks + this frame's metric head depth (rawPos.z), then
+              // scale the glasses relative to the population-average adult
+              // IPD. This is what makes the fit track an individual face's
+              // real size/distance instead of one fixed guessed scale.
+              const landmarks = results.faceLandmarks?.[0];
+              const leftIris = landmarks?.[LEFT_IRIS_CENTER];
+              const rightIris = landmarks?.[RIGHT_IRIS_CENTER];
+              if (leftIris && rightIris) {
+                const w = video.videoWidth || 640;
+                const h = video.videoHeight || 480;
+                const dx = (leftIris.x - rightIris.x) * w;
+                const dy = (leftIris.y - rightIris.y) * h;
+                const ipdPx = Math.hypot(dx, dy);
+                const depth = Math.abs(rawPos.z) || 40;
+                const ipdMetric = (ipdPx / focalLengthPx()) * depth;
+                const rawScaleFactor = Math.min(
+                  1.8,
+                  Math.max(0.6, ipdMetric / AVERAGE_ADULT_IPD_CM)
+                );
+                if (!hasIpdOnce) {
+                  smoothedIpdScaleFactor = rawScaleFactor;
+                  hasIpdOnce = true;
+                } else {
+                  smoothedIpdScaleFactor +=
+                    (rawScaleFactor - smoothedIpdScaleFactor) * SMOOTHING;
+                }
+              }
+            }
+            if (modelRef.current) {
+              modelRef.current.scale.setScalar(GLASSES_SCALE * smoothedIpdScaleFactor);
+              modelRef.current.position.set(...GLASSES_OFFSET);
+              modelRef.current.rotation.set(...GLASSES_ROTATION);
             }
             renderer.render(scene, camera);
           }
@@ -153,6 +242,7 @@ function TryItOnModal({ open, onOpenChange, modelUrl, frameColor }) {
       if (stream) stream.getTracks().forEach((t) => t.stop());
       if (faceLandmarker) faceLandmarker.close();
       if (renderer) renderer.dispose();
+      modelRef.current = null;
       setStatus("idle");
     };
   }, [open, modelUrl, frameColor]);
