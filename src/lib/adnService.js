@@ -93,6 +93,26 @@ export function buildMediaUrl(input, collectionId = null) {
 }
 
 /**
+ * Forms the full Virtual Item (vi) media stream URL from a relative downloadUrl.
+ * As received in anchorAsset.downloadUrl:
+ * e.g. "/6ae094fb1701f00439587797/sc-bottle/6ebf71a98964/DEV/generic"
+ * produces:
+ * "https://harbour-wren-3226.umberadn.com/api/vi/6ae094fb1701f00439587797/sc-bottle/6ebf71a98964/DEV/generic"
+ *
+ * @param {string} downloadUrl - Relative downloadUrl from anchorAsset or assetItemUrls
+ * @returns {string|null} Full CDN media stream URL
+ */
+export function getMediaUrlFromDownloadUrl(downloadUrl) {
+  if (!downloadUrl) return null;
+  if (downloadUrl.startsWith("http://") || downloadUrl.startsWith("https://")) {
+    return downloadUrl;
+  }
+  const { baseUrl } = getUmberConfig();
+  const normalizedPath = downloadUrl.startsWith("/") ? downloadUrl : `/${downloadUrl}`;
+  return `https://${baseUrl}/vi${normalizedPath}`;
+}
+
+/**
  * Dynamic configuration object for proxy routes and backward-compatible references.
  */
 export const ADN_CONFIG = {
@@ -173,10 +193,10 @@ export function transformADNToProduct(adnData, metadata) {
 
   const coverUrl = coverAsset
     ? getItemUrl(
-        collectionId,
-        coverAsset.assetItemId,
-        coverAsset.targetPlatform || targetPlatform
-      )
+      collectionId,
+      coverAsset.assetItemId,
+      coverAsset.targetPlatform || targetPlatform
+    )
     : null;
 
   const coverType = coverAsset?.mimetype?.startsWith("video/") ? "video" : "image";
@@ -189,8 +209,8 @@ export function transformADNToProduct(adnData, metadata) {
       const type = isModel(asset)
         ? "model"
         : asset.mimetype?.startsWith("video/")
-        ? "video"
-        : "image";
+          ? "video"
+          : "image";
       return {
         assetItemId: asset.assetItemId,
         name: asset.assetItemName || "",
@@ -214,15 +234,16 @@ export function transformADNToProduct(adnData, metadata) {
 
   const pdfUrl = pdfAsset
     ? getItemUrl(
-        collectionId,
-        pdfAsset.assetItemId,
-        pdfAsset.targetPlatform || targetPlatform
-      )
+      collectionId,
+      pdfAsset.assetItemId,
+      pdfAsset.targetPlatform || targetPlatform
+    )
     : null;
 
   return {
     id: collectionId || metadata.id,
     collectionId: collectionId || metadata.id,
+    aliases: metadata.aliases || [],
     title: metadata.title,
     price: metadata.price,
     category: metadata.category,
@@ -234,6 +255,7 @@ export function transformADNToProduct(adnData, metadata) {
       url: coverUrl,
       type: coverType,
     },
+    anchorAsset: adnData?.anchorAsset || null,
     thumbnails,
     pdfUrl,
   };

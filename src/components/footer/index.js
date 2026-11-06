@@ -71,8 +71,8 @@ function Footer() {
                             <span className="font-serif text-2xl font-bold tracking-wider text-primary">
                                 INFINITY<span className="text-accent">{"//"}</span>GADGETS
                             </span>
-                            <span className="font-mono text-[10px] text-muted-foreground/80 lowercase border border-border/70 px-1.5 py-0.5 bg-muted/30">
-                                powered by umber
+                            <span className="font-serif text-[10px] sm:text-[11px] font-medium text-muted-foreground border border-border px-2 py-0.5 rounded-none bg-muted/70 tracking-wide">
+                                Powered by Umber
                             </span>
                         </div>
                         <p className="font-mono text-sm text-muted-foreground max-w-sm leading-relaxed">

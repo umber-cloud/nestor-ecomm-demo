@@ -49,8 +49,8 @@ export default function FeaturedProducts() {
               <Sparkles className="h-3 w-3" />
               Featured Showcase
             </span>
-            <span className="font-mono text-[10px] lowercase text-muted-foreground/80">
-              powered by umber
+            <span className="font-serif text-[10px] sm:text-[11px] font-medium text-muted-foreground tracking-wide">
+              Powered by Umber
             </span>
           </div>
           <h2 className="text-2xl md:text-3xl font-semibold">
@@ -65,7 +65,7 @@ export default function FeaturedProducts() {
           href="/products"
           className="group inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:text-accent font-bold uppercase tracking-widest transition-colors"
         >
-          View All Hardware [17 Units]
+          View All Hardware [32 Units]
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>

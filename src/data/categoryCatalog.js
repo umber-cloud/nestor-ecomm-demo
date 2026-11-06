@@ -11,6 +11,7 @@ import { productMetadata } from "../lib/productMetadata.js";
 export const CATEGORY_ITEMS = productMetadata.map((p) => ({
   id: p.collectionId,
   collectionId: p.collectionId,
+  aliases: p.aliases || [],
   title: p.title,
   category: p.category,
   price: p.price,

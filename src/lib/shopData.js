@@ -8,9 +8,10 @@ import { productMetadata } from './productMetadata.js';
 import { fetchAllProducts } from './adnService.js';
 import { getCategoryProductBySlug } from '../data/categoryCatalog.js';
 
-// In-memory cache for fetched products to eliminate redundant edge queries
+// In-memory cache and in-flight promise for fetched products to eliminate redundant edge queries
 let cachedProducts = null;
 let cacheTimestamp = null;
+let inFlightFetch = null;
 const CACHE_DURATION = 60000; // 60 seconds
 
 /**
@@ -25,15 +26,25 @@ export async function getProducts() {
     return cachedProducts;
   }
 
-  try {
-    const products = await fetchAllProducts(productMetadata);
-    cachedProducts = products;
-    cacheTimestamp = now;
-    return products;
-  } catch (error) {
-    console.error('[ShopData Error] Failed to fetch products from ADN:', error);
-    return cachedProducts || [];
+  // Deduplicate simultaneous requests
+  if (inFlightFetch) {
+    return inFlightFetch;
   }
+
+  inFlightFetch = fetchAllProducts(productMetadata)
+    .then((products) => {
+      cachedProducts = products;
+      cacheTimestamp = Date.now();
+      inFlightFetch = null;
+      return products;
+    })
+    .catch((error) => {
+      console.error('[ShopData Error] Failed to fetch products from ADN:', error);
+      inFlightFetch = null;
+      return cachedProducts || [];
+    });
+
+  return inFlightFetch;
 }
 
 /**
@@ -56,12 +67,19 @@ export async function getProductBySlug(slug) {
     const colId = p.collectionId?.toLowerCase();
     const pId = p.id?.toLowerCase();
 
+    const hasAlias =
+      Array.isArray(p.aliases) &&
+      p.aliases.some(
+        (a) => a.toLowerCase() === decodedSlug || a.toLowerCase() === normalizedSlug
+      );
+
     return (
       titleSlug === normalizedSlug ||
       rawTitle === decodedSlug ||
       colId === decodedSlug ||
       colId === normalizedSlug ||
-      pId === decodedSlug
+      pId === decodedSlug ||
+      hasAlias
     );
   });
 
@@ -119,7 +137,7 @@ export async function getFeaturedProducts() {
       (p) =>
         p.collectionId?.toLowerCase() === key ||
         p.id?.toLowerCase() === key ||
-        (key === 'ray-bans' && p.title?.toLowerCase().includes('iray')) ||
+        (key === 'ray-bans' && (p.title?.toLowerCase().includes('iray') || p.collectionId === 'smart-eyewear')) ||
         (key === 'headphones' && (p.title?.toLowerCase().includes('soly') || p.collectionId === 'headphones' || p.collectionId === 'soly-headphones')) ||
         (key === 'sc-bottle' && p.title?.toLowerCase().includes('iclean'))
     );
