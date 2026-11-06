@@ -132,6 +132,15 @@ export const productMetadata = [
       "Multimodal AI assistant for visual and voice inquiries",
       "Charging case providing up to 36 hours of battery life",
     ],
+    variants: [
+      { id: "matte-black", label: "Matte Black", hex: "#1a1a1a", collectionId: "ray-bans", available: true },
+      { id: "tortoise-brown", label: "Tortoise Brown", hex: "#6b4423", collectionId: "ray-bans-brown", available: false },
+    ],
+    defaultVariantId: "matte-black",
+    tryOn: {
+      enabled: true,
+      collectionId: "ray-bans-model",
+    },
   },
   {
     collectionId: "sp-speaker",

@@ -16,6 +16,7 @@ export default function ProductPage({ params }) {
   const [loading, setLoading] = useState(true);
   const [product, setProduct] = useState(null);
   const [suggestions, setSuggestions] = useState([]);
+  const [activeVariantId, setActiveVariantId] = useState(null);
 
   const addProductToCart = useAddToCart();
 
@@ -27,6 +28,9 @@ export default function ProductPage({ params }) {
         const productData = await getProductBySlug(id);
         if (isMounted) {
           setProduct(productData);
+          setActiveVariantId(
+            productData?.defaultVariantId || productData?.variants?.[0]?.id || null
+          );
         }
 
         const suggestionData = await getProductSuggestions();
@@ -61,15 +65,21 @@ export default function ProductPage({ params }) {
 
   const productUrl = `${baseUrl}/products/${slug}`;
 
+  const activeVariant = product?.variants?.find((v) => v.id === activeVariantId);
+  const sliderCover = activeVariant?.cover || product?.cover;
+  const sliderImages = activeVariant?.thumbnails?.length
+    ? activeVariant.thumbnails
+    : product?.thumbnails;
+
   const handleAddToCart = (quantity = 1, sourceEl = null) => {
     if (!product) return;
     addProductToCart({
       product: {
         id: product.collectionId,
-        title: product.title,
+        title: activeVariant ? `${product.title} — ${activeVariant.label}` : product.title,
         price: product.price,
-        image: product.cover?.url,
-        type: product.cover?.type || "image",
+        image: sliderCover?.url,
+        type: sliderCover?.type || "image",
       },
       quantity,
       sourceEl,
@@ -116,7 +126,7 @@ export default function ProductPage({ params }) {
             <span>MEDIA.FEED</span>
             <span>{product.category?.toUpperCase()}</span>
           </div>
-          <ProductSlider images={product?.thumbnails} cover={product?.cover} />
+          <ProductSlider key={activeVariantId || "default"} images={sliderImages} cover={sliderCover} />
         </div>
 
         {/* Spec panel */}
@@ -124,7 +134,12 @@ export default function ProductPage({ params }) {
           <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
             <ProductShare productUrl={productUrl} productImageUrl={product.cover?.url} />
           </div>
-          <ProductInfo product={product} onAddToCart={handleAddToCart} />
+          <ProductInfo
+            product={product}
+            onAddToCart={handleAddToCart}
+            activeVariantId={activeVariantId}
+            onVariantSelect={setActiveVariantId}
+          />
 
           {product.pdfUrl && (
             <a

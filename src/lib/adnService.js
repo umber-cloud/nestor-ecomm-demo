@@ -240,16 +240,68 @@ export function transformADNToProduct(adnData, metadata) {
 }
 
 /**
+ * Fetch and hydrate per-color variant collections for a product (e.g. frame colors).
+ * Each variant points at its own Umber collection; a variant explicitly marked
+ * `available: false` is never fetched (shown muted in the UI as out of stock),
+ * and a live fetch failure for any single variant degrades that variant to
+ * unavailable rather than failing the whole product.
+ * @param {Array<Object>} variants - metadata.variants entries ({id,label,hex,collectionId,available})
+ * @returns {Promise<Array<Object>>} hydrated variants with cover/thumbnails attached
+ */
+export async function fetchProductVariants(variants) {
+  if (!Array.isArray(variants) || variants.length === 0) return [];
+
+  return Promise.all(
+    variants.map(async (variant) => {
+      if (variant.available === false) {
+        return { ...variant, cover: null, thumbnails: [] };
+      }
+      try {
+        const adnData = await fetchCollectionAssets(variant.collectionId);
+        const { cover, thumbnails } = transformADNToProduct(adnData, {
+          collectionId: variant.collectionId,
+          title: variant.label,
+        });
+        return { ...variant, cover, thumbnails };
+      } catch {
+        return { ...variant, available: false, cover: null, thumbnails: [] };
+      }
+    })
+  );
+}
+
+/**
+ * Resolve a try-on 3D model's live CDN URL from its dedicated Umber collection.
+ * The collection is expected to hold a single 3D Model asset; no type sniffing
+ * is needed (unlike mixed product collections) since the collection's own
+ * "Allowed Asset Types" already restricts it to 3D Model.
+ * @param {string} collectionId - Umber collection holding the GLB/GLTF asset
+ * @returns {Promise<string|null>} Fully qualified CDN URL, or null if unavailable
+ */
+export async function fetchTryOnModel(collectionId) {
+  if (!collectionId) return null;
+  try {
+    const adnData = await fetchCollectionAssets(collectionId);
+    const modelAsset = adnData?.anchorAsset || adnData?.assetItemUrls?.[0];
+    if (!modelAsset) return null;
+    return getItemUrl(collectionId, modelAsset.assetItemId, modelAsset.targetPlatform);
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Fetch and hydrate a single product using its metadata definition
  * @param {Object} metadata - Product catalog metadata item
  * @returns {Promise<Object>} Hydrated product object
  */
 export async function fetchProduct(metadata) {
+  let product;
   try {
     const adnData = await fetchCollectionAssets(metadata.collectionId);
-    return transformADNToProduct(adnData, metadata);
+    product = transformADNToProduct(adnData, metadata);
   } catch {
-    return {
+    product = {
       id: metadata.collectionId || metadata.id,
       collectionId: metadata.collectionId || metadata.id,
       title: metadata.title,
@@ -263,6 +315,34 @@ export async function fetchProduct(metadata) {
       error: true,
     };
   }
+
+  if (Array.isArray(metadata.variants) && metadata.variants.length > 0) {
+    product.variants = await fetchProductVariants(metadata.variants);
+    product.defaultVariantId =
+      metadata.defaultVariantId ||
+      product.variants.find((v) => v.available !== false)?.id ||
+      product.variants[0]?.id;
+
+    // If the base collection itself has no cover (common when the base
+    // collectionId is only a logical grouping and all real media lives in
+    // the per-color variant collections), fall back to the default variant.
+    if (!product.cover?.url) {
+      const defaultVariant = product.variants.find((v) => v.id === product.defaultVariantId);
+      if (defaultVariant) {
+        product.cover = defaultVariant.cover || product.cover;
+        product.thumbnails = defaultVariant.thumbnails?.length
+          ? defaultVariant.thumbnails
+          : product.thumbnails;
+      }
+    }
+  }
+
+  if (metadata.tryOn?.enabled && metadata.tryOn?.collectionId) {
+    const modelUrl = await fetchTryOnModel(metadata.tryOn.collectionId);
+    product.tryOn = modelUrl ? { enabled: true, modelUrl } : null;
+  }
+
+  return product;
 }
 
 /**

@@ -1,11 +1,15 @@
 "use client";
 import React, { useRef, useState } from 'react'
 import { Button } from "@/components/ui/button";
-import { ShoppingBag, Truck, RotateCcw, ShieldCheck, Minus, Plus, Terminal } from "lucide-react";
+import { ShoppingBag, Truck, RotateCcw, ShieldCheck, Minus, Plus, Terminal, Glasses } from "lucide-react";
+import ColorSwatches from "../productViewer/colorSwatches";
+import TryItOnModal from "../tryOn/tryItOnModal";
 
-function ProductInfo({ product, onAddToCart }) {
+function ProductInfo({ product, onAddToCart, activeVariantId, onVariantSelect }) {
     const [quantity, setQuantity] = useState(1);
+    const [tryOnOpen, setTryOnOpen] = useState(false);
     const addButtonRef = useRef(null);
+    const activeVariant = product?.variants?.find((v) => v.id === activeVariantId);
 
     return (
         <div className="flex flex-col">
@@ -15,6 +19,12 @@ function ProductInfo({ product, onAddToCart }) {
 
             <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mt-4">{product?.title}</h1>
             <p className="text-xl sm:text-2xl text-muted-foreground mt-2">{product?.price}</p>
+
+            <ColorSwatches
+                variants={product?.variants}
+                activeId={activeVariantId}
+                onSelect={onVariantSelect}
+            />
 
             <p className="text-muted-foreground leading-relaxed mt-5 text-sm sm:text-base">
                 {product?.description || (
@@ -54,6 +64,24 @@ function ProductInfo({ product, onAddToCart }) {
                     Add to Bag
                 </Button>
             </div>
+
+            {product?.tryOn?.enabled && (
+                <Button
+                    variant="outline"
+                    className="h-11 w-full mt-3 gap-2"
+                    onClick={() => setTryOnOpen(true)}
+                >
+                    <Glasses className="h-4 w-4" />
+                    Try it on yourself
+                </Button>
+            )}
+
+            <TryItOnModal
+                open={tryOnOpen}
+                onOpenChange={setTryOnOpen}
+                modelUrl={product?.tryOn?.modelUrl}
+                frameColor={activeVariant?.hex}
+            />
 
             <div className="flex flex-wrap gap-2 mt-8">
                 <span className="inline-flex items-center gap-1.5 rounded-none bg-muted px-3.5 py-2 text-xs text-muted-foreground">
