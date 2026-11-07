@@ -154,7 +154,11 @@ function CategoryProductContent({ slug }) {
             <span>MEDIA.FEED // 1080P</span>
             <span>{product.category?.toUpperCase()}</span>
           </div>
-          <ProductSlider images={product.thumbnails} cover={product.cover} />
+          <ProductSlider
+            images={product.thumbnails}
+            cover={product.cover}
+            pdfUrl={product?.pdfUrl}
+          />
         </div>
 
         {/* Spec & Buy Panel */}
@@ -171,9 +175,9 @@ function CategoryProductContent({ slug }) {
               rel="noopener noreferrer"
               className="mt-8 pt-5 border-t border-border flex items-center justify-between font-mono text-xs uppercase tracking-widest group"
             >
-              <span className="flex items-center gap-2 text-foreground">
-                <FileText className="h-4 w-4 text-secondary" />
-                Spec sheet (PDF)
+              <span className="flex items-center gap-2 text-foreground font-semibold">
+                <FileText className="h-4 w-4 text-primary" />
+                User Manual (PDF)
               </span>
               <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </a>

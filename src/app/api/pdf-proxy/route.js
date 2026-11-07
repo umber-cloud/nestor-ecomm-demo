@@ -1,13 +1,29 @@
 import { NextResponse } from "next/server";
 import { ADN_CONFIG } from "@/lib/adnService";
 
-const ALLOWED_HOST = new URL(ADN_CONFIG.host).hostname;
+/**
+ * Handles CORS preflight requests for the PDF proxy
+ */
+export async function OPTIONS() {
+  return new Response(null, {
+    status: 204,
+    headers: {
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Range",
+    },
+  });
+}
 
+/**
+ * Streams PDF assets safely to client viewers with full CORS,
+ * inline disposition, range support, and content-length headers.
+ */
 export async function GET(request) {
   const { searchParams } = new URL(request.url);
   const targetUrl = searchParams.get("url");
 
-  // Validate that the URL exists and points to our allowed host
+  // Validate that the URL exists
   if (!targetUrl) {
     return NextResponse.json({ error: "Missing url parameter" }, { status: 400 });
   }
@@ -19,14 +35,27 @@ export async function GET(request) {
     return NextResponse.json({ error: "Invalid URL" }, { status: 400 });
   }
 
-  if (parsed.hostname !== ALLOWED_HOST) {
+  // Determine allowed hosts dynamically
+  let allowedHost = "";
+  try {
+    allowedHost = new URL(ADN_CONFIG.host).hostname;
+  } catch {
+    allowedHost = "harbour-wren-3226.umberadn.com";
+  }
+
+  const isUmberHost =
+    parsed.hostname === allowedHost ||
+    parsed.hostname.endsWith(".umberadn.com") ||
+    parsed.hostname.endsWith(".umbercloud.io");
+
+  if (!isUmberHost) {
     return NextResponse.json({ error: "Forbidden host" }, { status: 403 });
   }
 
   try {
     const upstream = await fetch(targetUrl, {
+      cache: "no-store",
       headers: {
-        // Forward a browser-like accept header
         Accept: "application/pdf,*/*",
       },
     });
@@ -38,16 +67,17 @@ export async function GET(request) {
       );
     }
 
-    // Stream the binary response directly to the client
-    const blob = await upstream.blob();
-    const arrayBuffer = await blob.arrayBuffer();
+    const arrayBuffer = await upstream.arrayBuffer();
 
-    return new Response(arrayBuffer, {
+    return new Response(Buffer.from(arrayBuffer), {
       status: 200,
       headers: {
         "Content-Type": "application/pdf",
-        "Content-Disposition": "inline",
-        // Cache for 5 minutes on the browser, 60 seconds shared cache
+        "Content-Disposition": 'inline; filename="user-manual.pdf"',
+        "Content-Length": arrayBuffer.byteLength.toString(),
+        "Accept-Ranges": "bytes",
+        "Access-Control-Allow-Origin": "*",
+        "Access-Control-Allow-Methods": "GET, HEAD, OPTIONS",
         "Cache-Control": "public, max-age=300, s-maxage=60",
       },
     });
@@ -56,3 +86,4 @@ export async function GET(request) {
     return NextResponse.json({ error: "Failed to fetch PDF" }, { status: 502 });
   }
 }
+

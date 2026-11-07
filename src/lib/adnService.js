@@ -257,6 +257,17 @@ export function transformADNToProduct(adnData, metadata) {
     )
     : null;
 
+  // Include PDF in gallery thumbnails list
+  if (pdfAsset && pdfUrl) {
+    thumbnails.push({
+      assetItemId: pdfAsset.assetItemId,
+      name: pdfAsset.assetItemName || "User Manual (PDF)",
+      type: "pdf",
+      mimetype: "application/pdf",
+      url: pdfUrl,
+    });
+  }
+
   return {
     id: collectionId || metadata.id,
     collectionId: collectionId || metadata.id,

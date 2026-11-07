@@ -89,14 +89,16 @@ export default function ProductPage({ params }) {
   if (loading) {
     return (
       <div className="mt-16 pt-2">
-        <div className="grid grid-cols-1 lg:grid-cols-[1fr_420px] gap-6">
-          <Skeleton className="aspect-square w-full " />
-          <div className="space-y-4 pt-6">
-            <Skeleton className="h-5 w-24 " />
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="lg:col-span-5">
+            <Skeleton className="aspect-square w-full" />
+          </div>
+          <div className="lg:col-span-7 space-y-4 pt-6">
+            <Skeleton className="h-5 w-24" />
             <Skeleton className="h-10 w-3/4" />
             <Skeleton className="h-6 w-1/4" />
             <Skeleton className="h-20 w-full mt-6" />
-            <Skeleton className="h-11 w-full mt-6 " />
+            <Skeleton className="h-11 w-full mt-6" />
           </div>
         </div>
       </div>
@@ -112,25 +114,31 @@ export default function ProductPage({ params }) {
   }
 
   return (
-    <div className="max-w-6xl mx-auto w-full">
+    <div className="max-w-7xl mx-auto w-full px-2 sm:px-4">
       <div className="mt-16 pt-2 font-mono text-xs">
         <BreadCrumb />
       </div>
 
-      <div className="flex flex-col lg:flex-row gap-4 sm:gap-6 mb-12 items-stretch">
-        {/* Media frame */}
-        <div className="relative border border-primary/50 bg-card p-4 sm:p-6 w-full lg:w-[440px] shrink-0">
+      {/* 40:60 Proportional Layout (col-span-5 / col-span-7) */}
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12 items-start">
+        {/* Media frame (40% width) */}
+        <div className="relative border border-primary/50 bg-card p-4 sm:p-6 w-full lg:col-span-5">
           <div className="absolute -top-px -left-px h-5 w-5 border-t-2 border-l-2 border-accent" />
           <div className="absolute -bottom-px -right-px h-5 w-5 border-b-2 border-r-2 border-accent" />
           <div className="mb-3 flex items-center justify-between font-mono text-[10px] uppercase tracking-widest text-secondary">
             <span>MEDIA.FEED</span>
             <span>{product.category?.toUpperCase()}</span>
           </div>
-          <ProductSlider key={activeVariantId || "default"} images={sliderImages} cover={sliderCover} />
+          <ProductSlider
+            key={activeVariantId || "default"}
+            images={sliderImages}
+            cover={sliderCover}
+            pdfUrl={product?.pdfUrl}
+          />
         </div>
 
-        {/* Spec panel */}
-        <div className="relative border border-border bg-card/80 p-5 sm:p-7 md:p-8 w-full lg:flex-1">
+        {/* Spec panel (60% width) */}
+        <div className="relative border border-border bg-card/80 p-5 sm:p-7 md:p-8 w-full lg:col-span-7">
           <div className="absolute top-4 right-4 sm:top-6 sm:right-6">
             <ProductShare productUrl={productUrl} productImageUrl={product.cover?.url} />
           </div>
@@ -148,9 +156,9 @@ export default function ProductPage({ params }) {
               rel="noopener noreferrer"
               className="mt-8 pt-5 border-t border-border flex items-center justify-between font-mono text-xs uppercase tracking-widest group"
             >
-              <span className="flex items-center gap-2 text-foreground">
-                <FileText className="h-4 w-4 text-secondary" />
-                Spec sheet (PDF)
+              <span className="flex items-center gap-2 text-foreground font-semibold">
+                <FileText className="h-4 w-4 text-primary" />
+                User Manual (PDF)
               </span>
               <ArrowUpRight className="h-4 w-4 text-muted-foreground group-hover:text-primary transition-colors" />
             </a>
