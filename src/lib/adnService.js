@@ -15,14 +15,14 @@ export function getUmberConfig() {
   const rawBaseUrl =
     process.env.NEXT_PUBLIC_UMBER_BASE_URL ||
     process.env.UMBER_BASE_URL ||
-    "";
+    "harbour-wren-3226.umberadn.com/api";
   // Normalize base URL (strip protocol and trailing slashes)
-  const baseUrl = rawBaseUrl.replace(/^https?:\/\//i, "").replace(/\/+$/, "");
+  const baseUrl = (rawBaseUrl || "harbour-wren-3226.umberadn.com/api").replace(/^https?:\/\//i, "").replace(/\/+$/, "");
 
   const domainId =
     process.env.NEXT_PUBLIC_UMBER_DOMAIN_ID ||
     process.env.UMBER_DOMAIN_ID ||
-    "";
+    "6ae094fb1701f00439587797";
 
   const envId =
     process.env.NEXT_PUBLIC_UMBER_ENV_ID ||
@@ -63,6 +63,23 @@ export function getItemUrl(collectionId, assetItemId, targetPlatform = "generic"
   const { baseUrl, domainId, envId } = getUmberConfig();
   const platform = targetPlatform || "generic";
   return `https://${baseUrl}/vi/${domainId}/${collectionId}/${assetItemId}/${envId}/${platform}`;
+}
+
+/**
+ * Forms the Virtual Asset (va) URL for direct asset stream retrieval.
+ * Pattern: https://{baseUrl}/va/{domainId}/{assetId}/{envId}/{targetPlatform}
+ *
+ * @param {string} assetId - The virtual asset identifier (e.g. "store-announcement")
+ * @param {string} [targetPlatform="generic"] - Target platform ("generic")
+ * @returns {string} Fully qualified virtual asset URL
+ */
+export function getVirtualAssetUrl(assetId, targetPlatform = "generic") {
+  if (!assetId) {
+    throw new Error("getVirtualAssetUrl requires a valid assetId");
+  }
+  const { baseUrl, domainId, envId } = getUmberConfig();
+  const platform = targetPlatform || "generic";
+  return `https://${baseUrl}/va/${domainId}/${assetId}/${envId}/${platform}`;
 }
 
 /**
@@ -313,67 +330,102 @@ export async function fetchTryOnModel(collectionId) {
 }
 
 /**
- * Fetch and hydrate a single product using its metadata definition
- * @param {Object} metadata - Product catalog metadata item
- * @returns {Promise<Object>} Hydrated product object
+ * Fetch top promotion / announcement banner data directly from Umber ADN Virtual Asset (/va) endpoint.
+ * Pattern: https://{baseUrl}/va/{domainId}/{assetId}/{envId}/{targetPlatform}
+ * Example: https://harbour-wren-3226.umberadn.com/api/va/6ae094fb1701f00439587797/store-announcement/DEV/generic
+ *
+ * @param {string} [assetId="store-announcement"] - Virtual asset identifier on Umber
+ * @param {string} [targetPlatform="generic"] - Target platform
+ * @returns {Promise<Object|null>} Raw JSON payload directly from Umber, or null if fetch fails
  */
-export async function fetchProduct(metadata) {
-  let product;
-  try {
-    const adnData = await fetchCollectionAssets(metadata.collectionId);
-    product = transformADNToProduct(adnData, metadata);
-  } catch {
-    product = {
-      id: metadata.collectionId || metadata.id,
-      collectionId: metadata.collectionId || metadata.id,
-      title: metadata.title,
-      price: metadata.price,
-      category: metadata.category,
-      description: metadata.description || "",
-      features: metadata.features || [],
-      cover: metadata.cover || { url: null, type: "image" },
-      thumbnails: metadata.thumbnails || [],
-      pdfUrl: metadata.pdfUrl || null,
-      error: true,
-    };
-  }
+  export async function fetchAnnouncement(assetId = "store-announcement", targetPlatform = "generic") {
+    try {
+      const vaUrl = getVirtualAssetUrl(assetId, targetPlatform);
+      // Bust browser & edge cache with timestamp query param
+      const separator = vaUrl.includes("?") ? "&" : "?";
+      const bustUrl = `${vaUrl}${separator}_t=${Date.now()}`;
+      const res = await fetch(bustUrl, {
+        cache: "no-store",
+        headers: {
+          "Cache-Control": "no-cache",
+          Pragma: "no-cache",
+        },
+      });
 
-  if (Array.isArray(metadata.variants) && metadata.variants.length > 0) {
-    product.variants = await fetchProductVariants(metadata.variants);
-    product.defaultVariantId =
-      metadata.defaultVariantId ||
-      product.variants.find((v) => v.available !== false)?.id ||
-      product.variants[0]?.id;
-
-    // If the base collection itself has no cover (common when the base
-    // collectionId is only a logical grouping and all real media lives in
-    // the per-color variant collections), fall back to the default variant.
-    if (!product.cover?.url) {
-      const defaultVariant = product.variants.find((v) => v.id === product.defaultVariantId);
-      if (defaultVariant) {
-        product.cover = defaultVariant.cover || product.cover;
-        product.thumbnails = defaultVariant.thumbnails?.length
-          ? defaultVariant.thumbnails
-          : product.thumbnails;
+      if (!res.ok) {
+        throw new Error(`Umber /va returned HTTP ${res.status} for asset "${assetId}"`);
       }
+
+      const payload = await res.json();
+      return payload;
+    } catch (err) {
+      console.warn(`[Announcement] Failed to fetch /va for "${assetId}":`, err.message);
+      return null;
     }
   }
 
-  if (metadata.tryOn?.enabled && metadata.tryOn?.collectionId) {
-    const modelUrl = await fetchTryOnModel(metadata.tryOn.collectionId);
-    product.tryOn = modelUrl ? { enabled: true, modelUrl } : null;
+  /**
+   * Fetch and hydrate a single product using its metadata definition
+   * @param {Object} metadata - Product catalog metadata item
+   * @returns {Promise<Object>} Hydrated product object
+   */
+  export async function fetchProduct(metadata) {
+    let product;
+    try {
+      const adnData = await fetchCollectionAssets(metadata.collectionId);
+      product = transformADNToProduct(adnData, metadata);
+    } catch {
+      product = {
+        id: metadata.collectionId || metadata.id,
+        collectionId: metadata.collectionId || metadata.id,
+        title: metadata.title,
+        price: metadata.price,
+        category: metadata.category,
+        description: metadata.description || "",
+        features: metadata.features || [],
+        cover: metadata.cover || { url: null, type: "image" },
+        thumbnails: metadata.thumbnails || [],
+        pdfUrl: metadata.pdfUrl || null,
+        error: true,
+      };
+    }
+
+    if (Array.isArray(metadata.variants) && metadata.variants.length > 0) {
+      product.variants = await fetchProductVariants(metadata.variants);
+      product.defaultVariantId =
+        metadata.defaultVariantId ||
+        product.variants.find((v) => v.available !== false)?.id ||
+        product.variants[0]?.id;
+
+      // If the base collection itself has no cover (common when the base
+      // collectionId is only a logical grouping and all real media lives in
+      // the per-color variant collections), fall back to the default variant.
+      if (!product.cover?.url) {
+        const defaultVariant = product.variants.find((v) => v.id === product.defaultVariantId);
+        if (defaultVariant) {
+          product.cover = defaultVariant.cover || product.cover;
+          product.thumbnails = defaultVariant.thumbnails?.length
+            ? defaultVariant.thumbnails
+            : product.thumbnails;
+        }
+      }
+    }
+
+    if (metadata.tryOn?.enabled && metadata.tryOn?.collectionId) {
+      const modelUrl = await fetchTryOnModel(metadata.tryOn.collectionId);
+      product.tryOn = modelUrl ? { enabled: true, modelUrl } : null;
+    }
+
+    return product;
   }
 
-  return product;
-}
-
-/**
- * Concurrently fetches and hydrates all catalog products
- * @param {Array<Object>} metadataArray - Array of product catalog metadata
- * @returns {Promise<Array<Object>>} Hydrated product array
- */
-export async function fetchAllProducts(metadataArray) {
-  if (!Array.isArray(metadataArray)) return [];
-  const productPromises = metadataArray.map((metadata) => fetchProduct(metadata));
-  return await Promise.all(productPromises);
-}
+  /**
+   * Concurrently fetches and hydrates all catalog products
+   * @param {Array<Object>} metadataArray - Array of product catalog metadata
+   * @returns {Promise<Array<Object>>} Hydrated product array
+   */
+  export async function fetchAllProducts(metadataArray) {
+    if (!Array.isArray(metadataArray)) return [];
+    const productPromises = metadataArray.map((metadata) => fetchProduct(metadata));
+    return await Promise.all(productPromises);
+  }

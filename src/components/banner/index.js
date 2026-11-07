@@ -117,7 +117,10 @@ export default function Banner() {
   const currentProduct = slides[currentSlide] || BANNER_VIDEO_SLIDES[0];
 
   return (
-    <section className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] max-w-[100vw] overflow-hidden bg-black -mt-[40px] mb-16 select-none">
+    <section
+      style={{ marginTop: "calc(var(--header-height, 65px) - 104px)" }}
+      className="relative w-screen left-1/2 right-1/2 -ml-[50vw] -mr-[50vw] max-w-[100vw] overflow-hidden bg-black mb-16 select-none"
+    >
       {/* Container with cinematic height responsive curve */}
       <div className="relative w-full h-[85vh] min-h-[580px] sm:min-h-[640px] md:min-h-[720px] lg:min-h-[780px] max-h-[920px]">
         {/* Layer 1: Background Video Carousel */}

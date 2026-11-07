@@ -1,6 +1,7 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import {
     Sheet,
@@ -14,6 +15,7 @@ import { ShoppingCart, User, Menu } from "lucide-react";
 import { useCart } from "@/lib/cartContext";
 import { CartSheet } from "@/components/CartSheet";
 import { useCartFlyAnimation } from "@/components/cartFlyAnimation";
+import AnnouncementBar from "@/components/announcementBar";
 
 const components = [
     { title: "HOME", href: "/" },
@@ -22,25 +24,54 @@ const components = [
 ];
 
 export default function Header() {
+    const pathname = usePathname();
     const [isMounted, setIsMounted] = useState(false);
     const [cartOpen, setCartOpen] = useState(false);
     const [mobileOpen, setMobileOpen] = useState(false);
+    const headerRef = useRef(null);
+
+    // Dynamically calculate and sync exact header height to CSS variable --header-height
+    const updateHeaderHeight = useCallback(() => {
+        if (headerRef.current && typeof document !== "undefined") {
+            const applyHeight = () => {
+                if (headerRef.current) {
+                    const height = headerRef.current.offsetHeight;
+                    document.documentElement.style.setProperty("--header-height", `${height}px`);
+                }
+            };
+            applyHeight();
+            requestAnimationFrame(applyHeight);
+        }
+    }, []);
 
     useEffect(() => {
         setIsMounted(true);
-    }, []);
+        updateHeaderHeight();
+    }, [updateHeaderHeight]);
+
+    useEffect(() => {
+        updateHeaderHeight();
+        window.addEventListener("resize", updateHeaderHeight);
+        return () => window.removeEventListener("resize", updateHeaderHeight);
+    }, [pathname, isMounted, updateHeaderHeight]);
 
     const { getCartItemsCount } = useCart();
     const { cartIconRef, pulseKey } = useCartFlyAnimation();
     const itemCount = isMounted ? getCartItemsCount() : 0;
 
-    if (!isMounted) return null;
-
     return (
         <>
             <CartSheet isOpen={cartOpen} onClose={() => setCartOpen(false)} />
 
-            <header className="fixed top-0 left-0 w-full z-50 border-b border-border bg-background/90 backdrop-blur-md shadow-xs">
+            <header
+                ref={headerRef}
+                className="fixed top-0 left-0 w-full z-50 border-b border-border bg-background/90 backdrop-blur-md shadow-xs transition-[height] duration-200"
+            >
+                {/* Announcement promo band: only renders on homepage */}
+                {pathname === "/" && (
+                    <AnnouncementBar onVisibilityChange={updateHeaderHeight} />
+                )}
+
                 <nav className="max-w-7xl mx-auto h-16 px-4 md:px-6 flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2 lg:hidden">
                         <Sheet open={mobileOpen} onOpenChange={setMobileOpen}>
