@@ -115,7 +115,7 @@ export default function Header() {
                                 <span className="font-mono text-[10px] tracking-[0.35em] text-secondary font-semibold">GADGETS_</span>
                             </span>
                             <span className="font-serif text-[10px] sm:text-[11px] font-medium text-muted-foreground border border-border px-2 py-0.5 rounded-none bg-muted/70 tracking-wide whitespace-nowrap">
-                                Powered by Umber
+                                Powered by <span className="text-red-500 font-bold">Umber</span>
                             </span>
                         </div>
                     </Link>

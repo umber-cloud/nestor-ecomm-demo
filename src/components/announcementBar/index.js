@@ -104,49 +104,49 @@ export default function AnnouncementBar({ onVisibilityChange }) {
     <aside
       role="banner"
       aria-label="Promotional announcement"
-      className="relative z-50 w-full bg-neutral-950 text-white text-xs font-mono border-b border-white/10 transition-all duration-200"
+      className="relative z-50 w-full bg-neutral-950 text-white font-mono border-b border-white/10 transition-all duration-200"
     >
-      <div className="max-w-7xl mx-auto h-9 px-4 sm:px-6 flex items-center justify-between gap-3">
+      <div className="max-w-7xl mx-auto h-12 sm:h-14 px-4 sm:px-6 flex items-center justify-between gap-3">
         {/* Left Spacer for symmetrical centering on desktop */}
-        <div className="hidden md:flex w-20 shrink-0" />
+        <div className="hidden md:flex w-24 shrink-0" />
 
         {/* Center: Promotional Message & CTA */}
-        <div className="flex-1 flex items-center justify-center gap-2 sm:gap-3 text-center overflow-hidden">
+        <div className="flex-1 flex items-center justify-center gap-2.5 sm:gap-4 text-center overflow-hidden">
           {data.badge && (
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-primary/20 text-primary border border-primary/30 text-[10px] uppercase font-bold tracking-widest shrink-0">
-              <Sparkles className="w-2.5 h-2.5 animate-pulse" />
+            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/20 text-primary border border-primary/30 text-[11px] sm:text-xs uppercase font-bold tracking-widest shrink-0">
+              <Sparkles className="w-3.5 h-3.5 animate-pulse" />
               {data.badge}
             </span>
           )}
 
-          <p className="truncate text-[11px] sm:text-xs text-neutral-200 tracking-wide font-medium">
+          <p className="truncate text-xs sm:text-sm md:text-base text-neutral-100 tracking-wide font-medium">
             {currentMessage}
           </p>
 
           {data.linkHref && data.linkText && (
             <Link
               href={data.linkHref}
-              className="inline-flex items-center gap-1 text-[11px] sm:text-xs font-bold text-primary hover:text-white transition-colors underline underline-offset-2 shrink-0 group ml-1"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm md:text-base font-bold text-primary hover:text-white transition-colors underline underline-offset-4 shrink-0 group ml-1"
             >
               <span>{data.linkText}</span>
-              <ArrowRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5" />
+              <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
             </Link>
           )}
         </div>
 
         {/* Right: Temporary Dismiss Button */}
         {data.dismissible !== false ? (
-          <div className="flex items-center justify-end w-20 shrink-0">
+          <div className="flex items-center justify-end w-24 shrink-0">
             <button
               onClick={handleDismiss}
-              className="p-1 rounded-sm text-neutral-400 hover:text-white transition-colors cursor-pointer"
+              className="p-1.5 rounded-sm text-neutral-400 hover:text-white transition-colors cursor-pointer"
               aria-label="Close announcement for now"
             >
-              <X className="w-3.5 h-3.5" />
+              <X className="w-4 h-4" />
             </button>
           </div>
         ) : (
-          <div className="hidden md:flex w-20 shrink-0" />
+          <div className="hidden md:flex w-24 shrink-0" />
         )}
       </div>
     </aside>

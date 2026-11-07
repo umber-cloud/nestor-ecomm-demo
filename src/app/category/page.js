@@ -235,7 +235,7 @@ function CategoryPageContent() {
       <div className="flex items-center justify-between border-b border-border/80 pb-4 mb-8">
         <div className="flex items-baseline gap-3">
           <h2 className="font-serif text-2xl sm:text-3xl text-foreground font-bold">
-            {activeCategory ? `${activeCategory} Collection` : "All Categorized Hardware"}
+            {activeCategory ? `${activeCategory} Collection` : "All categories"}
           </h2>
           <span className="font-mono text-xs text-muted-foreground uppercase tracking-widest">
             [{loading ? "..." : `${filteredProducts.length} ${filteredProducts.length === 1 ? "PIECE" : "PIECES"}`}]

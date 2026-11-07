@@ -50,7 +50,7 @@ export default function FeaturedProducts() {
               Featured Showcase
             </span>
             <span className="font-serif text-[10px] sm:text-[11px] font-medium text-muted-foreground tracking-wide">
-              Powered by Umber
+              Powered by <span className="text-red-500 font-bold">Umber</span>
             </span>
           </div>
           <h2 className="text-2xl md:text-3xl font-semibold">
