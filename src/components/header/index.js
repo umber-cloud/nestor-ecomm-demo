@@ -18,6 +18,7 @@ import { useCartFlyAnimation } from "@/components/cartFlyAnimation";
 const components = [
     { title: "HOME", href: "/" },
     { title: "CATEGORY", href: "/category" },
+    { title: "SUPPORT", href: "/support" },
 ];
 
 export default function Header() {
