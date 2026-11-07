@@ -27,7 +27,7 @@ const CategoryGrid = ({ title, description, cover }) => {
       )}
       <div className={`absolute inset-0 bg-gradient-to-t ${tint}`} />
       <div className="absolute inset-0 flex flex-col justify-end p-6 md:p-8 text-foreground">
-        <h2 className="text-2xl md:text-3xl font-semibold">{title}</h2>
+        <h2 className="font-serif text-2xl md:text-3xl font-bold uppercase tracking-tight text-foreground">{title}</h2>
         <span className="mt-2 inline-flex w-fit items-center gap-1.5 border border-primary bg-background/70 px-4 py-2 font-mono text-xs uppercase tracking-[0.15em] text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-colors">
           {description}
           <ArrowUpRight className="h-3.5 w-3.5" />

@@ -107,7 +107,7 @@ export default function SupportPage() {
       <section className="mt-6 mb-12 flex flex-col gap-4">
         <div className="flex items-center gap-3 font-mono text-[11px] uppercase tracking-[0.3em] text-secondary font-semibold">
           <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
-          SYSTEM PROTOCOL {"//"} CUSTOMER CARE
+          CUSTOMER CARE
         </div>
 
         <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-black uppercase tracking-tight text-foreground">
@@ -149,7 +149,7 @@ export default function SupportPage() {
                     {cat.tag}
                   </span>
                 </div>
-                <h3 className="font-serif text-base font-bold text-foreground leading-snug">
+                <h3 className="font-serif text-base font-bold uppercase tracking-tight text-foreground leading-snug">
                   {cat.title}
                 </h3>
                 <p className="font-mono text-xs text-muted-foreground leading-relaxed">
@@ -189,9 +189,8 @@ export default function SupportPage() {
                     >
                       <span>{faq.q}</span>
                       <ChevronDown
-                        className={`w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0 ${
-                          isOpen ? "rotate-180 text-primary" : ""
-                        }`}
+                        className={`w-4 h-4 text-muted-foreground transition-transform duration-200 shrink-0 ${isOpen ? "rotate-180 text-primary" : ""
+                          }`}
                       />
                     </button>
                     {isOpen && (
@@ -222,7 +221,7 @@ export default function SupportPage() {
             {submitted ? (
               <div className="py-8 flex flex-col items-center text-center gap-3">
                 <CheckCircle2 className="w-10 h-10 text-primary" />
-                <h3 className="font-serif text-lg font-bold text-foreground">
+                <h3 className="font-serif text-lg font-bold uppercase text-foreground">
                   Inquiry Dispatched
                 </h3>
                 <p className="font-mono text-xs text-muted-foreground max-w-xs leading-relaxed">

@@ -44,28 +44,18 @@ export default function FeaturedProducts() {
     <section className="mt-16">
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-3 mb-6 border-b border-border/60 pb-4">
         <div>
-          <div className="flex items-center gap-2 mb-1">
-            <span className="inline-flex items-center gap-1.5 px-2 py-0.5 text-[10px] font-mono uppercase tracking-widest text-primary border border-primary/40 bg-primary/10">
-              <Sparkles className="h-3 w-3" />
-              Featured Showcase
-            </span>
-            <span className="font-serif text-[10px] sm:text-[11px] font-medium text-muted-foreground tracking-wide">
-              Powered by <span className="text-red-500 font-bold">Umber</span>
-            </span>
-          </div>
-          <h2 className="text-2xl md:text-3xl font-semibold">
-            Featured <em className="font-serif font-normal">Products</em>
+
+          <h2 className="font-serif text-2xl sm:text-3xl font-bold uppercase tracking-tight text-foreground">
+            Featured Products
           </h2>
-          <p className="font-mono text-xs text-muted-foreground mt-1">
-            Flagship hardware streamed live from Umber Cloud ADN Edge
-          </p>
+
         </div>
 
         <Link
           href="/products"
           className="group inline-flex items-center gap-1.5 font-mono text-xs text-primary hover:text-accent font-bold uppercase tracking-widest transition-colors"
         >
-          View All Hardware [32 Units]
+          View All Products [32 Units]
           <ArrowRight className="h-3.5 w-3.5 transition-transform group-hover:translate-x-1" />
         </Link>
       </div>

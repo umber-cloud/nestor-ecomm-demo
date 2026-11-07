@@ -218,7 +218,7 @@ export default function Banner() {
                       <span className="font-mono text-[10px] sm:text-xs text-white/60">
                         0{index + 1}
                       </span>
-                      <span className="font-sans text-xs sm:text-sm font-medium text-white tracking-wide whitespace-nowrap">
+                      <span className="font-serif text-xs sm:text-sm font-bold uppercase tracking-wider text-white whitespace-nowrap">
                         {item.tabLabel}
                       </span>
                     </div>

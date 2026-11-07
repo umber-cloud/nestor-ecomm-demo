@@ -12,9 +12,9 @@ export default {
   			xs: '420px',
   		},
   		fontFamily: {
-  			sans: ['var(--font-sans)', 'ui-sans-serif', 'system-ui'],
-  			serif: ['var(--font-serif)', 'ui-serif', 'Georgia', 'serif'],
-  			mono: ['var(--font-mono)', 'ui-monospace', 'monospace'],
+  			sans: ['var(--font-sans)', 'Inter', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+  			serif: ['var(--font-serif)', 'Plus Jakarta Sans', '-apple-system', 'BlinkMacSystemFont', '"Segoe UI"', 'Roboto', 'sans-serif'],
+  			mono: ['var(--font-mono)', 'JetBrains Mono', 'ui-monospace', 'monospace'],
   		},
   		colors: {
   			background: 'hsl(var(--background))',

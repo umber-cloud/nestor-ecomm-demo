@@ -17,8 +17,8 @@ function ProductInfo({ product, onAddToCart, activeVariantId, onVariantSelect })
                 {product?.category}
             </span>
 
-            <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold mt-4">{product?.title}</h1>
-            <p className="text-xl sm:text-2xl text-muted-foreground mt-2">{product?.price}</p>
+            <h1 className="font-serif text-2xl sm:text-3xl md:text-4xl font-bold uppercase tracking-tight text-foreground mt-4">{product?.title}</h1>
+            <p className="font-mono text-xl sm:text-2xl text-primary font-bold mt-2">{product?.price}</p>
 
             <ColorSwatches
                 variants={product?.variants}

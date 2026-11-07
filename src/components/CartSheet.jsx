@@ -36,7 +36,7 @@ export function CartSheet({ isOpen, onClose }) {
     <Sheet open={isOpen} onOpenChange={onClose}>
       <SheetContent className="flex flex-col gap-0 w-full sm:max-w-md">
         <SheetHeader className="border-b border-border pb-4">
-          <SheetTitle className="font-serif text-xl font-normal">
+          <SheetTitle className="font-serif text-lg sm:text-xl font-bold uppercase tracking-tight text-foreground">
             Shopping Bag {cart.length > 0 && `(${cart.length})`}
           </SheetTitle>
           <SheetDescription className="sr-only">
@@ -61,8 +61,8 @@ export function CartSheet({ isOpen, onClose }) {
                     <CartItemThumbnail item={item} className="object-cover" />
                   </div>
                   <div className="flex-1 min-w-0">
-                    <h3 className="font-medium text-sm truncate">{item.title}</h3>
-                    <p className="text-sm text-muted-foreground mt-0.5">${formatPrice(item.price)}</p>
+                    <h3 className="font-serif text-xs sm:text-sm font-bold uppercase tracking-tight text-foreground truncate">{item.title}</h3>
+                    <p className="font-mono text-sm text-primary font-bold mt-0.5">${formatPrice(item.price)}</p>
                     <div className="flex items-center gap-3 mt-3">
                       <div className="flex items-center border border-border rounded-none">
                         <button

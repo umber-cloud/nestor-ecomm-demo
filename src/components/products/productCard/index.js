@@ -76,8 +76,8 @@ const ProductCard = ({ collectionId, title, price, cover, onClick, priority }) =
       </div>
 
       <div onClick={onClick} className="cursor-pointer px-1 sm:px-1.5 pt-2.5 sm:pt-3 pb-1">
-        <h3 className="text-sm md:text-base font-medium truncate">{title}</h3>
-        <p className="text-sm text-muted-foreground mt-0.5">{price}</p>
+        <h3 className="font-serif text-sm md:text-base font-bold uppercase tracking-tight text-foreground truncate">{title}</h3>
+        <p className="font-mono text-sm text-primary font-bold mt-0.5">{price}</p>
       </div>
     </div>
   );

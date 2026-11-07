@@ -45,8 +45,8 @@ export default function Home() {
       <FeaturedProducts />
 
       <section className="mt-20 mb-8">
-        <h2 className="text-2xl md:text-3xl font-semibold mb-6">
-          Shop by <em className="font-serif font-normal">Category</em>
+        <h2 className="font-serif text-2xl sm:text-3xl font-bold uppercase tracking-tight text-foreground mb-6">
+          Shop by Category
         </h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <CategoryCard

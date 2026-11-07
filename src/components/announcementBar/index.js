@@ -12,7 +12,7 @@ import { fetchAnnouncement } from "@/lib/adnService";
  *
  * Rules:
  * - 100% dynamic from Umber ADN Virtual Asset (/va) endpoint.
- * - ZERO hardcoded messages: if the file is unreachable, nothing is rendered.
+ * - Max horizontal space allocated to message text: never truncates.
  * - Always shows on page refresh (no persistence of dismissal).
  */
 export default function AnnouncementBar({ onVisibilityChange }) {
@@ -106,27 +106,24 @@ export default function AnnouncementBar({ onVisibilityChange }) {
       aria-label="Promotional announcement"
       className="relative z-50 w-full bg-neutral-950 text-white font-mono border-b border-white/10 transition-all duration-200"
     >
-      <div className="max-w-7xl mx-auto h-12 sm:h-14 px-4 sm:px-6 flex items-center justify-between gap-3">
-        {/* Left Spacer for symmetrical centering on desktop */}
-        <div className="hidden md:flex w-24 shrink-0" />
-
-        {/* Center: Promotional Message & CTA */}
-        <div className="flex-1 flex items-center justify-center gap-2.5 sm:gap-4 text-center overflow-hidden">
+      <div className="w-full max-w-screen-2xl mx-auto min-h-[48px] sm:min-h-[56px] px-4 sm:px-12 md:px-16 flex items-center justify-center relative py-2.5">
+        {/* Center: Promotional Message & CTA - Full available width without artificial truncation */}
+        <div className="w-full flex items-center justify-center gap-2 sm:gap-3.5 flex-wrap text-center pr-8 sm:pr-0">
           {data.badge && (
-            <span className="hidden sm:inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/20 text-primary border border-primary/30 text-[11px] sm:text-xs uppercase font-bold tracking-widest shrink-0">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/20 text-primary border border-primary/30 text-[11px] sm:text-xs uppercase font-bold tracking-widest shrink-0">
               <Sparkles className="w-3.5 h-3.5 animate-pulse" />
               {data.badge}
             </span>
           )}
 
-          <p className="truncate text-xs sm:text-sm md:text-base text-neutral-100 tracking-wide font-medium">
+          <p className="text-xs sm:text-sm md:text-[15px] lg:text-base text-neutral-100 font-medium tracking-wide">
             {currentMessage}
           </p>
 
           {data.linkHref && data.linkText && (
             <Link
               href={data.linkHref}
-              className="inline-flex items-center gap-1.5 text-xs sm:text-sm md:text-base font-bold text-primary hover:text-white transition-colors underline underline-offset-4 shrink-0 group ml-1"
+              className="inline-flex items-center gap-1.5 text-xs sm:text-sm md:text-[15px] font-bold text-primary hover:text-white transition-colors underline underline-offset-4 shrink-0 whitespace-nowrap group ml-0.5"
             >
               <span>{data.linkText}</span>
               <ArrowRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5" />
@@ -134,9 +131,9 @@ export default function AnnouncementBar({ onVisibilityChange }) {
           )}
         </div>
 
-        {/* Right: Temporary Dismiss Button */}
-        {data.dismissible !== false ? (
-          <div className="flex items-center justify-end w-24 shrink-0">
+        {/* Right: Absolute-positioned Dismiss Button (does not shrink the text container) */}
+        {data.dismissible !== false && (
+          <div className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 flex items-center">
             <button
               onClick={handleDismiss}
               className="p-1.5 rounded-sm text-neutral-400 hover:text-white transition-colors cursor-pointer"
@@ -145,8 +142,6 @@ export default function AnnouncementBar({ onVisibilityChange }) {
               <X className="w-4 h-4" />
             </button>
           </div>
-        ) : (
-          <div className="hidden md:flex w-24 shrink-0" />
         )}
       </div>
     </aside>

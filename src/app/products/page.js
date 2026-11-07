@@ -49,7 +49,7 @@ function ProductsPageContent() {
       <div className="mt-16 pt-2 mb-8">
         <BreadCrumb />
         <div className="flex items-baseline justify-between">
-          <h1 className="font-serif text-3xl md:text-4xl">
+          <h1 className="font-serif text-3xl md:text-4xl font-bold uppercase tracking-tight text-foreground">
             {searchTerm ? `Results for "${searchTerm}"` : "All Hardware Products"}
           </h1>
           <span className="font-mono text-xs text-muted-foreground uppercase tracking-widest">

@@ -121,7 +121,7 @@ function CategoryPageContent() {
           <div>
             <div className="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.3em] text-secondary">
               <span className="h-2 w-2 rounded-full bg-secondary animate-pulse" />
-              <span>TRANSMISSION // CATEGORY MATRIX</span>
+              <span> CATEGORY MATRIX</span>
             </div>
             <h1 className="font-serif text-3xl sm:text-4xl md:text-5xl font-black uppercase text-foreground mt-2">
               Shop by <span className="text-primary italic">Categories</span>
@@ -234,7 +234,7 @@ function CategoryPageContent() {
       {/* Grid Header */}
       <div className="flex items-center justify-between border-b border-border/80 pb-4 mb-8">
         <div className="flex items-baseline gap-3">
-          <h2 className="font-serif text-2xl sm:text-3xl text-foreground font-bold">
+          <h2 className="font-serif text-2xl sm:text-3xl text-foreground font-bold uppercase tracking-tight">
             {activeCategory ? `${activeCategory} Collection` : "All categories"}
           </h2>
           <span className="font-mono text-xs text-muted-foreground uppercase tracking-widest">
