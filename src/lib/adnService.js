@@ -440,3 +440,92 @@ export async function fetchTryOnModel(collectionId) {
     const productPromises = metadataArray.map((metadata) => fetchProduct(metadata));
     return await Promise.all(productPromises);
   }
+
+  // ==========================================================================
+  // Studio feed (Umber-driven)
+  //
+  // Everything on /studio comes from Umber:
+  //   * a JSON Virtual Asset (default id "studio-feed") holding the creators
+  //     and the list of posts, and
+  //   * one Virtual Collection per post holding that post's photos / videos.
+  //
+  // Manifest shape:
+  //   {
+  //     "creators": [{ "id", "name", "handle", "bio", "verified": true,
+  //                    "avatarAssetId": "<optional image virtual asset id>" }],
+  //     "posts": [{ "id", "creatorId", "collectionId", "caption",
+  //                 "tags": ["trending"], "products": ["<product collectionId>"],
+  //                 "likes": 120, "publishedAt": "2026-11-12T10:00:00Z" }]
+  //   }
+  // ==========================================================================
+
+  /**
+   * Fetch and hydrate the Studio feed from Umber.
+   * @param {Array<Object>} products - Hydrated catalog products (for tagged items)
+   * @param {string} [manifestAssetId="studio-feed"] - JSON virtual asset id
+   * @returns {Promise<{creators: Array<Object>, posts: Array<Object>}|null>} null when the manifest is unavailable
+   */
+  export async function fetchStudioFeed(products = [], manifestAssetId = "studio-feed") {
+    let manifest;
+    try {
+      const res = await fetch(getVirtualAssetUrl(manifestAssetId), { cache: "no-store" });
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      manifest = await res.json();
+    } catch (err) {
+      console.warn(`[Studio] Manifest "${manifestAssetId}" unavailable:`, err.message);
+      return null;
+    }
+
+    const creators = (Array.isArray(manifest?.creators) ? manifest.creators : []).map((c) => ({
+      ...c,
+      avatarUrl: c.avatarAssetId ? getVirtualAssetUrl(c.avatarAssetId) : null,
+    }));
+    const creatorById = Object.fromEntries(creators.map((c) => [c.id, c]));
+    const productById = Object.fromEntries(
+      products.filter(Boolean).map((p) => [p.collectionId, p])
+    );
+
+    const rawPosts = Array.isArray(manifest?.posts) ? manifest.posts : [];
+    const hydrated = await Promise.all(
+      rawPosts.map(async (post) => {
+        const creator = creatorById[post.creatorId];
+        if (!creator || !post.collectionId) return null;
+        try {
+          const data = await fetchCollectionAssets(post.collectionId);
+          const platform = data?.targetPlatform || "generic";
+          const items = Array.isArray(data?.assetItemUrls) ? data.assetItemUrls : [];
+          // Anchor item first so it is the post's cover.
+          const ordered = data?.anchorAsset
+            ? [data.anchorAsset, ...items.filter((i) => i.assetItemId !== data.anchorAsset.assetItemId)]
+            : items;
+          const media = ordered
+            .filter((i) => i.mimetype?.startsWith("image/") || i.mimetype?.startsWith("video/"))
+            .map((i) => ({
+              assetItemId: i.assetItemId,
+              type: i.mimetype.startsWith("video/") ? "video" : "image",
+              url: getItemUrl(post.collectionId, i.assetItemId, i.targetPlatform || platform),
+            }));
+          if (media.length === 0) return null;
+          return {
+            id: post.id || post.collectionId,
+            creator,
+            caption: post.caption || "",
+            tags: Array.isArray(post.tags) ? post.tags : [],
+            likes: typeof post.likes === "number" ? post.likes : null,
+            publishedAt: post.publishedAt || null,
+            media,
+            tagged: (Array.isArray(post.products) ? post.products : [])
+              .map((id) => productById[id])
+              .filter(Boolean),
+          };
+        } catch {
+          return null; // a post whose collection isn't deployed is simply skipped
+        }
+      })
+    );
+
+    const posts = hydrated
+      .filter(Boolean)
+      .sort((a, b) => new Date(b.publishedAt || 0) - new Date(a.publishedAt || 0));
+    return { creators, posts };
+  }
