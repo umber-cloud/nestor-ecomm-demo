@@ -226,7 +226,7 @@ export const productMetadata = [
   },
   {
     collectionId: "rollable-laptop",
-    title: "Lenovo ThinkBook Rollable Laptop",
+    title: "Rollable Laptop",
     category: "Productivity",
     price: "$2,899.00",
     description: "Breakthrough concept laptop with an internal motorized rollable OLED screen that expands vertically from 12.7 inches to an expansive 15.3 inches at the tap of a button.",
