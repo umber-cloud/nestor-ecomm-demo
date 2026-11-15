@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef, useCallback } from "react";
 import Link from "next/link";
 import { ArrowRight, ChevronLeft, ChevronRight, Play, Pause } from "lucide-react";
-import { BANNER_VIDEO_SLIDES, fetchBannerVideoSlides } from "@/lib/bannerData";
+import { fetchBannerVideoSlides } from "@/lib/bannerData";
 
 /**
  * Modern Full-Bleed Video Hero Carousel
@@ -11,17 +11,15 @@ import { BANNER_VIDEO_SLIDES, fetchBannerVideoSlides } from "@/lib/bannerData";
  *
  * Features:
  * - Edge-to-edge stretched background video canvas
- * - 3 flagship product video streams from Umber Cloud ADN:
- *     1. banner-iray (IRay Spectacles)
- *     2. banner-sc-bottle (IClean UV Bottle)
- *     3. banner-air-purifier (HEPA Air Purifier)
+ * - Dynamically populated from Umber Cloud ADN (collection: ecom-banner-videos)
+ * - Zero hardcoded URLs — automatically hides if no live videos are returned
  * - Automatic slide progression: video plays completely once, then triggers the next product
  * - Real-time progress bar synced to video playback time
  * - Samsung-style bottom pill navigation with Play/Pause and Next/Prev controls
  * - High-contrast cinematic scrim ensuring optimal text legibility across all displays
  */
 export default function Banner() {
-  const [slides, setSlides] = useState(BANNER_VIDEO_SLIDES);
+  const [slides, setSlides] = useState([]);
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPlaying, setIsPlaying] = useState(true);
   const [progress, setProgress] = useState(0);
@@ -37,7 +35,7 @@ export default function Banner() {
           setSlides(liveSlides);
         }
       } catch (err) {
-        console.warn("[Banner] Using fallback video slides:", err);
+        console.warn("[Banner] Failed to load live video slides:", err);
       }
     }
     loadLiveVideos();
@@ -114,7 +112,12 @@ export default function Banner() {
     }
   };
 
-  const currentProduct = slides[currentSlide] || BANNER_VIDEO_SLIDES[0];
+  // If no slides are returned from Umber ADN, do not render the banner
+  if (!slides || slides.length === 0) {
+    return null;
+  }
+
+  const currentProduct = slides[currentSlide] || slides[0];
 
   return (
     <section
@@ -216,7 +219,7 @@ export default function Banner() {
                   >
                     <div className="flex items-center gap-2 mb-1.5">
                       <span className="font-mono text-[10px] sm:text-xs text-white/60">
-                        0{index + 1}
+                        {String(index + 1).padStart(2, "0")}
                       </span>
                       <span className="font-serif text-xs sm:text-sm font-bold uppercase tracking-wider text-white whitespace-nowrap">
                         {item.tabLabel}
