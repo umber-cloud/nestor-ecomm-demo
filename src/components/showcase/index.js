@@ -9,14 +9,14 @@ import { useAddToCart } from "@/lib/useAddToCart";
 import { Sheet, SheetContent, SheetTitle, SheetDescription } from "@/components/ui/sheet";
 
 // ---------------------------------------------------------------------------
-// Studio feed, modelled on Myntra Studio: one narrow phone-width column of
+// Showcase feed: one narrow phone-width column of
 // creator posts. Each post = creator row (avatar, name, Follow, time), a
 // swipeable photo/video carousel, a strip of tagged products with "SHOP ALL",
 // like / share actions and a hashtag caption. A "Recommended for you" row of
 // followable accounts is interleaved every few posts.
 //
 // All content (creators, posts, captions, media, tagged products) is supplied
-// by Umber via fetchStudioFeed(). Likes and follows are per-browser
+// by Umber via fetchShowcaseFeed(). Likes and follows are per-browser
 // (localStorage); there is no backend for them.
 // ---------------------------------------------------------------------------
 
@@ -339,9 +339,9 @@ function Recommended({ creators, follows, onFollow }) {
   );
 }
 
-export function StudioFeed({ feed }) {
-  const [likes, toggleLike] = useLocalSet("studio-likes");
-  const [follows, toggleFollow] = useLocalSet("studio-follows");
+export function ShowcaseFeed({ feed }) {
+  const [likes, toggleLike] = useLocalSet("showcase-likes");
+  const [follows, toggleFollow] = useLocalSet("showcase-follows");
   const [visibleCount, setVisibleCount] = useState(6);
   const sentinelRef = useRef(null);
   const posts = feed.posts;
@@ -359,9 +359,9 @@ export function StudioFeed({ feed }) {
   }, [posts.length]);
 
   const share = async (post) => {
-    const url = `${window.location.origin}/studio`;
+    const url = `${window.location.origin}/showcase`;
     try {
-      if (navigator.share) await navigator.share({ title: `${post.creator.name} on Studio`, url });
+      if (navigator.share) await navigator.share({ title: `${post.creator.name} on Showcase`, url });
       else await navigator.clipboard.writeText(url);
     } catch {}
   };

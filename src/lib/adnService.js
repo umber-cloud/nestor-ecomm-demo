@@ -442,9 +442,9 @@ export async function fetchTryOnModel(collectionId) {
   }
 
   // ==========================================================================
-  // Studio feed (Umber-driven)
+  // Showcase feed (Umber-driven)
   //
-  // Everything on /studio comes from Umber:
+  // Everything on /showcase comes from Umber:
   //   * a JSON Virtual Asset (default id "studio-feed") holding the creators
   //     and the list of posts, and
   //   * one Virtual Collection per post holding that post's photos / videos.
@@ -460,19 +460,19 @@ export async function fetchTryOnModel(collectionId) {
   // ==========================================================================
 
   /**
-   * Fetch and hydrate the Studio feed from Umber.
+   * Fetch and hydrate the Showcase feed from Umber.
    * @param {Array<Object>} products - Hydrated catalog products (for tagged items)
    * @param {string} [manifestAssetId="studio-feed"] - JSON virtual asset id
    * @returns {Promise<{creators: Array<Object>, posts: Array<Object>}|null>} null when the manifest is unavailable
    */
-  export async function fetchStudioFeed(products = [], manifestAssetId = "studio-feed") {
+  export async function fetchShowcaseFeed(products = [], manifestAssetId = "studio-feed") {
     let manifest;
     try {
       const res = await fetch(getVirtualAssetUrl(manifestAssetId), { cache: "no-store" });
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       manifest = await res.json();
     } catch (err) {
-      console.warn(`[Studio] Manifest "${manifestAssetId}" unavailable:`, err.message);
+      console.warn(`[Showcase] Manifest "${manifestAssetId}" unavailable:`, err.message);
       return null;
     }
 

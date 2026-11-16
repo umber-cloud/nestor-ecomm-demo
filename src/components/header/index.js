@@ -20,7 +20,7 @@ import AnnouncementBar from "@/components/announcementBar";
 const components = [
     { title: "HOME", href: "/" },
     { title: "CATEGORY", href: "/category" },
-    { title: "STUDIO", href: "/studio" },
+    { title: "SHOWCASE", href: "/showcase" },
     { title: "SUPPORT", href: "/support" },
 ];
 
