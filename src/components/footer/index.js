@@ -1,5 +1,6 @@
-"use client"
-import React, { useState } from 'react';
+"use client";
+import { useState } from "react";
+import Link from "next/link";
 import { z } from "zod";
 import { useToast } from "@/hooks/use-toast";
 
@@ -11,17 +12,14 @@ const linkColumns = [
     {
         heading: "SHOP",
         links: [
-            { label: "Apparel", href: "/categories/Apparel" },
-            { label: "Accessories", href: "/categories/Accessories" },
-            { label: "Digital", href: "/categories/Digital" },
+            { label: "Category", href: "/category" },
+            { label: "Showcase", href: "/showcase" },
         ],
     },
     {
         heading: "SUPPORT",
         links: [
-            { label: "Contact Us", href: "/contactus" },
-            { label: "Your Cart", href: "/cart" },
-            { label: "Account", href: "/profile" },
+            { label: "Support", href: "/support" },
         ],
     },
 ];
@@ -112,10 +110,10 @@ function Footer() {
                                 <ul className="space-y-3 font-sans text-sm">
                                     {col.links.map((link) => (
                                         <li key={link.label}>
-                                            <a href={link.href} className="group inline-flex items-center gap-2 text-foreground/80 hover:text-primary transition-colors">
+                                            <Link href={link.href} className="group inline-flex items-center gap-2 text-foreground/80 hover:text-primary transition-colors">
                                                 <span className="font-mono text-primary opacity-0 group-hover:opacity-100 transition-opacity">{'>'}</span>
                                                 {link.label}
-                                            </a>
+                                            </Link>
                                         </li>
                                     ))}
                                 </ul>
