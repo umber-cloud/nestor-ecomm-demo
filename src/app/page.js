@@ -6,7 +6,7 @@ import CategoryCard from "@/components/categories/categorieCard";
 import FeaturedProducts from "@/components/products/featuredProducts";
 import { getProducts } from "@/lib/shopData";
 
-// Homepage of Nestor ECommerce Demo showcasing live Umber ADN media
+// Homepage of Nestor E-Commerce Demo showcasing live Umber ADN media
 export default function Home() {
   const [covers, setCovers] = useState({
     Fun: null,
